@@ -35,7 +35,6 @@
     <!--============================
         BRAND SLIDER START
     ==============================-->
-    {{-- testing --}}
     @include('frontend.home.sections.brand-slider')
     <!--============================
         BRAND SLIDER END

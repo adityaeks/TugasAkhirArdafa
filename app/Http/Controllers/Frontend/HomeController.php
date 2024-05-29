@@ -32,7 +32,7 @@ class HomeController extends Controller
         $flashSaleItems = FlashSaleItem::where('show_at_home', 1)->where('status', 1)->pluck('product_id')->toArray();
 
         $popularCategory = HomePageSetting::where('key', 'popular_category_section')->first();
-        $brands = Brand::where('status', 1)->where('is_featured', 1)->get();
+        $brands = Brand::where('status', 1)->get();
 
         $typeBaseProducts = $this->getTypeBaseProduct();
         $categoryProductSliderSectionOne = HomePageSetting::where('key', 'product_slider_section_one')->first();

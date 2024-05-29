@@ -98,7 +98,6 @@ class BrandDataTable extends DataTable
             Column::make('id'),
             Column::make('logo')->width(200),
             Column::make('name')->width(300),
-            Column::make('is_featured'),
             Column::make('status'),
             Column::computed('action')
             ->exportable(false)

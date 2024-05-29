@@ -28,15 +28,6 @@
                             <label>Name</label>
                             <input type="text" class="form-control" name="name" value="">
                         </div>
-
-                        <div class="form-group">
-                            <label for="inputState">Is Featured</label>
-                            <select id="inputState" class="form-control" name="is_featured">
-                              <option value="">Select</option>
-                              <option value="1">Yes</option>
-                              <option value="0">No</option>
-                            </select>
-                          </div>
                         <div class="form-group">
                             <label for="inputState">Status</label>
                             <select id="inputState" class="form-control" name="status">
