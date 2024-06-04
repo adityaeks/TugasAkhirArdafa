@@ -38,7 +38,6 @@ class BrandController extends Controller
         $request->validate([
             'logo' => ['image', 'required', 'max:2000'],
             'name' => ['required', 'max:200'],
-            'is_featured' => ['required'],
             'status' => ['required']
         ]);
 
@@ -48,7 +47,6 @@ class BrandController extends Controller
         $brand->logo = $logoPath;
         $brand->name = $request->name;
         $brand->slug = Str::slug($request->name);
-        $brand->is_featured = $request->is_featured;
         $brand->status = $request->status;
         $brand->save();
 
@@ -81,7 +79,6 @@ class BrandController extends Controller
         $request->validate([
             'logo' => ['image', 'max:2000'],
             'name' => ['required', 'max:200'],
-            'is_featured' => ['required'],
             'status' => ['required']
         ]);
 
@@ -92,7 +89,6 @@ class BrandController extends Controller
         $brand->logo = empty(!$logoPath) ? $logoPath : $brand->logo;
         $brand->name = $request->name;
         $brand->slug = Str::slug($request->name);
-        $brand->is_featured = $request->is_featured;
         $brand->status = $request->status;
         $brand->save();
 

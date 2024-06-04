@@ -60,22 +60,6 @@
                             </div>
 
                         </div>
-
-                        <div class="form-group">
-                            <label for="inputState">Brand</label>
-                            <select id="inputState" class="form-control" name="brand">
-                                <option value="">Select</option>
-                                @foreach ($brands as $brand)
-                                    <option value="{{$brand->id}}">{{$brand->name}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>SKU</label>
-                            <input type="text" class="form-control" name="sku" value="{{old('sku')}}">
-                        </div>
-
                         <div class="form-group">
                             <label>Price</label>
                             <input type="text" class="form-control" name="price" value="{{old('price')}}">
@@ -107,12 +91,6 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Video Link</label>
-                            <input type="text" class="form-control" name="video_link" value="{{old('video_link')}}">
-                        </div>
-
-
-                        <div class="form-group">
                             <label>Short Description</label>
                             <textarea name="short_description" class="form-control"></textarea>
                         </div>
@@ -128,22 +106,12 @@
                             <select id="inputState" class="form-control" name="product_type">
                                 <option value="">Select</option>
                                 <option value="new_arrival">New Arrival</option>
-                                <option value="featured_product">Featured</option>
+                                <option value="featured_product">Unggulan</option>
                                 <option value="top_product">Top Product</option>
                                 <option value="best_product">Best Product</option>
                             </select>
                         </div>
-
-                        <div class="form-group">
-                            <label>Seo Title</label>
-                            <input type="text" class="form-control" name="seo_title" value="{{old('seo_title')}}">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Seo Description</label>
-                            <textarea name="seo_description" class="form-control"></textarea>
-                        </div>
-
+                        
                         <div class="form-group">
                             <label for="inputState">Status</label>
                             <select id="inputState" class="form-control" name="status">

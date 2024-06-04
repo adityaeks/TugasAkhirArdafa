@@ -74,21 +74,6 @@
                     </div>
 
                     <div class="form-group wsus__input">
-                        <label for="inputState">Brand</label>
-                        <select id="inputState" class="form-control" name="brand">
-                            <option value="">Select</option>
-                            @foreach ($brands as $brand)
-                                <option {{$brand->id == $product->brand_id ? 'selected' : ''}} value="{{$brand->id}}">{{$brand->name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="form-group wsus__input">
-                        <label>SKU</label>
-                        <input type="text" class="form-control" name="sku" value="{{$product->sku}}">
-                    </div>
-
-                    <div class="form-group wsus__input">
                         <label>Price</label>
                         <input type="text" class="form-control" name="price" value="{{$product->price}}">
                     </div>
@@ -119,12 +104,6 @@
                     </div>
 
                     <div class="form-group wsus__input">
-                        <label>Video Link</label>
-                        <input type="text" class="form-control" name="video_link" value="{{$product->video_link}}">
-                    </div>
-
-
-                    <div class="form-group wsus__input">
                         <label>Short Description</label>
                         <textarea name="short_description" class="form-control">{!! $product->short_description !!}</textarea>
                     </div>
@@ -133,17 +112,6 @@
                     <div class="form-group wsus__input">
                         <label>Long Description</label>
                         <textarea name="long_description" class="form-control summernote">{!! $product->long_description !!}</textarea>
-                    </div>
-
-
-                    <div class="form-group wsus__input">
-                        <label>Seo Title</label>
-                        <input type="text" class="form-control" name="seo_title" value="{{$product->seo_title}}">
-                    </div>
-
-                    <div class="form-group wsus__input">
-                        <label>Seo Description</label>
-                        <textarea name="seo_description" class="form-control">{!!$product->seo_description!!}</textarea>
                     </div>
 
                     <div class="form-group wsus__input">
