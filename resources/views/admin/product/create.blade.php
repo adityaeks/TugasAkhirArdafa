@@ -61,11 +61,6 @@
 
                         </div>
                         <div class="form-group">
-                            <label>SKU</label>
-                            <input type="text" class="form-control" name="sku" value="{{old('sku')}}">
-                        </div>
-
-                        <div class="form-group">
                             <label>Price</label>
                             <input type="text" class="form-control" name="price" value="{{old('price')}}">
                         </div>
@@ -96,12 +91,6 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Video Link</label>
-                            <input type="text" class="form-control" name="video_link" value="{{old('video_link')}}">
-                        </div>
-
-
-                        <div class="form-group">
                             <label>Short Description</label>
                             <textarea name="short_description" class="form-control"></textarea>
                         </div>
@@ -122,17 +111,7 @@
                                 <option value="best_product">Best Product</option>
                             </select>
                         </div>
-
-                        <div class="form-group">
-                            <label>Seo Title</label>
-                            <input type="text" class="form-control" name="seo_title" value="{{old('seo_title')}}">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Seo Description</label>
-                            <textarea name="seo_description" class="form-control"></textarea>
-                        </div>
-
+                        
                         <div class="form-group">
                             <label for="inputState">Status</label>
                             <select id="inputState" class="form-control" name="status">

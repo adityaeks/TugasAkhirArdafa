@@ -48,8 +48,6 @@ class VendorProductController extends Controller
             'qty' => ['required'],
             'short_description' => ['required', 'max: 600'],
             'long_description' => ['required'],
-            'seo_title' => ['nullable','max:200'],
-            'seo_description' => ['nullable','max:250'],
             'status' => ['required']
         ]);
 
@@ -67,8 +65,6 @@ class VendorProductController extends Controller
         $product->qty = $request->qty;
         $product->short_description = $request->short_description;
         $product->long_description = $request->long_description;
-        $product->video_link = $request->video_link;
-        $product->sku = $request->sku;
         $product->price = $request->price;
         $product->offer_price = $request->offer_price;
         $product->offer_start_date = $request->offer_start_date;
@@ -76,8 +72,6 @@ class VendorProductController extends Controller
         $product->product_type = $request->product_type;
         $product->status = $request->status;
         $product->is_approved = 0;
-        $product->seo_title = $request->seo_title;
-        $product->seo_description = $request->seo_description;
         $product->save();
 
         toastr('Created Successfully!', 'success');
@@ -133,8 +127,6 @@ class VendorProductController extends Controller
             'qty' => ['required'],
             'short_description' => ['required', 'max: 600'],
             'long_description' => ['required'],
-            'seo_title' => ['nullable','max:200'],
-            'seo_description' => ['nullable','max:250'],
             'status' => ['required']
         ]);
 
@@ -157,8 +149,6 @@ class VendorProductController extends Controller
         $product->qty = $request->qty;
         $product->short_description = $request->short_description;
         $product->long_description = $request->long_description;
-        $product->video_link = $request->video_link;
-        $product->sku = $request->sku;
         $product->price = $request->price;
         $product->offer_price = $request->offer_price;
         $product->offer_start_date = $request->offer_start_date;
@@ -166,8 +156,6 @@ class VendorProductController extends Controller
         $product->product_type = $request->product_type;
         $product->status = $request->status;
         $product->is_approved = $product->is_approved;
-        $product->seo_title = $request->seo_title;
-        $product->seo_description = $request->seo_description;
         $product->save();
 
         toastr('Updated Successfully!', 'success');
