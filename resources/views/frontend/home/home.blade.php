@@ -1,6 +1,6 @@
 @extends('frontend.layouts.master')
 @section('title')
-{{$settings->site_name}} || e-Commerce HTML Template
+{{$settings->site_name}} || Home
 @endsection
 
 @section('content')
@@ -35,7 +35,7 @@
     <!--============================
         BRAND SLIDER START
     ==============================-->
-    @include('frontend.home.sections.brand-slider')
+    {{-- @include('frontend.home.sections.brand-slider') --}}
     <!--============================
         BRAND SLIDER END
     ==============================-->
@@ -44,7 +44,7 @@
     <!--============================
         SINGLE BANNER START
     ==============================-->
-    @include('frontend.home.sections.single-banner')
+    {{-- @include('frontend.home.sections.single-banner') --}}
     <!--============================
         SINGLE BANNER END
     ==============================-->
