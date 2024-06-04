@@ -60,9 +60,6 @@
                             </div>
 
                         </div>
-
-                        
-
                         <div class="form-group">
                             <label>SKU</label>
                             <input type="text" class="form-control" name="sku" value="{{old('sku')}}">
@@ -120,7 +117,7 @@
                             <select id="inputState" class="form-control" name="product_type">
                                 <option value="">Select</option>
                                 <option value="new_arrival">New Arrival</option>
-                                <option value="featured_product">Featured</option>
+                                <option value="featured_product">Unggulan</option>
                                 <option value="top_product">Top Product</option>
                                 <option value="best_product">Best Product</option>
                             </select>
