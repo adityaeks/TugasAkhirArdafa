@@ -74,16 +74,6 @@
                     </div>
 
                     <div class="form-group wsus__input">
-                        <label for="inputState">Brand</label>
-                        <select id="inputState" class="form-control" name="brand">
-                            <option value="">Select</option>
-                            @foreach ($brands as $brand)
-                                <option {{$brand->id == $product->brand_id ? 'selected' : ''}} value="{{$brand->id}}">{{$brand->name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="form-group wsus__input">
                         <label>SKU</label>
                         <input type="text" class="form-control" name="sku" value="{{$product->sku}}">
                     </div>
