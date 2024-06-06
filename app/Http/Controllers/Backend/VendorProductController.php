@@ -60,8 +60,6 @@ class VendorProductController extends Controller
         $product->slug = Str::slug($request->name);
         $product->vendor_id = Auth::user()->vendor->id;
         $product->category_id = $request->category;
-        $product->sub_category_id = $request->sub_category;
-        $product->child_category_id = $request->child_category;
         $product->qty = $request->qty;
         $product->short_description = $request->short_description;
         $product->long_description = $request->long_description;
@@ -100,15 +98,11 @@ class VendorProductController extends Controller
             abort(404);
         }
 
-        $subCategories = SubCategory::where('category_id', $product->category_id)->get();
-        $childCategories = ChildCategory::where('sub_category_id', $product->sub_category_id)->get();
         $categories = Category::all();
 
         return view('vendor.product.edit',
         compact(
             'product',
-            'subCategories',
-            'childCategories',
             'categories',
         ));
     }
@@ -144,8 +138,6 @@ class VendorProductController extends Controller
         $product->slug = Str::slug($request->name);
         $product->vendor_id = Auth::user()->vendor->id;
         $product->category_id = $request->category;
-        $product->sub_category_id = $request->sub_category;
-        $product->child_category_id = $request->child_category;
         $product->qty = $request->qty;
         $product->short_description = $request->short_description;
         $product->long_description = $request->long_description;
@@ -206,21 +198,4 @@ class VendorProductController extends Controller
         return response(['message' => 'Status has been updated!']);
     }
 
-    /**
-     * Get all product sub categores
-     */
-
-     public function getSubCategories(Request $request)
-     {
-         $subCategories = SubCategory::where('category_id', $request->id)->get();
-
-         return $subCategories;
-     }
-
-     public function getChildCategories(Request $request)
-     {
-         $childCategories = ChildCategory::where('sub_category_id', $request->id)->get();
-
-         return $childCategories;
-     }
 }

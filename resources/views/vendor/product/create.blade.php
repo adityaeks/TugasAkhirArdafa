@@ -31,7 +31,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-12">
                             <div class="form-group wsus__input">
                                 <label for="inputState">Category</label>
                                 <select id="inputState" class="form-control main-category" name="category">
@@ -42,24 +42,6 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group wsus__input">
-                                <label for="inputState">Sub Category</label>
-                                <select id="inputState" class="form-control sub-category" name="sub_category">
-                                    <option value="">Select</option>
-
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group wsus__input">
-                                <label for="inputState">Child Category</label>
-                                <select id="inputState" class="form-control child-category" name="child_category">
-                                    <option value="">Select</option>
-                                </select>
-                            </div>
-                        </div>
-
                     </div>
 
                     <div class="form-group wsus__input">

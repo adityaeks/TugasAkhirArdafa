@@ -96,10 +96,8 @@ class ProductController extends Controller
     public function edit(string $id)
     {
         $product = Product::findOrFail($id);
-        $subCategories = SubCategory::where('category_id', $product->category_id)->get();
-        $childCategories = ChildCategory::where('sub_category_id', $product->sub_category_id)->get();
         $categories = Category::all();
-        return view('admin.product.edit', compact('product', 'categories', 'subCategories', 'childCategories'));
+        return view('admin.product.edit', compact('product', 'categories'));
     }
 
     /**
@@ -127,8 +125,6 @@ class ProductController extends Controller
         $product->name = $request->name;
         $product->slug = Str::slug($request->name);
         $product->category_id = $request->category;
-        $product->sub_category_id = $request->sub_category;
-        $product->child_category_id = $request->child_category;
         $product->qty = $request->qty;
         $product->short_description = $request->short_description;
         $product->long_description = $request->long_description;
@@ -188,22 +184,5 @@ class ProductController extends Controller
         return response(['message' => 'Status has been updated!']);
     }
 
-    /**
-     * Get all product sub categores
-     */
-
-    public function getSubCategories(Request $request)
-    {
-        $subCategories = SubCategory::where('category_id', $request->id)->get();
-
-        return $subCategories;
-    }
-
-    public function getChildCategories(Request $request)
-    {
-        $childCategories = ChildCategory::where('sub_category_id', $request->id)->get();
-
-        return $childCategories;
-    }
 
 }
