@@ -216,8 +216,7 @@
                                                     <p><span>Address:</span> {{$product->vendor->address}}</p>
                                                     <p><span>Phone:</span> {{$product->vendor->phone}}</p>
                                                     <p><span>mail:</span> {{$product->vendor->email}}</p>
-                                                    <a href="vendor_details.html" class="see_btn">visit store</a>
-                                                </div>
+                                                    <a href="{{ route('vendor.products', $product->vendor->id) }}" class="see_btn">visit store</a>                                                </div>
                                             </div>
                                             <div class="col-xl-12">
                                                 <div class="wsus__vendor_details">
