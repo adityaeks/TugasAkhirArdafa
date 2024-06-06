@@ -17,7 +17,7 @@
     <!--============================
         FLASH SELL START
     ==============================-->
-    {{-- @include('frontend.home.sections.flash-sale') --}}
+    @include('frontend.home.sections.flash-sale')
     <!--============================
         FLASH SELL END
     ==============================-->
@@ -44,7 +44,7 @@
     <!--============================
         SINGLE BANNER START
     ==============================-->
-    {{-- @include('frontend.home.sections.single-banner') --}}
+    @include('frontend.home.sections.single-banner')
     <!--============================
         SINGLE BANNER END
     ==============================-->
