@@ -13,15 +13,10 @@ use App\Http\Controllers\Backend\BlogCommentController;
 use App\Http\Controllers\Backend\BlogController;
 use App\Http\Controllers\Backend\BrandController;
 use App\Http\Controllers\Backend\CategoryController;
-use App\Http\Controllers\Backend\ChildCategoryController;
 use App\Http\Controllers\Backend\CodSettingController;
 use App\Http\Controllers\Backend\CouponController;
 use App\Http\Controllers\Backend\CustomerListController;
 use App\Http\Controllers\Backend\FlashSaleController;
-use App\Http\Controllers\Backend\FooterGridThreeController;
-use App\Http\Controllers\Backend\FooterGridTwoController;
-use App\Http\Controllers\Backend\FooterInfoController;
-use App\Http\Controllers\Backend\FooterSocialController;
 use App\Http\Controllers\Backend\HomePageSettingController;
 use App\Http\Controllers\Backend\ManageUserController;
 use App\Http\Controllers\Backend\OrderController;
@@ -38,7 +33,6 @@ use App\Http\Controllers\Backend\SettingController;
 use App\Http\Controllers\Backend\ShippingRuleController;
 use App\Http\Controllers\Backend\SliderController;
 use App\Http\Controllers\Backend\StripeSettingController;
-use App\Http\Controllers\Backend\SubCategoryController;
 use App\Http\Controllers\Backend\SubscribersController;
 use App\Http\Controllers\Backend\TermsAndConditionController;
 use App\Http\Controllers\Backend\TransactionController;
@@ -48,7 +42,6 @@ use App\Http\Controllers\Backend\VendorRequestController;
 use App\Http\Controllers\Backend\WithdrawController;
 use App\Http\Controllers\Backend\WithdrawMehtodController;
 use App\Models\BlogCategory;
-use App\Models\FooterInfo;
 use App\Models\VendorCondition;
 use Illuminate\Support\Facades\Route;
 
@@ -68,13 +61,6 @@ Route::resource('slider', SliderController::class);
 /** Category Route */
 Route::put('change-status', [CategoryController::class, 'changeStatus'])->name('category.change-status');
 Route::resource('category', CategoryController::class);
-/** Sub Category Route */
-Route::put('subcategory/change-status', [SubCategoryController::class, 'changeStatus'])->name('sub-category.change-status');
-Route::resource('sub-category', SubCategoryController::class);
-/** Child Category Route */
-Route::put('child-category/change-status', [ChildCategoryController::class, 'changeStatus'])->name('child-category.change-status');
-Route::get('get-subcategories', [ChildCategoryController::class, 'getSubCategories'])->name('get-subcategories');
-Route::resource('child-category', ChildCategoryController::class);
 
 /** Brand routes */
 Route::put('brand/change-status', [BrandController::class, 'changeStatus'])->name('brand.change-status');
@@ -84,8 +70,6 @@ Route::resource('brand', BrandController::class);
 Route::resource('vendor-profile', AdminVendorProfileController::class);
 
 /** Products routes */
-Route::get('product/get-subcategories', [ProductController::class, 'getSubCategories'])->name('product.get-subcategories');
-Route::get('product/get-child-categories', [ProductController::class, 'getChildCategories'])->name('product.get-child-categories');
 Route::put('product/change-status', [ProductController::class, 'changeStatus'])->name('product.change-status');
 Route::resource('products', ProductController::class);
 
@@ -238,20 +222,6 @@ Route::put('about/update', [AboutController::class, 'update'])->name('about.upda
 /** terms and conditons routes */
 Route::get('terms-and-conditions', [TermsAndConditionController::class, 'index'])->name('terms-and-conditions.index');
 Route::put('terms-and-conditions/update', [TermsAndConditionController::class, 'update'])->name('terms-and-conditions.update');
-
-
-/** footer routes */
-Route::resource('footer-info', FooterInfoController::class);
-Route::put('footer-socials/change-status', [FooterSocialController::class, 'changeStatus'])->name('footer-socials.change-status');
-Route::resource('footer-socials', FooterSocialController::class);
-
-Route::put('footer-grid-two/change-status', [FooterGridTwoController::class, 'changeStatus'])->name('footer-grid-two.change-status');
-Route::put('footer-grid-two/change-title', [FooterGridTwoController::class, 'changeTitle'])->name('footer-grid-two.change-title');
-Route::resource('footer-grid-two', FooterGridTwoController::class);
-
-Route::put('footer-grid-three/change-status', [FooterGridThreeController::class, 'changeStatus'])->name('footer-grid-three.change-status');
-Route::put('footer-grid-three/change-title', [FooterGridThreeController::class, 'changeTitle'])->name('footer-grid-three.change-title');
-Route::resource('footer-grid-three', FooterGridThreeController::class);
 
 
 

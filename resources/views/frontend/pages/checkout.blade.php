@@ -37,9 +37,9 @@
                     <div class="col-xl-8 col-lg-7">
                         <div class="wsus__check_form">
                             <div class="d-flex">
-                                <h5>Shipping Details </h5>
-                            <a href="javascript:;" style="margin-left:auto;" class="common_btn" data-bs-toggle="modal" data-bs-target="#exampleModal">add
-                                new address</a>
+                                <h5>Detail Pengiriman </h5>
+                            <a href="javascript:;" style="margin-left:auto;" class="common_btn" data-bs-toggle="modal" data-bs-target="#exampleModal">Tambah
+                                alamat baru</a>
                             </div>
 
                             <div class="row">
@@ -50,7 +50,7 @@
                                             <input class="form-check-input shipping_address" data-id="{{$address->id}}" type="radio" name="flexRadioDefault"
                                                 id="flexRadioDefault1">
                                             <label class="form-check-label" for="flexRadioDefault1">
-                                                Select Address
+                                                Pilih Alamat
                                             </label>
                                         </div>
                                         <ul>
@@ -70,7 +70,7 @@
                     </div>
                     <div class="col-xl-4 col-lg-5">
                         <div class="wsus__order_details" id="sticky_sidebar">
-                            <p class="wsus__product">shipping Methods</p>
+                            <p class="wsus__product">Metode Pengiriman</p>
                             @foreach ($shippingMethods as $method)
                                 @if ($method->type === 'min_cost' && getCartTotal() >= $method->min_cost)
                                     <div class="form-check">
@@ -95,8 +95,8 @@
 
                             <div class="wsus__order_details_summery">
                                 <p>subtotal: <span>{{$settings->currency_icon}}{{getCartTotal()}}</span></p>
-                                <p>shipping fee(+): <span id="shipping_fee">{{$settings->currency_icon}}0</span></p>
-                                <p>coupon(-): <span>{{$settings->currency_icon}}{{getCartDiscount()}}</span></p>
+                                <p>biaya pengiriman(+): <span id="shipping_fee">{{$settings->currency_icon}}0</span></p>
+                                <p>kupon(-): <span>{{$settings->currency_icon}}{{getCartDiscount()}}</span></p>
                                 <p><b>total:</b> <span><b id="total_amount" data-id="{{getMainCartTotal()}}">{{$settings->currency_icon}}{{getMainCartTotal()}}</b></span></p>
                             </div>
                             <div class="terms_area">
@@ -104,7 +104,7 @@
                                     <input class="form-check-input agree_term" type="checkbox" value="" id="flexCheckChecked3"
                                         checked>
                                     <label class="form-check-label" for="flexCheckChecked3">
-                                        I have read and agree to the website <a href="#">terms and conditions *</a>
+                                        I have read and agree to the website <a href="{{ route('terms-and-conditions') }}">terms and conditions *</a>
                                     </label>
                                 </div>
                             </div>
