@@ -5,15 +5,12 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Adverisement;
 use App\Models\Blog;
-use App\Models\Brand;
 use App\Models\Category;
-use App\Models\ChildCategory;
 use App\Models\FlashSale;
 use App\Models\FlashSaleItem;
 use App\Models\HomePageSetting;
 use App\Models\Product;
 use App\Models\Slider;
-use App\Models\SubCategory;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -32,7 +29,6 @@ class HomeController extends Controller
         $flashSaleItems = FlashSaleItem::where('show_at_home', 1)->where('status', 1)->pluck('product_id')->toArray();
 
         $popularCategory = HomePageSetting::where('key', 'popular_category_section')->first();
-        $brands = Brand::where('status', 1)->get();
 
         $typeBaseProducts = $this->getTypeBaseProduct();
         $categoryProductSliderSectionOne = HomePageSetting::where('key', 'product_slider_section_one')->first();
@@ -61,7 +57,6 @@ class HomeController extends Controller
                 'flashSaleDate',
                 'flashSaleItems',
                 'popularCategory',
-                'brands',
                 'typeBaseProducts',
                 'categoryProductSliderSectionOne',
                 'categoryProductSliderSectionTwo',
@@ -111,10 +106,9 @@ class HomeController extends Controller
         $products = Product::where(['status' => 1, 'is_approved' => 1, 'vendor_id' => $id])->orderBy('id', 'DESC')->paginate(12);
 
         $categories = Category::where(['status' => 1])->get();
-        $brands = Brand::where(['status' => 1])->get();
         $vendor = Vendor::findOrFail($id);
 
-        return view('frontend.pages.vendor-product', compact('products', 'categories', 'brands', 'vendor'));
+        return view('frontend.pages.vendor-product', compact('products', 'categories', 'vendor'));
 
     }
 

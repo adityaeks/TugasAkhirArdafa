@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
-use App\Models\Brand;
 use App\Models\Category;
 use App\Models\NewsletterSubscriber;
 use App\Models\Order;
@@ -45,7 +44,6 @@ class AdminController extends Controller
 
         $totalReview = ProductReview::count();
 
-        $totalBrands = Brand::count();
         $totalCategories = Category::count();
         $totalBlogs = Blog::count();
         $totalSubscriber = NewsletterSubscriber::count();
@@ -65,7 +63,6 @@ class AdminController extends Controller
             'monthEarnings',
             'yearEarnings',
             'totalReview',
-            'totalBrands',
             'totalCategories',
             'totalBlogs',
             'totalSubscriber',
