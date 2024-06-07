@@ -44,36 +44,36 @@ class OrderDataTable extends DataTable
                     return "<span class='badge bg-warning'>pending</span>";
                 }
             })
-            ->addColumn('order_status', function($query){
-                switch ($query->order_status) {
-                    case 'pending':
-                        return "<span class='badge bg-warning'>pending</span>";
-                        break;
-                    case 'processed_and_ready_to_ship':
-                        return "<span class='badge bg-info'>processed</span>";
-                        break;
-                    case 'dropped_off':
-                        return "<span class='badge bg-info'>dropped off</span>";
-                        break;
-                    case 'shipped':
-                        return "<span class='badge bg-info'>shipped</span>";
-                        break;
-                    case 'out_for_delivery':
-                        return "<span class='badge bg-primary'>out for delivery</span>";
-                        break;
-                    case 'delivered':
-                        return "<span class='badge bg-success'>delivered</span>";
-                        break;
-                    case 'canceled':
-                        return "<span class='badge bg-danger'>canceled</span>";
-                        break;
-                    default:
-                        # code...
-                        break;
-                }
+            // ->addColumn('order_status', function($query){
+            //     switch ($query->order_status) {
+            //         case 'pending':
+            //             return "<span class='badge bg-warning'>pending</span>";
+            //             break;
+            //         case 'processed_and_ready_to_ship':
+            //             return "<span class='badge bg-info'>processed</span>";
+            //             break;
+            //         case 'dropped_off':
+            //             return "<span class='badge bg-info'>dropped off</span>";
+            //             break;
+            //         case 'shipped':
+            //             return "<span class='badge bg-info'>shipped</span>";
+            //             break;
+            //         case 'out_for_delivery':
+            //             return "<span class='badge bg-primary'>out for delivery</span>";
+            //             break;
+            //         case 'delivered':
+            //             return "<span class='badge bg-success'>delivered</span>";
+            //             break;
+            //         case 'canceled':
+            //             return "<span class='badge bg-danger'>canceled</span>";
+            //             break;
+            //         default:
+            //             # code...
+            //             break;
+            //     }
 
-            })
-            ->rawColumns(['order_status', 'action', 'payment_status'])
+            // })
+            ->rawColumns(['action', 'payment_status'])
             ->setRowId('id');
     }
 
@@ -120,7 +120,7 @@ class OrderDataTable extends DataTable
             Column::make('date'),
             Column::make('product_qty'),
             Column::make('amount'),
-            Column::make('order_status'),
+            // Column::make('order_status'),
             Column::make('payment_status'),
 
             Column::make('payment_method'),

@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'laravel/laravel',
-        'pretty_version' => 'dev-master',
-        'version' => 'dev-master',
-        'reference' => 'e8c5c99b69e73e0d7d901c9ce70c2ba9e1851ae0',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '075b8d295685f3ca68af6797aa9a9dbe15d45d3f',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -407,9 +407,9 @@
             'dev_requirement' => false,
         ),
         'laravel/laravel' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
-            'reference' => 'e8c5c99b69e73e0d7d901c9ce70c2ba9e1851ae0',
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '075b8d295685f3ca68af6797aa9a9dbe15d45d3f',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -558,6 +558,15 @@
             'install_path' => __DIR__ . '/../maximebf/debugbar',
             'aliases' => array(),
             'dev_requirement' => true,
+        ),
+        'midtrans/midtrans-php' => array(
+            'pretty_version' => '2.5.2',
+            'version' => '2.5.2.0',
+            'reference' => 'a1ad0c824449ca8c68c4cf11b3417ad518311d2b',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../midtrans/midtrans-php',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
         'mockery/mockery' => array(
             'pretty_version' => '1.6.2',

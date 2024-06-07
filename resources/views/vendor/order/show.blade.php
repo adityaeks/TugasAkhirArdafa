@@ -143,7 +143,7 @@
                         ==============================-->
 
                             <div class="row">
-                                <div class="col-md-4">
+                                {{-- <div class="col-md-4">
                                     <form action="{{ route('vendor.orders.status', $order->id) }}">
                                         <div class="form-group mt-5">
                                             <label for="" class="mb-2">Order Status</label>
@@ -156,8 +156,8 @@
                                             <button class="btn btn-primary mt-3" type="submit">Save</button>
                                         </div>
                                     </form>
-                                </div>
-                                <div class="col-md-8">
+                                </div> --}}
+                                <div class="col-md-12">
                                     <div class="mt-5 float-end">
                                         <button class="btn btn-warning print_invoice">print</button>
                                     </div>
