@@ -108,12 +108,11 @@ class FrontendProductController extends Controller
         }
 
         $categories = Category::where(['status' => 1])->get();
-        $brands = Brand::where(['status' => 1])->get();
         // banner ad
         $productpage_banner_section = Adverisement::where('key', 'productpage_banner_section')->first();
         $productpage_banner_section = json_decode($productpage_banner_section?->value);
 
-        return view('frontend.pages.product', compact('products', 'categories', 'brands', 'productpage_banner_section'));
+        return view('frontend.pages.product', compact('products', 'categories', 'productpage_banner_section'));
     }
     /** Show product detail page */
     public function showProduct(string $slug)
