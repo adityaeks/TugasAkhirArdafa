@@ -114,7 +114,7 @@
 @endsection
 
 @push('scripts')
-    <script>
+    {{-- <script>
         $(document).ready(function(){
             $('body').on('change', '.main-category', function(e){
                 let id = $(this).val();
@@ -160,5 +160,5 @@
                 })
             })
         })
-    </script>
+    </script> --}}
 @endpush

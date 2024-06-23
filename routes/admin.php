@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Backend\MessageController;
-use App\Http\Controllers\Backend\AbountController;
 use App\Http\Controllers\Backend\AboutController;
 use App\Http\Controllers\Backend\AdminController;
 use App\Http\Controllers\Backend\AdminListController;
@@ -129,11 +128,6 @@ Route::resource('order', OrderController::class);
 /** Order Transaction route */
 Route::get('transaction', [TransactionController::class, 'index'])->name('transaction');
 
-/** Withdraw method route */
-Route::resource('withdraw-method', WithdrawMehtodController::class);
-Route::get('withdraw', [WithdrawController::class, 'index'])->name('withdraw.index');
-Route::get('withdraw/{id}', [WithdrawController::class, 'show'])->name('withdraw.show');
-Route::put('withdraw/{id}', [WithdrawController::class, 'update'])->name('withdraw.update');
 
 /** Message route */
 Route::get('messages', [MessageController::class, 'index'])->name('messages.index');

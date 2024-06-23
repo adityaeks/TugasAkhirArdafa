@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Models\Category;
-use App\Models\NewsletterSubscriber;
 use App\Models\Order;
 use App\Models\ProductReview;
 use App\Models\User;
@@ -46,7 +45,6 @@ class AdminController extends Controller
 
         $totalCategories = Category::count();
         $totalBlogs = Blog::count();
-        $totalSubscriber = NewsletterSubscriber::count();
         $totalVendors = User::where('role', 'vendor')->count();
         $totalUsers = User::where('role', 'user')->count();
 
@@ -65,7 +63,6 @@ class AdminController extends Controller
             'totalReview',
             'totalCategories',
             'totalBlogs',
-            'totalSubscriber',
             'totalVendors',
             'totalUsers'
         ));
