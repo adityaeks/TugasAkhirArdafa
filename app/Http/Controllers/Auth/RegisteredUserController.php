@@ -10,6 +10,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Mail\AccountCreatedMail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
@@ -43,6 +45,8 @@ class RegisteredUserController extends Controller
         ]);
 
         event(new Registered($user));
+
+        Mail::to($user->email)->send(new AccountCreatedMail($user->name, $user->email, $request->password)); // Mengirim email
 
         Auth::login($user);
 
