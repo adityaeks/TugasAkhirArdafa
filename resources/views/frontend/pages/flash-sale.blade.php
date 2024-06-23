@@ -5,32 +5,6 @@
 @endsection
 
 @section('content')
-    <!--============================
-            BREADCRUMB START
-        ==============================-->
-    <section id="wsus__breadcrumb">
-        <div class="wsus_breadcrumb_overlay">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <h4>Flash Sale</h4>
-                        <ul>
-                            <li><a href="{{url('/')}}">Home</a></li>
-                            <li><a href="javascript:;">Flash Sale</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!--============================
-            BREADCRUMB END
-        ==============================-->
-
-
-    <!--============================
-            DAILY DEALS DETAILS START
-        ==============================-->
     <section id="wsus__daily_deals">
         <div class="container">
             <div class="wsus__offer_details_area">
@@ -68,9 +42,7 @@
             </div>
         </div>
     </section>
-    <!--============================
-            DAILY DEALS DETAILS END
-        ==============================-->
+
 
 @endsection
 

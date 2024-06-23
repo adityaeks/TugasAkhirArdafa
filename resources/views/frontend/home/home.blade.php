@@ -71,7 +71,7 @@
     <!--============================
         ELECTRONIC PART START
     ==============================-->
-    @include('frontend.home.sections.category-product-slider-two')
+    {{-- @include('frontend.home.sections.category-product-slider-two') --}}
 
     <!--============================
         ELECTRONIC PART END
@@ -109,7 +109,7 @@
     <!--============================
         HOME BLOGS START
     ==============================-->
-    @include('frontend.home.sections.blog')
+    {{-- @include('frontend.home.sections.blog') --}}
     <!--============================
         HOME BLOGS END
     ==============================-->
