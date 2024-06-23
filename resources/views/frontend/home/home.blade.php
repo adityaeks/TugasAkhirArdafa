@@ -17,7 +17,7 @@
     <!--============================
         FLASH SELL START
     ==============================-->
-    @include('frontend.home.sections.flash-sale')
+    {{-- @include('frontend.home.sections.flash-sale') --}}
     <!--============================
         FLASH SELL END
     ==============================-->
@@ -53,7 +53,7 @@
     <!--============================
         HOT DEALS START
     ==============================-->
-    @include('frontend.home.sections.hot-deals')
+    {{-- @include('frontend.home.sections.hot-deals') --}}
     <!--============================
         HOT DEALS END
     ==============================-->
@@ -71,7 +71,7 @@
     <!--============================
         ELECTRONIC PART START
     ==============================-->
-    @include('frontend.home.sections.category-product-slider-two')
+    {{-- @include('frontend.home.sections.category-product-slider-two') --}}
 
     <!--============================
         ELECTRONIC PART END
@@ -81,7 +81,7 @@
     <!--============================
         LARGE BANNER  START
     ==============================-->
-    @include('frontend.home.sections.large-banner')
+    {{-- @include('frontend.home.sections.large-banner') --}}
 
     <!--============================
         LARGE BANNER  END
@@ -100,7 +100,7 @@
     <!--============================
       HOME SERVICES START
     ==============================-->
-    @include('frontend.home.sections.services')
+    {{-- @include('frontend.home.sections.services') --}}
     <!--============================
         HOME SERVICES END
     ==============================-->
@@ -109,7 +109,7 @@
     <!--============================
         HOME BLOGS START
     ==============================-->
-    @include('frontend.home.sections.blog')
+    {{-- @include('frontend.home.sections.blog') --}}
     <!--============================
         HOME BLOGS END
     ==============================-->

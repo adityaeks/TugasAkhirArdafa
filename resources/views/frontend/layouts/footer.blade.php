@@ -1,4 +1,4 @@
-<footer class="bg-body-tertiary text-center text-md-start">
+<footer class="bg-body-tertiary text-center text-md-start mt-4">
     <!-- Grid container -->
     <div class="container p-4">
         <!--Grid row-->

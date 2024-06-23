@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Backend\MessageController;
-use App\Http\Controllers\Backend\AbountController;
 use App\Http\Controllers\Backend\AboutController;
 use App\Http\Controllers\Backend\AdminController;
 use App\Http\Controllers\Backend\AdminListController;
@@ -29,16 +28,11 @@ use App\Http\Controllers\Backend\SellerProductController;
 use App\Http\Controllers\Backend\SettingController;
 use App\Http\Controllers\Backend\ShippingRuleController;
 use App\Http\Controllers\Backend\SliderController;
-use App\Http\Controllers\Backend\SubscribersController;
 use App\Http\Controllers\Backend\TermsAndConditionController;
 use App\Http\Controllers\Backend\TransactionController;
 use App\Http\Controllers\Backend\VendorConditionController;
 use App\Http\Controllers\Backend\VendorListController;
 use App\Http\Controllers\Backend\VendorRequestController;
-use App\Http\Controllers\Backend\WithdrawController;
-use App\Http\Controllers\Backend\WithdrawMehtodController;
-use App\Models\BlogCategory;
-use App\Models\VendorCondition;
 use Illuminate\Support\Facades\Route;
 
 
@@ -91,7 +85,7 @@ Route::put('products-variant-item-status', [ProductVariantItemController::class,
 Route::get('reviews', [AdminReviewController::class, 'index'])->name('reviews.index');
 Route::put('reviews/change-status', [AdminReviewController::class, 'changeStatus'])->name('reviews.change-status');
 
-/** Seller product routes */
+// seller produk
 Route::get('seller-products', [SellerProductController::class, 'index'])->name('seller-products.index');
 Route::get('seller-pending-products', [SellerProductController::class, 'pendingProducts'])->name('seller-pending-products.index');
 Route::put('change-approve-status', [SellerProductController::class, 'changeApproveStatus'])->name('change-approve-status');
@@ -129,11 +123,6 @@ Route::resource('order', OrderController::class);
 /** Order Transaction route */
 Route::get('transaction', [TransactionController::class, 'index'])->name('transaction');
 
-/** Withdraw method route */
-Route::resource('withdraw-method', WithdrawMehtodController::class);
-Route::get('withdraw', [WithdrawController::class, 'index'])->name('withdraw.index');
-Route::get('withdraw/{id}', [WithdrawController::class, 'show'])->name('withdraw.show');
-Route::put('withdraw/{id}', [WithdrawController::class, 'update'])->name('withdraw.update');
 
 /** Message route */
 Route::get('messages', [MessageController::class, 'index'])->name('messages.index');
@@ -170,11 +159,6 @@ Route::resource('blog', BlogController::class);
 Route::get('blog-comments', [BlogCommentController::class, 'index'])->name('blog-comments.index');
 Route::delete('blog-comments/{id}/destory', [BlogCommentController::class, 'destory'])->name('blog-comments.destory');
 
-
-/** Subscribers route */
-Route::get('subscribers', [SubscribersController::class, 'index'])->name('subscribers.index');
-Route::delete('subscribers/{id}', [SubscribersController::class, 'destory'])->name('subscribers.destory');
-Route::post('subscribers-send-mail', [SubscribersController::class, 'sendMail'])->name('subscribers-send-mail');
 
 /** Advertisement Routes */
 Route::get('advertisement', [AdvertisementController::class, 'index'])->name('advertisement.index');
