@@ -14,14 +14,13 @@ use Illuminate\Support\Facades\Session;
 class CartController extends Controller
 {
 
-    /** Show cart page  */
     public function cartDetails()
     {
         $cartItems = Cart::content();
 
         if(count($cartItems) === 0){
             Session::forget('coupon');
-            toastr('Please add some products in your cart for view the cart page', 'warning', 'Cart is empty!');
+            toastr('Silakan tambahkan produk ke keranjang untuk melihat halaman keranjang anda  ', 'warning', 'Keranjang kosong!');
             return redirect()->route('home');
         }
 
@@ -31,17 +30,16 @@ class CartController extends Controller
         return view('frontend.pages.cart-detail', compact('cartItems', 'cartpage_banner_section'));
     }
 
-    /** Add item to cart */
     public function addToCart(Request $request)
     {
 
         $product = Product::findOrFail($request->product_id);
 
-        // check product quantity
+        // cek stock produk
         if($product->qty === 0){
-            return response(['status' => 'error', 'message' => 'Product stock out']);
+            return response(['status' => 'error', 'message' => 'Stok produk habis']);
         }elseif($product->qty < $request->qty){
-            return response(['status' => 'error', 'message' => 'Quantity not available in our stock']);
+            return response(['status' => 'error', 'message' => 'Jumlah stok tidak tersedia']);
         }
 
         $variants = [];
@@ -57,7 +55,7 @@ class CartController extends Controller
         }
 
 
-        /** check discount */
+        // cek diskon
         $productPrice = 0;
 
         if(checkDiscount($product)){
@@ -79,7 +77,7 @@ class CartController extends Controller
 
         Cart::add($cartData);
 
-        return response(['status' => 'success', 'message' => 'Added to cart successfully!']);
+        return response(['status' => 'success', 'message' => 'Berhasil ditambahkan ke keranjang!']);
     }
 
     /** Update product quantity */
@@ -90,15 +88,15 @@ class CartController extends Controller
 
         // check product quantity
         if($product->qty === 0){
-            return response(['status' => 'error', 'message' => 'Product stock out']);
+            return response(['status' => 'error', 'message' => 'Stok produk habis']);
         }elseif($product->qty < $request->qty){
-            return response(['status' => 'error', 'message' => 'Quantity not available in our stock']);
+            return response(['status' => 'error', 'message' => 'Jumlah stok tidak tersedia']);
         }
 
         Cart::update($request->rowId, $request->quantity);
         $productTotal = $this->getProductTotal($request->rowId);
 
-        return response(['status' => 'success', 'message' => 'Product Quantity Updated!', 'product_total' => $productTotal]);
+        return response(['status' => 'success', 'message' => 'Stok Produk di update!', 'product_total' => $productTotal]);
     }
 
     /** get product total */
@@ -125,14 +123,14 @@ class CartController extends Controller
     {
         Cart::destroy();
 
-        return response(['status' => 'success', 'message' => 'Cart cleared successfully']);
+        return response(['status' => 'success', 'message' => 'Keranjang di bersihkan']);
     }
 
     /** Remove product form cart */
     public function removeProduct($rowId)
     {
         Cart::remove($rowId);
-        toastr('Product removed succesfully!', 'success', 'Success');
+        toastr('Produk berhasil dihapus!', 'success', 'Success');
         return redirect()->back();
     }
 
@@ -153,26 +151,26 @@ class CartController extends Controller
     {
         Cart::remove($request->rowId);
 
-        return response(['status' => 'success', 'message' => 'Product removed successfully!']);
+        return response(['status' => 'success', 'message' => 'Produk berhasil dihapus!']);
     }
 
     /** Apply coupon */
     public function applyCoupon(Request $request)
     {
         if($request->coupon_code === null){
-            return response(['status' => 'error', 'message' => 'Coupon filed is required']);
+            return response(['status' => 'error', 'message' => 'Kupon diperlukan']);
         }
 
         $coupon = Coupon::where(['code' => $request->coupon_code, 'status' => 1])->first();
 
         if($coupon === null){
-            return response(['status' => 'error', 'message' => 'Coupon not exist!']);
+            return response(['status' => 'error', 'message' => 'Kupon tidak ada!']);
         }elseif($coupon->start_date > date('Y-m-d')){
-            return response(['status' => 'error', 'message' => 'Coupon not exist!']);
+            return response(['status' => 'error', 'message' => 'Kupon tidak ada!']);
         }elseif($coupon->end_date < date('Y-m-d')){
-            return response(['status' => 'error', 'message' => 'Coupon is expired']);
+            return response(['status' => 'error', 'message' => 'Kupon kadaluarsa']);
         }elseif($coupon->total_used >= $coupon->quantity){
-            return response(['status' => 'error', 'message' => 'you can not apply this coupon']);
+            return response(['status' => 'error', 'message' => 'Kupon tidak bisa dipakai']);
         }
 
         if($coupon->discount_type === 'amount'){
@@ -191,7 +189,7 @@ class CartController extends Controller
             ]);
         }
 
-        return response(['status' => 'success', 'message' => 'Coupon applied successfully!']);
+        return response(['status' => 'success', 'message' => 'Kupon berhasil digunakan!']);
     }
 
     /** Calculate coupon discount */

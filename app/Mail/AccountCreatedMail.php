@@ -29,32 +29,45 @@ class AccountCreatedMail extends Mailable
     /**
      * Get the message envelope.
      */
-    public function envelope(): Envelope
+
+     public function build()
     {
         $generalSetting = GeneralSetting::first();
-
-        return new Envelope(
-            subject: 'Welcome to '. $generalSetting->site_name,
-        );
+        return $this->subject('Selamat Datang di '. $generalSetting->site_name)
+                    ->view('mail.account-created')
+                    ->with([
+                        'name' => $this->name,
+                        'email' => $this->email,
+                        'password' => $this->password, // Hati-hati dengan mengirim password melalui email
+                    ]);
     }
 
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
-    {
-        return new Content(
-            view: 'Mail.account-created',
-        );
-    }
+    // public function envelope(): Envelope
+    // {
+    //     $generalSetting = GeneralSetting::first();
 
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
-    public function attachments(): array
-    {
-        return [];
-    }
+    //     return new Envelope(
+    //         subject: 'Welcome to '. $generalSetting->site_name,
+    //     );
+    // }
+
+    // /**
+    //  * Get the message content definition.
+    //  */
+    // public function content(): Content
+    // {
+    //     return new Content(
+    //         view: 'Mail.account-created',
+    //     );
+    // }
+
+    // /**
+    //  * Get the attachments for the message.
+    //  *
+    //  * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+    //  */
+    // public function attachments(): array
+    // {
+    //     return [];
+    // }
 }

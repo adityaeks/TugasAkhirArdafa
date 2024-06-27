@@ -121,54 +121,12 @@
 @endsection
 
 @push('scripts')
-    <script>
-        $(document).ready(function(){
-            $('body').on('change', '.main-category', function(e){
-
-                $('.child-category').html('<option value="">Select</option>')
-
-                let id = $(this).val();
-                $.ajax({
-                    method: 'GET',
-                    url: "{{route('admin.product.get-subcategories')}}",
-                    data: {
-                        id:id
-                    },
-                    success: function(data){
-                        $('.sub-category').html('<option value="">Select</option>')
-
-                        $.each(data, function(i, item){
-                            $('.sub-category').append(`<option value="${item.id}">${item.name}</option>`)
-                        })
-                    },
-                    error: function(xhr, status, error){
-                        console.log(error);
-                    }
-                })
-            })
-
-
-            /** get child categories **/
-            $('body').on('change', '.sub-category', function(e){
-                let id = $(this).val();
-                $.ajax({
-                    method: 'GET',
-                    url: "{{route('admin.product.get-child-categories')}}",
-                    data: {
-                        id:id
-                    },
-                    success: function(data){
-                        $('.child-category').html('<option value="">Select</option>')
-
-                        $.each(data, function(i, item){
-                            $('.child-category').append(`<option value="${item.id}">${item.name}</option>`)
-                        })
-                    },
-                    error: function(xhr, status, error){
-                        console.log(error);
-                    }
-                })
-            })
+<script>
+    $(document).ready(function(){
+        $('body').on('change', '.main-category', function(e){
+            // This function now does nothing on change, you can add other functionalities if needed
         })
-    </script>
+    })
+</script>
+
 @endpush
