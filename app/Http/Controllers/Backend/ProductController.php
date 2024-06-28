@@ -48,6 +48,7 @@ class ProductController extends Controller
             'category' => ['required'],
             'price' => ['required'],
             'qty' => ['required'],
+            'weight' => ['required'],
             'short_description' => ['required', 'max: 600'],
             'long_description' => ['required'],
             'status' => ['required']
@@ -62,9 +63,8 @@ class ProductController extends Controller
         $product->slug = Str::slug($request->name);
         $product->vendor_id = Auth::user()->vendor->id;
         $product->category_id = $request->category;
-        $product->sub_category_id = $request->sub_category;
-        $product->child_category_id = $request->child_category;
         $product->qty = $request->qty;
+        $product->weight = $request->weight;
         $product->short_description = $request->short_description;
         $product->long_description = $request->long_description;
         $product->price = $request->price;
@@ -111,6 +111,7 @@ class ProductController extends Controller
             'category' => ['required'],
             'price' => ['required'],
             'qty' => ['required'],
+            'weight' => ['required'],
             'short_description' => ['required', 'max: 600'],
             'long_description' => ['required'],
             'status' => ['required']
@@ -126,6 +127,7 @@ class ProductController extends Controller
         $product->slug = Str::slug($request->name);
         $product->category_id = $request->category;
         $product->qty = $request->qty;
+        $product->weight = $request->weight;
         $product->short_description = $request->short_description;
         $product->long_description = $request->long_description;
         $product->price = $request->price;

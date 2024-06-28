@@ -78,6 +78,10 @@
                             <label>Stock Quantity</label>
                             <input type="number" min="0" class="form-control" name="qty" value="{{$product->qty}}">
                         </div>
+                        <div class="form-group">
+                            <label>Weight</label>
+                            <input type="number" min="0" class="form-control" name="weight" value="{{$product->weight}}">
+                        </div>
 
                         <div class="form-group">
                             <label>Short Description</label>

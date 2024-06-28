@@ -38,16 +38,41 @@ class HomeController extends Controller
         // banners
 
         $homepage_secion_banner_one = Adverisement::where('key', 'homepage_secion_banner_one')->first();
-        $homepage_secion_banner_one = json_decode($homepage_secion_banner_one->value);
+        if ($homepage_secion_banner_one === null) {
+            // Catat kesalahan atau tangani kasus di mana banner tidak ditemukan
+            $homepage_secion_banner_one_value = null; // atau tetapkan nilai default
+        } else {
+            $homepage_secion_banner_one_value = json_decode($homepage_secion_banner_one->value);
+        }
+        $homepage_secion_banner_one = json_decode($homepage_secion_banner_one?->value);
 
         $homepage_secion_banner_two = Adverisement::where('key', 'homepage_secion_banner_two')->first();
+        if ($homepage_secion_banner_two === null) {
+            // Catat kesalahan atau tangani kasus di mana banner tidak ditemukan
+            $homepage_secion_banner_two_value = null; // atau tetapkan nilai default
+        } else {
+            $homepage_secion_banner_two_value = json_decode($homepage_secion_banner_two->value);
+        }
         $homepage_secion_banner_two = json_decode($homepage_secion_banner_two?->value);
 
         $homepage_secion_banner_three = Adverisement::where('key', 'homepage_secion_banner_three')->first();
+        if ($homepage_secion_banner_two === null) {
+            // Catat kesalahan atau tangani kasus di mana banner tidak ditemukan
+            $homepage_secion_banner_two_value = null; // atau tetapkan nilai default
+        } else {
+            $homepage_secion_banner_two_value = json_decode($homepage_secion_banner_two->value);
+        }
         $homepage_secion_banner_three = json_decode($homepage_secion_banner_three?->value);
 
         $homepage_secion_banner_four = Adverisement::where('key', 'homepage_secion_banner_four')->first();
+        if ($homepage_secion_banner_two === null) {
+            // Catat kesalahan atau tangani kasus di mana banner tidak ditemukan
+            $homepage_secion_banner_two_value = null; // atau tetapkan nilai default
+        } else {
+            $homepage_secion_banner_two_value = json_decode($homepage_secion_banner_two->value);
+        }
         $homepage_secion_banner_four = json_decode($homepage_secion_banner_four?->value);
+
 
         return view('frontend.home.home',
             compact(

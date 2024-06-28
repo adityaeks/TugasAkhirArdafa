@@ -1,7 +1,7 @@
 @extends('frontend.layouts.master')
 
 @section('title')
-{{$settings->site_name}} || About
+UMKM Lowayu || About
 @endsection
 
 @section('content')

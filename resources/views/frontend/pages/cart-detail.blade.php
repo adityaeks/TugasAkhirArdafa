@@ -1,7 +1,7 @@
 @extends('frontend.layouts.master')
 
 @section('title')
-{{$settings->site_name}} || Cart Details
+UMKM Lowayu || Cart Details
 @endsection
 
 @section('content')

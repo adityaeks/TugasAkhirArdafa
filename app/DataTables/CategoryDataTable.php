@@ -28,9 +28,6 @@ class CategoryDataTable extends DataTable
 
                 return $editBtn.$deleteBtn;
             })
-            ->addColumn('icon', function($query){
-                return '<i style="font-size:40px" class="'.$query->icon.'"></i>';
-            })
             ->addColumn('status', function($query){
                 if($query->status == 1){
                     $button = '<label class="custom-switch mt-2">
@@ -45,7 +42,7 @@ class CategoryDataTable extends DataTable
                 }
                 return $button;
             })
-            ->rawColumns(['icon', 'action', 'status'])
+            ->rawColumns(['action', 'status'])
             ->setRowId('id');
     }
 
@@ -87,7 +84,6 @@ class CategoryDataTable extends DataTable
         return [
 
             Column::make('id')->width(100),
-            Column::make('icon')->width(300),
             Column::make('name'),
             Column::make('status')->width(200),
             Column::computed('action')

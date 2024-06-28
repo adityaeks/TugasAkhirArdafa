@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Backend\ManageUserController;
 use App\Http\Controllers\Backend\MessageController;
 use App\Http\Controllers\Backend\AboutController;
 use App\Http\Controllers\Backend\AdminController;
@@ -7,22 +8,16 @@ use App\Http\Controllers\Backend\AdminListController;
 use App\Http\Controllers\Backend\AdminReviewController;
 use App\Http\Controllers\Backend\AdminVendorProfileController;
 use App\Http\Controllers\Backend\AdvertisementController;
-use App\Http\Controllers\Backend\BlogCategoryController;
-use App\Http\Controllers\Backend\BlogCommentController;
-use App\Http\Controllers\Backend\BlogController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\CodSettingController;
 use App\Http\Controllers\Backend\CouponController;
 use App\Http\Controllers\Backend\CustomerListController;
 use App\Http\Controllers\Backend\FlashSaleController;
 use App\Http\Controllers\Backend\HomePageSettingController;
-use App\Http\Controllers\Backend\ManageUserController;
 use App\Http\Controllers\Backend\OrderController;
 use App\Http\Controllers\Backend\PaymentSettingController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\ProductImageGalleryController;
-use App\Http\Controllers\Backend\ProductVariantController;
-use App\Http\Controllers\Backend\ProductVariantItemController;
 use App\Http\Controllers\Backend\ProfileController;
 use App\Http\Controllers\Backend\SellerProductController;
 use App\Http\Controllers\Backend\SettingController;
@@ -63,23 +58,6 @@ Route::resource('products', ProductController::class);
 /** Products image gallery route */
 Route::resource('products-image-gallery', ProductImageGalleryController::class);
 
-/** Products variant route */
-Route::put('products-variant/change-status', [ProductVariantController::class, 'changeStatus'])->name('products-variant.change-status');
-Route::resource('products-variant', ProductVariantController::class);
-
-/** Products variant item route */
-Route::get('products-variant-item/{productId}/{variantId}', [ProductVariantItemController::class, 'index'])->name('products-variant-item.index');
-
-Route::get('products-variant-item/create/{productId}/{variantId}', [ProductVariantItemController::class, 'create'])->name('products-variant-item.create');
-Route::post('products-variant-item', [ProductVariantItemController::class, 'store'])->name('products-variant-item.store');
-
-Route::get('products-variant-item-edit/{variantItemId}', [ProductVariantItemController::class, 'edit'])->name('products-variant-item.edit');
-
-Route::put('products-variant-item-update/{variantItemId}', [ProductVariantItemController::class, 'update'])->name('products-variant-item.update');
-
-Route::delete('products-variant-item/{variantItemId}', [ProductVariantItemController::class, 'destroy'])->name('products-variant-item.destroy');
-
-Route::put('products-variant-item-status', [ProductVariantItemController::class, 'chageStatus'])->name('products-variant-item.chages-status');
 
 /** reviews routes */
 Route::get('reviews', [AdminReviewController::class, 'index'])->name('reviews.index');
@@ -124,14 +102,6 @@ Route::resource('order', OrderController::class);
 Route::get('transaction', [TransactionController::class, 'index'])->name('transaction');
 
 
-/** Message route */
-Route::get('messages', [MessageController::class, 'index'])->name('messages.index');
-Route::get('get-messages', [MessageController::class, 'getMessages'])->name('get-messages');
-Route::post('send-message', [MessageController::class, 'sendMessage'])->name('send-message');
-
-
-
-
 /** settings routes */
 Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
 Route::put('generale-setting-update', [SettingController::class, 'generalSettingUpdate'])->name('generale-setting-update');
@@ -149,16 +119,6 @@ Route::put('popular-category-section', [HomePageSettingController::class, 'updat
 Route::put('product-slider-section-one', [HomePageSettingController::class, 'updateProductSliderSectionOn'])->name('product-slider-section-one');
 Route::put('product-slider-section-two', [HomePageSettingController::class, 'updateProductSliderSectionTwo'])->name('product-slider-section-two');
 Route::put('product-slider-section-three', [HomePageSettingController::class, 'updateProductSliderSectionThree'])->name('product-slider-section-three');
-
-/** Blog routes */
-Route::put('blog-category/status-change', [BlogCategoryController::class, 'changeStatus'])->name('blog-category.status-change');
-Route::resource('blog-category', BlogCategoryController::class);
-
-Route::put('blog/status-change', [BlogController::class, 'changeStatus'])->name('blog.status-change');
-Route::resource('blog', BlogController::class);
-Route::get('blog-comments', [BlogCommentController::class, 'index'])->name('blog-comments.index');
-Route::delete('blog-comments/{id}/destory', [BlogCommentController::class, 'destory'])->name('blog-comments.destory');
-
 
 /** Advertisement Routes */
 Route::get('advertisement', [AdvertisementController::class, 'index'])->name('advertisement.index');

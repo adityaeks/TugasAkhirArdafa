@@ -1,6 +1,6 @@
 @extends('frontend.layouts.master')
 @section('title')
-{{$settings->site_name}} || Home
+UMKM Lowayu || Home
 @endsection
 
 @section('content')
@@ -26,7 +26,7 @@
     <!--============================
        MONTHLY TOP PRODUCT START
     ==============================-->
-    @include('frontend.home.sections.top-category-product')
+    {{-- @include('frontend.home.sections.top-category-product') --}}
     <!--============================
        MONTHLY TOP PRODUCT END
     ==============================-->
@@ -44,7 +44,7 @@
     <!--============================
         SINGLE BANNER START
     ==============================-->
-    @include('frontend.home.sections.single-banner')
+    {{-- @include('frontend.home.sections.single-banner') --}}
     <!--============================
         SINGLE BANNER END
     ==============================-->

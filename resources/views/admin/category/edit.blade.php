@@ -21,14 +21,6 @@
                         @csrf
                         @method('PUT')
                         <div class="form-group">
-                            <label>Icon</label>
-                             <div>
-                                <button class="btn btn-primary" data-icon="{{$category->icon}}" data-selected-class="btn-danger"
-                                data-unselected-class="btn-info" role="iconpicker" name="icon" ></button>
-                             </div>
-
-                        </div>
-                        <div class="form-group">
                             <label>Name</label>
                             <input type="text" class="form-control" name="name" value="{{$category->name}}">
                         </div>
