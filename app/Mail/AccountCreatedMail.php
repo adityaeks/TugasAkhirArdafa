@@ -32,7 +32,6 @@ class AccountCreatedMail extends Mailable
 
      public function build()
     {
-        $generalSetting = GeneralSetting::first();
         return $this->subject('Selamat Datang di UMKM Lowayu')
                     ->view('mail.account-created')
                     ->with([
@@ -41,33 +40,4 @@ class AccountCreatedMail extends Mailable
                         'password' => $this->password, // Hati-hati dengan mengirim password melalui email
                     ]);
     }
-
-    // public function envelope(): Envelope
-    // {
-    //     $generalSetting = GeneralSetting::first();
-
-    //     return new Envelope(
-    //         subject: 'Welcome to '. $generalSetting->site_name,
-    //     );
-    // }
-
-    // /**
-    //  * Get the message content definition.
-    //  */
-    // public function content(): Content
-    // {
-    //     return new Content(
-    //         view: 'Mail.account-created',
-    //     );
-    // }
-
-    // /**
-    //  * Get the attachments for the message.
-    //  *
-    //  * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-    //  */
-    // public function attachments(): array
-    // {
-    //     return [];
-    // }
 }

@@ -46,6 +46,7 @@ class VendorProductController extends Controller
             'category' => ['required'],
             'price' => ['required'],
             'qty' => ['required'],
+            'weight' => ['required'],
             'short_description' => ['required', 'max: 600'],
             'long_description' => ['required'],
             'status' => ['required']
@@ -61,6 +62,7 @@ class VendorProductController extends Controller
         $product->vendor_id = Auth::user()->vendor->id;
         $product->category_id = $request->category;
         $product->qty = $request->qty;
+        $product->weight = $request->weight;
         $product->short_description = $request->short_description;
         $product->long_description = $request->long_description;
         $product->price = $request->price;
@@ -119,6 +121,7 @@ class VendorProductController extends Controller
             'category' => ['required'],
             'price' => ['required'],
             'qty' => ['required'],
+            'weight' => ['required'],
             'short_description' => ['required', 'max: 600'],
             'long_description' => ['required'],
             'status' => ['required']
@@ -139,6 +142,7 @@ class VendorProductController extends Controller
         $product->vendor_id = Auth::user()->vendor->id;
         $product->category_id = $request->category;
         $product->qty = $request->qty;
+        $product->weight = $request->weight;
         $product->short_description = $request->short_description;
         $product->long_description = $request->long_description;
         $product->price = $request->price;

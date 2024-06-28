@@ -26,7 +26,7 @@ UMKM Lowayu || Home
     <!--============================
        MONTHLY TOP PRODUCT START
     ==============================-->
-    {{-- @include('frontend.home.sections.top-category-product') --}}
+    @include('frontend.home.sections.top-category-product')
     <!--============================
        MONTHLY TOP PRODUCT END
     ==============================-->
@@ -44,7 +44,7 @@ UMKM Lowayu || Home
     <!--============================
         SINGLE BANNER START
     ==============================-->
-    {{-- @include('frontend.home.sections.single-banner') --}}
+    @include('frontend.home.sections.single-banner')
     <!--============================
         SINGLE BANNER END
     ==============================-->

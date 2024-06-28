@@ -1,7 +1,7 @@
 @extends('vendor.layouts.master')
 
 @section('title')
-{{$settings->site_name}} || Product
+UMKM Lowayu || Product
 @endsection
 
 @section('content')
@@ -78,6 +78,10 @@
                     <div class="form-group wsus__input">
                         <label>Stock Quantity</label>
                         <input type="number" min="0" class="form-control" name="qty" value="{{$product->qty}}">
+                    </div>
+                    <div class="form-group wsus__input">
+                        <label>Weight</label>
+                        <input type="number" min="0" class="form-control" name="weight" value="{{$product->weight}}">
                     </div>
 
                     <div class="form-group wsus__input">

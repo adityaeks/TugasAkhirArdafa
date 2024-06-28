@@ -1,13 +1,11 @@
 @extends('vendor.layouts.master')
 
 @section('title')
-{{$settings->site_name}} || Product
+UMKM Lowayu || Product
 @endsection
 
 @section('content')
-  <!--=============================
-    DASHBOARD START
-  ==============================-->
+
   <section id="wsus__dashboard">
     <div class="container-fluid">
         @include('vendor.layouts.sidebar')
@@ -72,6 +70,10 @@
                     <div class="form-group wsus__input">
                         <label>Stock Quantity</label>
                         <input type="number" min="0" class="form-control" name="qty" value="{{old('qty')}}">
+                    </div>
+                    <div class="form-group wsus__input">
+                        <label>Weight</label>
+                        <input type="number" min="0" class="form-control" name="weight" value="{{old('weight')}}">
                     </div>
 
                     <div class="form-group wsus__input">

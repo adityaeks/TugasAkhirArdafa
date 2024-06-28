@@ -1,6 +1,6 @@
 @extends('vendor.layouts.master')
 @section('title')
-{{$settings->site_name}} || Dashboard
+UMKM Lowayu || Dashboard
 @endsection
 @section('content')
 <section id="wsus__dashboard">
@@ -57,21 +57,21 @@
                     <a class="wsus__dashboard_item red" href="javascript:;">
                       <i class="fas fa-cart-plus"></i>
                       <p>Todays Earnings</p>
-                      <h4 style="color:#ffff">{{$settings->currency_icon}}{{$todaysEarnings}}</h4>
+                      <h4 style="color:#ffff">Rp{{ number_format($todaysEarnings, 0, ',', '.') }}</h4>
                     </a>
                 </div>
                 <div class="col-xl-2 col-6 col-md-4">
                     <a class="wsus__dashboard_item red" href="javascript:;">
                       <i class="fas fa-cart-plus"></i>
                       <p>This Months Earnings</p>
-                      <h4 style="color:#ffff">{{$settings->currency_icon}}{{$monthEarnings}}</h4>
+                      <h4 style="color:#ffff">Rp{{ number_format($monthEarnings, 0, ',', '.') }}</h4>
                     </a>
                 </div>
                 <div class="col-xl-2 col-6 col-md-4">
                     <a class="wsus__dashboard_item red" href="javascript:;">
                       <i class="fas fa-cart-plus"></i>
                       <p>This Year Earnings</p>
-                      <h4 style="color:#ffff">{{$settings->currency_icon}}{{$yearEarnings}}</h4>
+                      <h4 style="color:#ffff">Rp{{ number_format($yearEarnings, 0, ',', '.') }}</h4>
                     </a>
                 </div>
 
@@ -79,14 +79,7 @@
                     <a class="wsus__dashboard_item red" href="javascript:;">
                       <i class="fas fa-cart-plus"></i>
                       <p>Total Earnings</p>
-                      <h4 style="color:#ffff">{{$settings->currency_icon}}{{$toalEarnings}}</h4>
-                    </a>
-                </div>
-                <div class="col-xl-2 col-6 col-md-4">
-                    <a class="wsus__dashboard_item red" href="{{route('vendor.reviews.index')}}">
-                      <i class="fas fa-cart-plus"></i>
-                      <p>Total Reviews</p>
-                      <h4 style="color:#ffff">{{$totalReviews}}</h4>
+                      <h4 style="color:#ffff">Rp{{ number_format($toalEarnings, 0, ',', '.') }}</h4>
                     </a>
                 </div>
                 <div class="col-xl-2 col-6 col-md-4">

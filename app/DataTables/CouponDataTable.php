@@ -30,7 +30,7 @@ class CouponDataTable extends DataTable
                 return $editBtn.$deleteBtn;
             })
             ->addColumn('discount', function($query){
-                return GeneralSetting::first()->currency_icon.$query->discount;
+                return 'Rp' . number_format($query->discount, 0, ',', '.');
             })
             ->addColumn('status', function($query){
                 if($query->status == 1){
@@ -89,6 +89,7 @@ class CouponDataTable extends DataTable
 
             Column::make('id'),
             Column::make('name'),
+            Column::make('code'),
             Column::make('discount_type'),
             Column::make('discount'),
             Column::make('start_date'),

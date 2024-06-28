@@ -1,13 +1,10 @@
 @extends('vendor.layouts.master')
 
 @section('title')
-{{$settings->site_name}} || Shop Profile
+UMKM Lowayu || Shop Profile
 @endsection
 
 @section('content')
-  <!--=============================
-    DASHBOARD START
-  ==============================-->
   <section id="wsus__dashboard">
     <div class="container-fluid">
         @include('vendor.layouts.sidebar')
