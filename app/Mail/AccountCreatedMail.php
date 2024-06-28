@@ -33,7 +33,7 @@ class AccountCreatedMail extends Mailable
      public function build()
     {
         $generalSetting = GeneralSetting::first();
-        return $this->subject('Selamat Datang di '. $generalSetting->site_name)
+        return $this->subject('Selamat Datang di UMKM Lowayu')
                     ->view('mail.account-created')
                     ->with([
                         'name' => $this->name,
