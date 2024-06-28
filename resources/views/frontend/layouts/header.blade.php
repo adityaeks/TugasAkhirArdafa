@@ -10,7 +10,7 @@
             <div class="col-xl-2 col-7 col-md-8 col-lg-2">
                 <div class="wsus_logo_area">
                     <a class="wsus__header_logo" href="{{url('/')}}">
-                        <img src="{{asset($logoSetting->logo)}}" alt="logo" class="img-fluid w-100">
+                        <img src="{{asset('frontend/images/umkm.png')}}" alt="logo" class="img-fluid w-100">
                     </a>
                 </div>
             </div>
@@ -61,9 +61,9 @@
                     <div class="wsus__cart_text">
                         <a class="wsus__cart_title" href="{{route('product-detail', $sidebarProduct->options->slug)}}">{{$sidebarProduct->name}}</a>
                         <p>
-                            {{$settings->currency_icon}}{{$sidebarProduct->price}}
+                            {{$sidebarProduct->price}}
                         </p>
-                        <small>Variants total: {{$settings->currency_icon}}{{$sidebarProduct->options->variants_total}}</small>
+                        <small>Variants total: {{$sidebarProduct->options->variants_total}}</small>
                         <br>
                         <small>Qty: {{$sidebarProduct->qty}}</small>
                     </div>
@@ -74,7 +74,7 @@
             @endif
         </ul>
         <div class="mini_cart_actions {{Cart::content()->count() === 0 ? 'd-none': ''}}">
-            <h5>sub total <span id="mini_cart_subtotal">{{$settings->currency_icon}}{{getCartTotal()}}</span></h5>
+            <h5>sub total <span id="mini_cart_subtotal">{{getCartTotal()}}</span></h5>
             <div class="wsus__minicart_btn_area">
                 <a class="common_btn" href="{{route('cart-details')}}">view cart</a>
                 <a class="common_btn" href="{{route('user.checkout')}}">checkout</a>

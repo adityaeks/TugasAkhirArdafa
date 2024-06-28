@@ -123,7 +123,7 @@
                                 <h4>Todays Earnings</h4>
                             </div>
                             <div class="card-body">
-                                {{ $settings->currency_icon }}{{ $todaysEarnings }}
+                                {{ $todaysEarnings }}
                             </div>
                         </div>
                     </div>
@@ -141,7 +141,7 @@
                                 <h4>This Month Earnings</h4>
                             </div>
                             <div class="card-body">
-                                {{ $settings->currency_icon }}{{ $monthEarnings }}
+                                {{ $monthEarnings }}
                             </div>
                         </div>
                     </div>
@@ -159,7 +159,7 @@
                                 <h4>This Years Earnings</h4>
                             </div>
                             <div class="card-body">
-                                {{ $settings->currency_icon }}{{ $yearEarnings }}
+                                {{ $yearEarnings }}
                             </div>
                         </div>
                     </div>

@@ -1,7 +1,7 @@
 @extends('frontend.dashboard.layouts.master')
 
 @section('title')
-{{$settings->site_name}} || Dahsboard
+UMKM Lowayu || Dahsboard
 @endsection
 
 @section('content')
