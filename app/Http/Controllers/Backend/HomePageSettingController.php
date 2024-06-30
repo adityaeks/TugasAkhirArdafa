@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
-use App\Models\HomePageSetting;
+use App\Models\HomeSetting;
 use Illuminate\Http\Request;
 
 class HomePageSettingController extends Controller
@@ -12,10 +12,10 @@ class HomePageSettingController extends Controller
     public function index()
     {
         $categories = Category::where('status', 1)->get();
-        $popularCategorySection = HomePageSetting::where('key', 'popular_category_section')->first();
-        $sliderSectionOne = HomePageSetting::where('key', 'product_slider_section_one')->first();
-        $sliderSectionTwo = HomePageSetting::where('key', 'product_slider_section_two')->first();
-        $sliderSectionThree = HomePageSetting::where('key', 'product_slider_section_three')->first();
+        $popularCategorySection = HomeSetting::where('key', 'popular_category_section')->first();
+        $sliderSectionOne = HomeSetting::where('key', 'product_slider_section_one')->first();
+        $sliderSectionTwo = HomeSetting::where('key', 'product_slider_section_two')->first();
+        $sliderSectionThree = HomeSetting::where('key', 'product_slider_section_three')->first();
 
         return view('admin.home-setting.index', compact('categories', 'popularCategorySection', 'sliderSectionOne', 'sliderSectionTwo', 'sliderSectionThree'));
     }
@@ -40,27 +40,23 @@ class HomePageSettingController extends Controller
         $data = [
             [
                 'category' => $request->cat_one,
-                'sub_category' => $request->sub_cat_one,
-                'child_category' => $request->child_cat_one,
+
             ],
             [
                 'category' => $request->cat_two,
-                'sub_category' => $request->sub_cat_two,
-                'child_category' => $request->child_cat_two,
+
             ],
             [
                 'category' => $request->cat_three,
-                'sub_category' => $request->sub_cat_three,
-                'child_category' => $request->child_cat_three,
+
             ],
             [
                 'category' => $request->cat_four,
-                'sub_category' => $request->sub_cat_four,
-                'child_category' => $request->child_cat_four,
+
             ]
         ];
 
-        HomePageSetting::updateOrCreate(
+        HomeSetting::updateOrCreate(
             [
                 'key' => 'popular_category_section'
             ],
@@ -84,11 +80,9 @@ class HomePageSettingController extends Controller
 
         $data = [
                 'category' => $request->cat_one,
-                'sub_category' => $request->sub_cat_one,
-                'child_category' => $request->child_cat_one,
             ];
 
-        HomePageSetting::updateOrCreate(
+        HomeSetting::updateOrCreate(
             [
                 'key' => 'product_slider_section_one'
             ],
@@ -113,11 +107,9 @@ class HomePageSettingController extends Controller
 
         $data = [
                 'category' => $request->cat_one,
-                'sub_category' => $request->sub_cat_one,
-                'child_category' => $request->child_cat_one,
             ];
 
-        HomePageSetting::updateOrCreate(
+        HomeSetting::updateOrCreate(
             [
                 'key' => 'product_slider_section_two'
             ],
@@ -145,17 +137,13 @@ class HomePageSettingController extends Controller
         $data = [
             [
                 'category' => $request->cat_one,
-                'sub_category' => $request->sub_cat_one,
-                'child_category' => $request->child_cat_one,
             ],
             [
                 'category' => $request->cat_two,
-                'sub_category' => $request->sub_cat_two,
-                'child_category' => $request->child_cat_two,
             ]
         ];
 
-        HomePageSetting::updateOrCreate(
+        HomeSetting::updateOrCreate(
             [
                 'key' => 'product_slider_section_three'
             ],

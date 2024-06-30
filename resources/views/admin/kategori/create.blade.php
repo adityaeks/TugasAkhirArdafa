@@ -17,7 +17,7 @@
 
                   </div>
                   <div class="card-body">
-                    <form action="{{route('admin.category.store')}}" method="POST">
+                    <form action="{{route('admin.kategori.store')}}" method="POST">
                         @csrf
                         <div class="form-group">
                             <label>Name</label>

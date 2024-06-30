@@ -150,32 +150,28 @@ class ProductController extends Controller
     public function destroy(string $id)
     {
         $product = Product::findOrFail($id);
-        if(OrderProduct::where('product_id',$product->id)->count() > 0){
-            return response(['status' => 'error', 'message' => 'This product have orders can\'t delete it.']);
+
+        // Cek apakah produk memiliki pesanan
+        if(OrderProduct::where('product_id', $product->id)->count() > 0){
+            return response(['status' => 'error', 'message' => 'Produk ini memiliki pesanan, tidak bisa dihapus.']);
         }
 
-        /** Delte the main product image */
+        // Hapus gambar utama produk
         $this->deleteImage($product->thumb_image);
 
-        /** Delete product gallery images */
+        // Hapus gambar galeri produk
         $galleryImages = ProductImageGallery::where('product_id', $product->id)->get();
         foreach($galleryImages as $image){
             $this->deleteImage($image->image);
             $image->delete();
         }
 
-        /** Delete product variants if exist */
-        $variants = ProductVariant::where('product_id', $product->id)->get();
-
-        foreach($variants as $variant){
-            $variant->productVariantItems()->delete();
-            $variant->delete();
-        }
-
+        // Hapus produk itu sendiri
         $product->delete();
 
-        return response(['status' => 'success', 'message' => 'Deleted Successfully!']);
+        return response(['status' => 'success', 'message' => 'Berhasil dihapus!']);
     }
+
 
     public function changeStatus(Request $request)
     {

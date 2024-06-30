@@ -72,7 +72,4 @@ UMKM Lowayu || Shop Profile
       </div>
     </div>
   </section>
-  <!--=============================
-    DASHBOARD START
-  ==============================-->
 @endsection

@@ -44,19 +44,21 @@ Route::post('profile/update/password', [ProfileController::class, 'updatePasswor
 Route::resource('slider', SliderController::class);
 
 /** Category Route */
-Route::put('change-status', [CategoryController::class, 'changeStatus'])->name('category.change-status');
-Route::resource('category', CategoryController::class);
+Route::put('change-status', [CategoryController::class, 'changeStatus'])->name('kategori.change-status');
+Route::resource('kategori', CategoryController::class);
+Route::delete('produk/{id}', [ProductController::class, 'destroy'])->name('admin.produk.destroy');
+
 
 
 /** Vendor Profile routes */
 Route::resource('vendor-profile', AdminVendorProfileController::class);
 
 /** Products routes */
-Route::put('product/change-status', [ProductController::class, 'changeStatus'])->name('product.change-status');
-Route::resource('products', ProductController::class);
+Route::put('product/change-status', [ProductController::class, 'changeStatus'])->name('produk.change-status');
+Route::resource('produk', ProductController::class);
 
 /** Products image gallery route */
-Route::resource('products-image-gallery', ProductImageGalleryController::class);
+Route::resource('produk-image-gallery', ProductImageGalleryController::class);
 
 
 /** reviews routes */
@@ -64,8 +66,8 @@ Route::get('reviews', [AdminReviewController::class, 'index'])->name('reviews.in
 Route::put('reviews/change-status', [AdminReviewController::class, 'changeStatus'])->name('reviews.change-status');
 
 // seller produk
-Route::get('seller-products', [SellerProductController::class, 'index'])->name('seller-products.index');
-Route::get('seller-pending-products', [SellerProductController::class, 'pendingProducts'])->name('seller-pending-products.index');
+Route::get('seller-products', [SellerProductController::class, 'index'])->name('seller-produk.index');
+Route::get('seller-pending-products', [SellerProductController::class, 'pendingProducts'])->name('seller-pending-produk.index');
 Route::put('change-approve-status', [SellerProductController::class, 'changeApproveStatus'])->name('change-approve-status');
 
 /** Flash Sale Routes */
@@ -108,7 +110,6 @@ Route::put('generale-setting-update', [SettingController::class, 'generalSetting
 Route::put('email-setting-update', [SettingController::class, 'emailConfigSettingUpdate'])->name('email-setting-update');
 Route::put('logo-setting-update', [SettingController::class, 'logoSettingUpdate'])->name('logo-setting-update');
 Route::put('pusher-setting-update', [SettingController::class, 'pusherSettingUpdate'])->name('pusher-setting-update');
-
 
 
 

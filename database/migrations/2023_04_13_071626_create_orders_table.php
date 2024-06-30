@@ -17,8 +17,6 @@ return new class extends Migration
             $table->integer('user_id');
             $table->double('sub_total');
             $table->double('amount');
-            $table->string('currency_name');
-            $table->string('currency_icon');
             $table->integer('product_qty');
             $table->string('payment_method');
             $table->integer('payment_status');

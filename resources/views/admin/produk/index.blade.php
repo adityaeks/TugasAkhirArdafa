@@ -15,7 +15,7 @@
                   <div class="card-header">
                     <h4>All Products</h4>
                     <div class="card-header-action">
-                        <a href="{{route('admin.products.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i> Create New</a>
+                        <a href="{{route('admin.produk.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i> Create New</a>
                     </div>
                   </div>
                   <div class="card-body">
@@ -41,7 +41,7 @@
                 let id = $(this).data('id');
 
                 $.ajax({
-                    url: "{{route('admin.product.change-status')}}",
+                    url: "{{route('admin.produk.change-status')}}",
                     method: 'PUT',
                     data: {
                         status: isChecked,

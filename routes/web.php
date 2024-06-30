@@ -70,7 +70,7 @@ Route::get('coupon-calculation', [CartController::class, 'couponCalculation'])->
 
 /** vendor page routes */
 Route::get('vendor', [HomeController::class, 'vendorPage'])->name('vendor.index');
-Route::get('vendor-product/{id}', [HomeController::class, 'vendorProductsPage'])->name('vendor.products');
+Route::get('vendor-produk/{id}', [HomeController::class, 'vendorProductsPage'])->name('vendor.produk');
 
 /** about page route */
 Route::get('about', [PageController::class, 'about'])->name('about');

@@ -42,19 +42,6 @@ class CartController extends Controller
             return response(['status' => 'error', 'message' => 'Jumlah stok tidak tersedia']);
         }
 
-        $variants = [];
-        $variantTotalAmount = 0;
-
-        if($request->has('variants_items')){
-            foreach($request->variants_items as $item_id){
-                $variantItem = ProductVariantItem::find($item_id);
-                $variants[$variantItem->productVariant->name]['name'] = $variantItem->name;
-                $variants[$variantItem->productVariant->name]['price'] = $variantItem->price;
-                $variantTotalAmount += $variantItem->price;
-            }
-        }
-
-
         // cek diskon
         $productPrice = 0;
 
@@ -70,8 +57,6 @@ class CartController extends Controller
         $cartData['qty'] = $request->qty;
         $cartData['price'] = $productPrice;
         $cartData['weight'] = 10;
-        $cartData['options']['variants'] = $variants;
-        $cartData['options']['variants_total'] = $variantTotalAmount;
         $cartData['options']['image'] = $product->thumb_image;
         $cartData['options']['slug'] = $product->slug;
 

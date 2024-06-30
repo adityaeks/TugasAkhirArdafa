@@ -25,7 +25,7 @@ class VendorProductImageGalleryController extends Controller
             abort(404);
         }
 
-        return $dataTable->render('vendor.product.image-gallery.index', compact('product'));
+        return $dataTable->render('vendor.produk.image-gallery.index', compact('product'));
     }
 
     /**

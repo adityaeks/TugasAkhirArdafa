@@ -11,10 +11,7 @@
 
     if (array_keys($lastKey)[0] === 'category') {
         $category = \App\Models\Category::find($lastKey['category']);
-        $products = \App\Models\Product::withAvg('reviews', 'rating')
-            ->withCount('reviews')
-            ->with(['variants', 'category', 'productImageGalleries'])
-            ->where('category_id', $category->id)
+        $products = \App\Models\Product::where('category_id', $category->id)
             ->orderBy('id', 'DESC')
             ->take(12)
             ->get();

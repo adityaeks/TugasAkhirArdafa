@@ -4,7 +4,7 @@
       <!-- Main Content -->
         <section class="section">
           <div class="section-header">
-            <h1>Category</h1>
+            <h1>Kategori</h1>
           </div>
 
           <div class="section-body">
@@ -13,11 +13,11 @@
               <div class="col-12">
                 <div class="card">
                   <div class="card-header">
-                    <h4>Edit Category</h4>
+                    <h4>Edit Kategori</h4>
 
                   </div>
                   <div class="card-body">
-                    <form action="{{route('admin.category.update', $category->id)}}" method="POST">
+                    <form action="{{route('admin.kategori.update', $category->id)}}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="form-group">

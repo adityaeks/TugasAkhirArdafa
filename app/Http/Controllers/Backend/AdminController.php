@@ -41,10 +41,7 @@ class AdminController extends Controller
         ->whereYear('created_at', Carbon::now()->year)
         ->sum('sub_total');
 
-        $totalReview = ProductReview::count();
-
         $totalCategories = Category::count();
-        $totalBlogs = Blog::count();
         $totalVendors = User::where('role', 'vendor')->count();
         $totalUsers = User::where('role', 'user')->count();
 
@@ -60,9 +57,7 @@ class AdminController extends Controller
             'todaysEarnings',
             'monthEarnings',
             'yearEarnings',
-            'totalReview',
             'totalCategories',
-            'totalBlogs',
             'totalVendors',
             'totalUsers'
         ));

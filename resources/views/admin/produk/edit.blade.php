@@ -17,7 +17,7 @@
                     <h4>Update Product</h4>
                   </div>
                   <div class="card-body">
-                    <form action="{{route('admin.products.update', $product->id)}}" method="POST" enctype="multipart/form-data">
+                    <form action="{{route('admin.produk.update', $product->id)}}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="form-group">
