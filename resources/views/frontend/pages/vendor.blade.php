@@ -5,9 +5,6 @@
 @endsection
 
 @section('content')
-    <!--============================
-              VENDORS START
-            ==============================-->
     <section id="wsus__product_page" class="wsus__vendors">
         <div class="container">
             <div class="row">

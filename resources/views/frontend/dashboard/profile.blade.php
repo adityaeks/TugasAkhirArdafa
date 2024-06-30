@@ -1,13 +1,10 @@
 @extends('frontend.dashboard.layouts.master')
 
 @section('title')
-{{$settings->site_name}} || Profile
+UMKM Lowayu || Profile
 @endsection
 
 @section('content')
-  <!--=============================
-    DASHBOARD START
-  ==============================-->
   <section id="wsus__dashboard">
     <div class="container-fluid">
         @include('frontend.dashboard.layouts.sidebar')
@@ -89,7 +86,4 @@
       </div>
     </div>
   </section>
-  <!--=============================
-    DASHBOARD START
-  ==============================-->
 @endsection

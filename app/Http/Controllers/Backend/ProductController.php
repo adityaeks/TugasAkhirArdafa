@@ -25,7 +25,7 @@ class ProductController extends Controller
      */
     public function index(ProductDataTable $dataTable)
     {
-        return $dataTable->render('admin.product.index');
+        return $dataTable->render('admin.produk.index');
     }
 
     /**
@@ -34,7 +34,7 @@ class ProductController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('admin.product.create', compact('categories'));
+        return view('admin.produk.create', compact('categories'));
     }
 
     /**
@@ -78,7 +78,7 @@ class ProductController extends Controller
 
         toastr('Created Successfully!', 'success');
 
-        return redirect()->route('admin.products.index');
+        return redirect()->route('admin.produk.index');
 
     }
 
@@ -97,7 +97,7 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
         $categories = Category::all();
-        return view('admin.product.edit', compact('product', 'categories'));
+        return view('admin.produk.edit', compact('product', 'categories'));
     }
 
     /**
@@ -140,7 +140,7 @@ class ProductController extends Controller
 
         toastr('Updated Successfully!', 'success');
 
-        return redirect()->route('admin.products.index');
+        return redirect()->route('admin.produk.index');
 
     }
 

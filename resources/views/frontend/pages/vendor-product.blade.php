@@ -5,15 +5,12 @@
 @endsection
 
 @section('content')
-    <!--============================
-                    PRODUCT PAGE START
-                ==============================-->
     <section id="wsus__product_page">
         <div class="container">
             <div class="row">
                 <div class="col-xl-12">
                     <div class="wsus__pro_page_bammer vendor_det_banner">
-                        <img src="{{ asset('frontend/images/vendor_details_banner.jpg') }}" alt="banner"
+                        <img src="{{ asset($vendor->banner) }}" alt="banner"
                             class="img-fluid w-100">
                         <div class="wsus__pro_page_bammer_text wsus__vendor_det_banner_text">
                             <div class="wsus__vendor_text_center">
@@ -29,7 +26,6 @@
                                 <ul class="d-flex">
                                     <li><a class="facebook" href="{{ $vendor->fb_link }}"><i
                                                 class="fab fa-facebook-f"></i></a></li>
-                                    <li><a class="twitter" href="{{ $vendor->tw_link }}"><i class="fab fa-twitter"></i></a>
                                     </li>
                                     <li><a class="instagram" href="{{ $vendor->insta_link }}"><i
                                                 class="fab fa-instagram"></i></a></li>
@@ -89,9 +85,7 @@
                                                         alt="product" class="img-fluid w-100 img_2" />
                                                 </a>
                                                 <ul class="wsus__single_pro_icon">
-                                                    <li><a href="#" data-bs-toggle="modal"
-                                                            data-bs-target="#product-{{ $product->id }}"><i
-                                                                class="far fa-eye"></i></a></li>
+                                        
                                                     <li><a href="#" class="add_to_wishlist"
                                                             data-id="{{ $product->id }}"><i class="far fa-heart"></i></a>
                                                     </li>

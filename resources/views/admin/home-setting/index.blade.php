@@ -26,13 +26,13 @@
                         <div class="col-10">
                           <div class="tab-content" id="nav-tabContent">
 
-                            @include('admin.home-page-setting.sections.popular-category-section')
+                            @include('admin.home-setting.sections.popular-category-section')
 
-                            @include('admin.home-page-setting.sections.product-slider-section-one')
+                            @include('admin.home-setting.sections.product-slider-section-one')
 
-                            @include('admin.home-page-setting.sections.product-slider-section-two')
+                            @include('admin.home-setting.sections.product-slider-section-two')
 
-                            @include('admin.home-page-setting.sections.product-slider-section-three')
+                            @include('admin.home-setting.sections.product-slider-section-three')
 
 
                           </div>

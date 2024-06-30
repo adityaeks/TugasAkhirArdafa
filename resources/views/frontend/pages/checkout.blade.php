@@ -5,7 +5,7 @@ UMKM Lowayu || Checkout
 @endsection
 
 @section('content')
-    
+
 
     <!--============================
         CHECK OUT PAGE START
@@ -57,7 +57,7 @@ UMKM Lowayu || Checkout
                                             value="{{$method->id}}" data-id="{{$method->cost}}">
                                         <label class="form-check-label" for="exampleRadios1">
                                             {{$method->name}}
-                                            <span>cost: ({{$settings->currency_icon}}{{$method->cost}})</span>
+                                            <span>cost: (Rp{{$method->cost}})</span>
                                         </label>
                                     </div>
                                 @elseif ($method->type === 'flat_cost')
@@ -66,18 +66,19 @@ UMKM Lowayu || Checkout
                                             value="{{$method->id}}" data-id="{{$method->cost}}">
                                         <label class="form-check-label" for="exampleRadios1">
                                             {{$method->name}}
-                                            <span>cost: ({{$settings->currency_icon}}{{$method->cost}})</span>
+                                            <span>cost: (Rp{{$method->cost}})</span>
                                         </label>
                                     </div>
                                 @endif
                             @endforeach
 
                             <div class="wsus__order_details_summery">
-                                <p>subtotal: <span>{{$settings->currency_icon}}{{getCartTotal()}}</span></p>
-                                <p>biaya pengiriman(+): <span id="shipping_fee">{{$settings->currency_icon}}0</span></p>
-                                <p>kupon(-): <span>{{$settings->currency_icon}}{{getCartDiscount()}}</span></p>
-                                <p><b>total:</b> <span><b id="total_amount" data-id="{{getMainCartTotal()}}">{{$settings->currency_icon}}{{getMainCartTotal()}}</b></span></p>
+                                <p>subtotal: <span>Rp{{ number_format(getCartTotal(), 0, ',', '.') }}</span></p>
+                                <p>biaya pengiriman(+): <span id="shipping_fee">Rp{{ number_format(0, 0, ',', '.') }}</span></p>
+                                <p>kupon(-): <span>Rp{{ number_format(getCartDiscount(), 0, ',', '.') }}</span></p>
+                                <p><b>total:</b> <span><b id="total_amount" data-id="{{ getMainCartTotal() }}">Rp{{ number_format(getMainCartTotal(), 0, ',', '.') }}</b></span></p>
                             </div>
+
                             <div class="terms_area">
                                 <div class="form-check">
                                     <input class="form-check-input agree_term" type="checkbox" value="" id="flexCheckChecked3"
@@ -200,9 +201,9 @@ UMKM Lowayu || Checkout
             let totalAmount = currentTotalAmount + shippingFee;
 
             $('#shipping_method_id').val($(this).val());
-            $('#shipping_fee').text("{{$settings->currency_icon}}"+shippingFee);
+            $('#shipping_fee').text("Rp"+shippingFee);
 
-            $('#total_amount').text("{{$settings->currency_icon}}"+totalAmount)
+            $('#total_amount').text("Rp"+totalAmount)
         })
 
         $('.shipping_address').on('click', function(){

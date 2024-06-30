@@ -7,15 +7,11 @@ use App\Models\CodSetting;
 use App\Models\GeneralSetting;
 use App\Models\Order;
 use App\Models\OrderProduct;
-use App\Models\PaypalSetting;
 use App\Models\Product;
-use App\Models\RazorpaySetting;
-use App\Models\StripeSetting;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Srmklive\PayPal\Services\PayPal as PayPalClient;
 use Stripe\Charge;
 use Stripe\Stripe;
 use Razorpay\Api\Api;
@@ -35,7 +31,7 @@ class PaymentController extends Controller
         return view('frontend.pages.payment-success');
     }
 
-    public function storeOrder($paymentMethod, $paymentStatus, $transactionId, $paidAmount, $paidCurrencyName)
+    public function storeOrder($paymentMethod, $paymentStatus, $transactionId, $paidAmount)
     {
         $setting = GeneralSetting::first();
 
@@ -44,8 +40,7 @@ class PaymentController extends Controller
         $order->user_id = Auth::user()->id;
         $order->sub_total = getCartTotal();
         $order->amount =  getFinalPayableAmount();
-        $order->currency_name = $setting->currency_name;
-        $order->currency_icon = $setting->currency_icon;
+        $order->currency_icon = 'Rp';
         $order->product_qty = \Cart::content()->count();
         $order->payment_method = $paymentMethod;
         $order->payment_status = $paymentStatus;
@@ -82,7 +77,6 @@ class PaymentController extends Controller
         $transaction->payment_method = $paymentMethod;
         $transaction->amount = getFinalPayableAmount();
         $transaction->amount_real_currency = $paidAmount;
-        $transaction->amount_real_currency_name = $paidCurrencyName;
         $transaction->save();
 
     }
@@ -264,7 +258,6 @@ class PaymentController extends Controller
     public function payWithCod(Request $request)
     {
         $codPaySetting = CodSetting::first();
-        $setting = GeneralSetting::first();
         if($codPaySetting->status == 0){
             return redirect()->back();
         }
@@ -274,12 +267,12 @@ class PaymentController extends Controller
        $payableAmount = round($total, 2);
 
 
-        $this->storeOrder('COD', 0, \Str::random(10), $payableAmount, $setting->currency_name);
+        $this->storeOrder('COD', 0, \Str::random(10), $payableAmount);
         // clear session
         $this->clearSession();
 
         return redirect()->route('user.payment.success');
-            
+
 
     }
 

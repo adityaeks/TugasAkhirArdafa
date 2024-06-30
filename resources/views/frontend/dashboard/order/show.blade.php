@@ -7,13 +7,10 @@
 @extends('frontend.dashboard.layouts.master')
 
 @section('title')
-    {{ $settings->site_name }} || Product
+    UMKM Lowayu|| Product
 @endsection
 
 @section('content')
-    <!--=============================
-        DASHBOARD START
-      ==============================-->
     <section id="wsus__dashboard">
         <div class="container-fluid">
             @include('vendor.layouts.sidebar')
@@ -24,9 +21,7 @@
                         <h3><i class="far fa-user"></i> Order Details</h3>
                         <div class="wsus__dashboard_profile">
 
-                            <!--============================
-                            INVOICE PAGE START
-                        ==============================-->
+                            {{-- Invoice --}}
                             <section id="" class="invoice-print">
                                 <div class="">
                                     <div class="wsus__invoice_area">
@@ -92,36 +87,35 @@
                                                             </th>
                                                         </tr>
                                                         @foreach ($order->orderProducts as $product)
-                                                                @php
-                                                                    $variants = json_decode($product->variants);
-                                                                @endphp
-                                                                <tr>
-                                                                    <td class="name">
-                                                                        <p>{{ $product->product_name }}</p>
-                                                                        @foreach ($variants as $key => $item)
-                                                                            <span>{{ $key }} :
-                                                                                {{ $item->name }}(
-                                                                                {{ $settings->currency_icon }}{{ $item->price }}
-                                                                                )</span>
-                                                                        @endforeach
-                                                                    </td>
-                                                                    <td class="amount">
-                                                                        {{ $product->vendor->shop_name }}
-                                                                    </td>
-                                                                    <td class="amount">
-                                                                        {{ $settings->currency_icon }}
-                                                                        {{ $product->unit_price }}
-                                                                    </td>
+                                                            @php
+                                                                $variants = json_decode($product->variants);
+                                                            @endphp
+                                                            <tr>
+                                                                <td class="name">
+                                                                    <p>{{ $product->product_name }}</p>
+                                                                    @foreach ($variants as $key => $item)
+                                                                        <span>{{ $key }} :
+                                                                            {{ $item->name }}(
+                                                                            Rp{{ number_format($item->price, 0, ',', '.') }}
+                                                                            )</span>
+                                                                    @endforeach
+                                                                </td>
+                                                                <td class="amount">
+                                                                    {{ $product->vendor->shop_name }}
+                                                                </td>
+                                                                <td class="amount">
+                                                                    Rp
+                                                                    Rp{{ number_format($product->unit_price, 0, ',', '.') }}
+                                                                </td>
 
-                                                                    <td class="quentity">
-                                                                        {{ $product->qty }}
-                                                                    </td>
-                                                                    <td class="total">
-                                                                        {{ $settings->currency_icon }}
-                                                                        {{ $product->unit_price * $product->qty }}
-                                                                    </td>
-                                                                </tr>
+                                                                <td class="quentity">
+                                                                    {{ $product->qty }}
+                                                                </td>
+                                                                <td class="total">
+                                                                    Rp {{ number_format($product->unit_price * $product->qty, 0, ',', '.') }}
+                                                                </td>
 
+                                                            </tr>
                                                         @endforeach
 
                                                     </table>
@@ -130,24 +124,26 @@
                                         </div>
                                         <div class="wsus__invoice_footer">
 
-                                            <p><span>Sub Total:</span> {{ @$settings->currency_icon }} {{@$order->sub_total}}</p>
-                                            <p><span>Shipping Fee(+):</span>{{ @$settings->currency_icon }} {{@$shipping->cost}} </p>
-                                            <p><span>Coupon(-):</span>{{ @$settings->currency_icon }} {{@$coupon->discount ? $coupon->discount : 0}}</p>
-                                            <p><span>Total Amount :</span>{{ @$settings->currency_icon }} {{@$order->amount}}</p>
+                                            <p><span>Sub Total:</span>
+                                                Rp{{ number_format($order->sub_total, 0, ',', '.') }}</p>
+                                            <p><span>Shipping Fee(+):</span>
+                                                Rp{{ number_format($shipping->cost, 0, ',', '.') }}</p>
+                                            <p><span>Coupon(-):</span>{{ @$settings->currency_icon }}
+                                                {{ @$coupon->discount ? $coupon->discount : 0 }}</p>
+                                            <p><span>Total Amount:</span>
+                                                Rp{{ number_format($order->amount, 0, ',', '.') }}</p>
 
 
                                         </div>
                                     </div>
                                 </div>
                             </section>
-                            <!--============================
-                            INVOICE PAGE END
-                        ==============================-->
-                        <div class="col">
-                            <div class="mt-2 float-end">
-                                <button class="btn btn-warning print_invoice">print</button>
+                            {{-- end --}}
+                            <div class="col">
+                                <div class="mt-2 float-end">
+                                    <button class="btn btn-warning print_invoice">print</button>
+                                </div>
                             </div>
-                        </div>
                         </div>
 
                     </div>
@@ -155,9 +151,6 @@
             </div>
         </div>
     </section>
-    <!--=============================
-        DASHBOARD START
-      ==============================-->
 @endsection
 
 @push('scripts')

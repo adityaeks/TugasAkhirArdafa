@@ -28,17 +28,17 @@
                         <div class="col-10">
                           <div class="tab-content" id="nav-tabContent">
 
-                            @include('admin.advertisement.homepage-banner-one')
+                            @include('admin.iklan.homepage-banner-one')
 
-                            @include('admin.advertisement.homepage-banner-two')
+                            @include('admin.iklan.homepage-banner-two')
 
-                            @include('admin.advertisement.homepage-banner-three')
+                            @include('admin.iklan.homepage-banner-three')
 
-                            @include('admin.advertisement.homepage-banner-four')
+                            @include('admin.iklan.homepage-banner-four')
 
-                            @include('admin.advertisement.product-page-banner')
+                            @include('admin.iklan.product-page-banner')
 
-                            @include('admin.advertisement.cart-page-banner')
+                            @include('admin.iklan.cart-page-banner')
 
                           </div>
                         </div>

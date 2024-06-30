@@ -23,7 +23,7 @@ class VendorProductController extends Controller
      */
     public function index(VendorProductDataTable $dataTable)
     {
-        return $dataTable->render('vendor.product.index');
+        return $dataTable->render('vendor.produk.index');
     }
 
     /**
@@ -32,7 +32,7 @@ class VendorProductController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('vendor.product.create', compact('categories'));
+        return view('vendor.produk.create', compact('categories'));
     }
 
     /**
@@ -88,9 +88,7 @@ class VendorProductController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+
     public function edit(string $id)
     {
         $product = Product::findOrFail($id);
@@ -102,16 +100,13 @@ class VendorProductController extends Controller
 
         $categories = Category::all();
 
-        return view('vendor.product.edit',
+        return view('vendor.produk.edit',
         compact(
             'product',
             'categories',
         ));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
 
@@ -133,7 +128,7 @@ class VendorProductController extends Controller
             abort(404);
         }
 
-        /** Handle the image upload */
+
         $imagePath = $this->updateImage($request, 'image', 'uploads', $product->thumb_image);
 
         $product->thumb_image = empty(!$imagePath) ? $imagePath : $product->thumb_image;
@@ -156,7 +151,7 @@ class VendorProductController extends Controller
 
         toastr('Updated Successfully!', 'success');
 
-        return redirect()->route('vendor.products.index');
+        return redirect()->route('vendor.produk.index');
 
     }
 
@@ -170,22 +165,13 @@ class VendorProductController extends Controller
             abort(404);
         }
 
-        /** Delte the main product image */
         $this->deleteImage($product->thumb_image);
 
-        /** Delete product gallery images */
+        // delete galeri foto
         $galleryImages = ProductImageGallery::where('product_id', $product->id)->get();
         foreach($galleryImages as $image){
             $this->deleteImage($image->image);
             $image->delete();
-        }
-
-        /** Delete product variants if exist */
-        $variants = ProductVariant::where('product_id', $product->id)->get();
-
-        foreach($variants as $variant){
-            $variant->productVariantItems()->delete();
-            $variant->delete();
         }
 
         $product->delete();

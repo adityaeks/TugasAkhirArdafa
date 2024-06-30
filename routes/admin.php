@@ -121,7 +121,7 @@ Route::put('product-slider-section-two', [HomePageSettingController::class, 'upd
 Route::put('product-slider-section-three', [HomePageSettingController::class, 'updateProductSliderSectionThree'])->name('product-slider-section-three');
 
 /** Advertisement Routes */
-Route::get('advertisement', [AdvertisementController::class, 'index'])->name('advertisement.index');
+Route::get('advertisement', [AdvertisementController::class, 'index'])->name('iklan.index');
 Route::put('advertisement/homepage-banner-secion-one', [AdvertisementController::class, 'homepageBannerSecionOne'])->name('homepage-banner-secion-one');
 Route::put('advertisement/homepage-banner-secion-two', [AdvertisementController::class, 'homepageBannerSecionTwo'])->name('homepage-banner-secion-two');
 Route::put('advertisement/homepage-banner-secion-three', [AdvertisementController::class, 'homepageBannerSecionThree'])->name('homepage-banner-secion-three');

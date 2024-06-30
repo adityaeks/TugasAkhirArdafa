@@ -12,12 +12,12 @@ class SellerProductController extends Controller
 {
     public function index(SellerProductsDataTable $dataTable)
     {
-        return $dataTable->render('admin.product.seller-product.index');
+        return $dataTable->render('admin.produk.seller-product.index');
     }
 
     public function pendingProducts(SellerPendingProductsDataTable $dataTable)
     {
-        return $dataTable->render('admin.product.seller-pending-product.index');
+        return $dataTable->render('admin.produk.seller-pending-product.index');
     }
 
     public function changeApproveStatus(Request $request)
