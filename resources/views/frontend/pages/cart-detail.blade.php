@@ -47,20 +47,20 @@ UMKM Lowayu || Cart Details
                                                 class="img-fluid w-100">
                                         </td>
 
-                                        <td class="wsus__pro_name">
+                                        {{-- <td class="wsus__pro_name">
                                             <p>{!! $item->name !!}</p>
                                             @foreach ($item->options->variants as $key => $variant)
                                                 <span>{{$key}}: {{$variant['name']}} ({{$settings->currency_icon.$variant['price']}})</span>
                                             @endforeach
 
+                                        </td> --}}
+
+                                        <td class="wsus__pro_tk">
+                                            <h6>{{('Rp').$item->price}}</h6>
                                         </td>
 
                                         <td class="wsus__pro_tk">
-                                            <h6>{{$settings->currency_icon.$item->price}}</h6>
-                                        </td>
-
-                                        <td class="wsus__pro_tk">
-                                            <h6 id="{{$item->rowId}}">{{$settings->currency_icon.($item->price + $item->options->variants_total) * $item->qty}}</h6>
+                                            <h6 id="{{$item->rowId}}">{{('Rp').($item->price + $item->options->variants_total) * $item->qty}}</h6>
                                         </td>
 
                                         <td class="wsus__pro_select">
@@ -94,9 +94,9 @@ UMKM Lowayu || Cart Details
                 <div class="col-xl-3">
                     <div class="wsus__cart_list_footer_button" id="sticky_sidebar">
                         <h6>total cart</h6>
-                        <p>subtotal: <span id="sub_total">{{$settings->currency_icon}}{{getCartTotal()}}</span></p>
-                        <p>coupon(-): <span id="discount">{{$settings->currency_icon}}{{getCartDiscount()}}</span></p>
-                        <p class="total"><span>total:</span> <span id="cart_total">{{$settings->currency_icon}}{{getMainCartTotal()}}</span></p>
+                        <p>subtotal: <span id="sub_total">Rp {{getCartTotal()}}</span></p>
+                        <p>coupon(-): <span id="discount">Rp {{getCartDiscount()}}</span></p>
+                        <p class="total"><span>total:</span> <span id="cart_total">Rp {{getMainCartTotal()}}</span></p>
 
                         <form id="coupon_form">
                             <input type="text" placeholder="Coupon Code" name="coupon_code" value="{{session()->has('coupon') ? session()->get('coupon')['coupon_code'] : ''}}">
@@ -138,7 +138,7 @@ UMKM Lowayu || Cart Details
                 success: function(data){
                     if(data.status === 'success'){
                         let productId = '#'+rowId;
-                        let totalAmount = "{{$settings->currency_icon}}"+data.product_total
+                        let totalAmount = ('Rp')+data.product_total
                         $(productId).text(totalAmount)
 
                         renderCartSubTotal()
@@ -177,7 +177,7 @@ UMKM Lowayu || Cart Details
                 success: function(data){
                     if(data.status === 'success'){
                         let productId = '#'+rowId;
-                        let totalAmount = "{{$settings->currency_icon}}"+data.product_total
+                        let totalAmount = "Rp"+data.product_total
                         $(productId).text(totalAmount)
 
                         renderCartSubTotal()
@@ -231,7 +231,7 @@ UMKM Lowayu || Cart Details
                 method: 'GET',
                 url: "{{ route('cart.sidebar-product-total') }}",
                 success: function(data) {
-                    $('#sub_total').text("{{$settings->currency_icon}}"+data);
+                    $('#sub_total').text("Rp"+data);
                 },
                 error: function(data) {
                     console.log(data);
@@ -270,8 +270,8 @@ UMKM Lowayu || Cart Details
                 url: "{{ route('coupon-calculation') }}",
                 success: function(data) {
                     if(data.status === 'success'){
-                        $('#discount').text('{{$settings->currency_icon}}'+data.discount);
-                        $('#cart_total').text('{{$settings->currency_icon}}'+data.cart_total);
+                        $('#discount').text('Rp'+data.discount);
+                        $('#cart_total').text('Rp'+data.cart_total);
                     }
                 },
                 error: function(data) {
