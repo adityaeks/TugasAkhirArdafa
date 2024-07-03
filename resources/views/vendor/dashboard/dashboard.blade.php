@@ -47,7 +47,7 @@ UMKM Lowayu || Dashboard
                     </a>
                 </div>
                 <div class="col-xl-2 col-6 col-md-4">
-                    <a class="wsus__dashboard_item red" href="{{route('vendor.products.index')}}">
+                    <a class="wsus__dashboard_item red" href="{{route('vendor.produk.index')}}">
                       <i class="fas fa-cart-plus"></i>
                       <p>Total Products</p>
                       <h4 style="color:#ffff">{{$totalProducts}}</h4>

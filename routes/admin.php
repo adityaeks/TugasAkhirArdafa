@@ -70,17 +70,9 @@ Route::get('seller-products', [SellerProductController::class, 'index'])->name('
 Route::get('seller-pending-products', [SellerProductController::class, 'pendingProducts'])->name('seller-pending-produk.index');
 Route::put('change-approve-status', [SellerProductController::class, 'changeApproveStatus'])->name('change-approve-status');
 
-/** Flash Sale Routes */
-Route::get('flash-sale', [FlashSaleController::class, 'index'])->name('flash-sale.index');
-Route::put('flash-sale', [FlashSaleController::class, 'update'])->name('flash-sale.update');
-Route::post('flash-sale/add-product', [FlashSaleController::class, 'addProduct'])->name('flash-sale.add-product');
-Route::put('flash-sale/show-at-home/status-change', [FlashSaleController::class, 'chageShowAtHomeStatus'])->name('flash-sale.show-at-home.change-status');
-Route::put('flash-sale-status', [FlashSaleController::class, 'changeStatus'])->name('flash-sale-status');
-Route::delete('flash-sale/{id}', [FlashSaleController::class, 'destory'])->name('flash-sale.destory');
-
 /** Coupon Routes */
-Route::put('coupons/change-status', [CouponController::class, 'changeStatus'])->name('coupons.change-status');
-Route::resource('coupons', CouponController::class);
+Route::put('kupon/change-status', [CouponController::class, 'changeStatus'])->name('kupon.change-status');
+Route::resource('kupon', CouponController::class);
 
 /** Coupon Routes */
 Route::put('shipping-rule/change-status', [ShippingRuleController::class, 'changeStatus'])->name('shipping-rule.change-status');

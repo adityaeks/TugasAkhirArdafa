@@ -17,7 +17,7 @@
 
                   </div>
                   <div class="card-body">
-                    <form action="{{route('admin.coupons.store')}}" method="POST">
+                    <form action="{{route('admin.kupon.store')}}" method="POST">
                         @csrf
 
                         <div class="form-group">

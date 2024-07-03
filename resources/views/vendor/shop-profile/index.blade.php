@@ -53,10 +53,7 @@ UMKM Lowayu || Shop Profile
                         <label>Facebook</label>
                         <input type="text" class="form-control" name="fb_link" value="{{$profile->fb_link}}">
                     </div>
-                    <div class="form-group wsus__input">
-                        <label>Twitter</label>
-                        <input type="text" class="form-control" name="tw_link" value="{{$profile->tw_link}}">
-                    </div>
+                   
                     <div class="form-group wsus__input">
                         <label>Instagram</label>
                         <input type="text" class="form-control" name="insta_link" value="{{$profile->insta_link}}">

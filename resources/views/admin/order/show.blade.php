@@ -82,9 +82,7 @@
                           <th class="text-right">Totals</th>
                         </tr>
                         @foreach ($order->orderProducts as $product)
-                        @php
-                            $variants = json_decode($product->variants);
-                        @endphp
+
                             <tr>
                             <td>{{++$loop->index}}</td>
                             @if (isset($product->product->slug))
@@ -92,17 +90,12 @@
                             @else
                                 <td>{{$product->product_name}}</td>
                             @endif
-                            <td>
-                                @foreach ($variants as $key => $variant)
-                                    <b>{{$key}}:</b> {{$variant->name}} ( {{$settings->currency_icon}}{{$variant->price}} )
 
-                                @endforeach
-                            </td>
                             <td>{{$product->vendor->shop_name}}</td>
 
-                            <td class="text-center">{{$settings->currency_icon}}{{$product->unit_price}} </td>
+                            <td class="text-center">Rp{{$product->unit_price}} </td>
                             <td class="text-center">{{$product->qty}}</td>
-                            <td class="text-right">{{$settings->currency_icon}}{{($product->unit_price * $product->qty) + $product->variant_total}}</td>
+                            <td class="text-right">Rp{{($product->unit_price * $product->qty) + $product->variant_total}}</td>
                             </tr>
                         @endforeach
 
@@ -133,20 +126,20 @@
                       <div class="col-lg-4 text-right">
                         <div class="invoice-detail-item">
                           <div class="invoice-detail-name">Subtotal</div>
-                          <div class="invoice-detail-value">{{$settings->currency_icon}} {{$order->sub_total}}</div>
+                          <div class="invoice-detail-value">Rp {{$order->sub_total}}</div>
                         </div>
                         <div class="invoice-detail-item">
                           <div class="invoice-detail-name">Shipping (+)</div>
-                          <div class="invoice-detail-value">{{$settings->currency_icon}} {{@$shipping->cost}}</div>
+                          <div class="invoice-detail-value">Rp {{@$shipping->cost}}</div>
                         </div>
                         <div class="invoice-detail-item">
                             <div class="invoice-detail-name">Coupon (-)</div>
-                            <div class="invoice-detail-value">{{$settings->currency_icon}} {{@$coupon->discount ? @$coupon->discount : 0}}</div>
+                            <div class="invoice-detail-value">Rp {{@$coupon->discount ? @$coupon->discount : 0}}</div>
                           </div>
                         <hr class="mt-2 mb-2">
                         <div class="invoice-detail-item">
                           <div class="invoice-detail-name">Total</div>
-                          <div class="invoice-detail-value invoice-detail-value-lg">{{$settings->currency_icon}} {{$order->amount}}</div>
+                          <div class="invoice-detail-value invoice-detail-value-lg">Rp {{$order->amount}}</div>
                         </div>
                       </div>
                     </div>

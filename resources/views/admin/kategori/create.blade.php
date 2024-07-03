@@ -23,13 +23,13 @@
                             <label>Name</label>
                             <input type="text" class="form-control" name="name" value="">
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label for="inputState">Status</label>
                             <select id="inputState" class="form-control" name="status">
                               <option value="1">Active</option>
                               <option value="0">Inactive</option>
                             </select>
-                        </div>
+                        </div> --}}
                         <button type="submmit" class="btn btn-primary">Create</button>
                     </form>
                   </div>
