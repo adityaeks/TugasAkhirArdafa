@@ -23,6 +23,16 @@ class Contact extends Mailable
         $this->contactMessage = $contactMessage;
         $this->email = $email;
     }
+    public function build()
+    {
+        return $this->subject('kontak')
+                    ->view('mail.contact')
+                    ->with([
+                        'subject' => $this->subject,
+                        'contactMessage' => $this->contactMessage,
+                        'email' => $this->email, // Hati-hati dengan mengirim password melalui email
+                    ]);
+    }
 
     /**
      * Get the message envelope.

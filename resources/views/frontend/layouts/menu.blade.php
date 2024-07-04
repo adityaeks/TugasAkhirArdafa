@@ -1,5 +1,5 @@
 @php
-    $categories = \App\Models\Category::where('status', 1)->get();
+    $categories = \App\Models\Category::all();
 @endphp
 
 

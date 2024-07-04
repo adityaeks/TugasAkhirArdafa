@@ -76,7 +76,7 @@ class VendorProductController extends Controller
 
         toastr('Created Successfully!', 'success');
 
-        return redirect()->route('vendor.products.index');
+        return redirect()->route('vendor.produk.index');
 
     }
 

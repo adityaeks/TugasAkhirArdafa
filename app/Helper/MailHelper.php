@@ -19,8 +19,5 @@ class MailHelper
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN'),
         ];
-
-        config(['mail.mailers.smtp' => $config]);
-        config(['mail.from.address' => $emailConfig->email]);
     }
 }

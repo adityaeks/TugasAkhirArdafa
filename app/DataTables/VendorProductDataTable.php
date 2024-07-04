@@ -80,6 +80,9 @@ class VendorProductDataTable extends DataTable
                 return '<i class="badge bg-warning">Pending</i>';
             }
         })
+        ->addColumn('price', function($query){
+            return 'Rp ' . number_format($query->price, 0, ',', '.');
+        })
         ->rawColumns(['image', 'type', 'status', 'action', 'approved'])
         ->setRowId('id');
 
@@ -124,7 +127,7 @@ class VendorProductDataTable extends DataTable
             Column::make('id'),
             Column::make('image')->width(150),
             Column::make('name'),
-            Column::make('price'),
+            Column::make('price')->width(150),
             Column::make('approved'),
             Column::make('type')->width(150),
             Column::make('status'),

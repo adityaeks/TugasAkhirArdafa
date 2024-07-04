@@ -132,7 +132,7 @@
                                                     <form class="shopping-cart-form">
                                                         <input type="hidden" name="product_id"
                                                             value="{{ $product->id }}">
-                                                        @foreach ($product->variants as $variant)
+                                                        {{-- @foreach ($product->variants as $variant)
                                                             @if ($variant->status != 0)
                                                                 <select class="d-none" name="variants_items[]">
                                                                     @foreach ($variant->productVariantItems as $variantItem)
@@ -145,7 +145,7 @@
                                                                     @endforeach
                                                                 </select>
                                                             @endif
-                                                        @endforeach
+                                                        @endforeach --}}
                                                         <input class="" name="qty" type="hidden"
                                                             min="1" max="100" value="1" />
                                                         <button class="add_cart" type="submit">add to cart</button>
@@ -220,20 +220,7 @@
                                                         <form class="shopping-cart-form">
                                                             <input type="hidden" name="product_id"
                                                                 value="{{ $product->id }}">
-                                                            @foreach ($product->variants as $variant)
-                                                                @if ($variant->status != 0)
-                                                                    <select class="d-none" name="variants_items[]">
-                                                                        @foreach ($variant->productVariantItems as $variantItem)
-                                                                            @if ($variantItem->status != 0)
-                                                                                <option value="{{ $variantItem->id }}"
-                                                                                    {{ $variantItem->is_default == 1 ? 'selected' : '' }}>
-                                                                                    {{ $variantItem->name }}
-                                                                                    (${{ $variantItem->price }})</option>
-                                                                            @endif
-                                                                        @endforeach
-                                                                    </select>
-                                                                @endif
-                                                            @endforeach
+                                                            {{-- 45 --}}
                                                             <input class="" name="qty" type="hidden"
                                                                 min="1" max="100" value="1" />
                                                             <button class="add_cart_two mr-2" type="submit">add to

@@ -34,14 +34,12 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => ['required', 'max:200', 'unique:categories,name'],
-            'status' => ['required']
         ]);
 
         $category = new Category();
 
         $category->name = $request->name;
         $category->slug = Str::slug($request->name);
-        $category->status = $request->status;
         $category->save();
 
         toastr('Created Successfully!', 'success');
@@ -73,14 +71,12 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => ['required', 'max:200', 'unique:categories,name,'.$id],
-            'status' => ['required']
         ]);
 
         $category = Category::findOrFail($id);
 
         $category->name = $request->name;
         $category->slug = Str::slug($request->name);
-        $category->status = $request->status;
         $category->save();
 
         toastr('Updated Successfully!', 'success');
@@ -97,12 +93,4 @@ class CategoryController extends Controller
         return response(['status' => 'success', 'Deleted Successfully!']);
     }
 
-    public function changeStatus(Request $request)
-    {
-        $category = Category::findOrFail($request->id);
-        $category->status = $request->status == 'true' ? 1 : 0;
-        $category->save();
-
-        return response(['message' => 'Status has been updated!']);
-    }
 }

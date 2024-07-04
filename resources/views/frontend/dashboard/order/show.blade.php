@@ -7,7 +7,7 @@
 @extends('frontend.dashboard.layouts.master')
 
 @section('title')
-    UMKM Lowayu|| Product
+    UMKM Lowayu Resi Order
 @endsection
 
 @section('content')
@@ -91,7 +91,7 @@
                                                                 $variants = json_decode($product->variants);
                                                             @endphp
                                                             <tr>
-                                                                <td class="name">
+                                                                {{-- <td class="name">
                                                                     <p>{{ $product->product_name }}</p>
                                                                     @foreach ($variants as $key => $item)
                                                                         <span>{{ $key }} :
@@ -99,7 +99,7 @@
                                                                             Rp{{ number_format($item->price, 0, ',', '.') }}
                                                                             )</span>
                                                                     @endforeach
-                                                                </td>
+                                                                </td> --}}
                                                                 <td class="amount">
                                                                     {{ $product->vendor->shop_name }}
                                                                 </td>

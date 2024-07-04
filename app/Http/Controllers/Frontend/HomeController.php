@@ -92,7 +92,7 @@ class HomeController extends Controller
 
         $products = Product::where(['status' => 1, 'is_approved' => 1, 'vendor_id' => $id])->orderBy('id', 'DESC')->paginate(12);
 
-        $categories = Category::where(['status' => 1])->get();
+        $categories = Category::all();
         $vendor = Vendor::findOrFail($id);
 
         return view('frontend.pages.vendor-product', compact('products', 'categories', 'vendor'));

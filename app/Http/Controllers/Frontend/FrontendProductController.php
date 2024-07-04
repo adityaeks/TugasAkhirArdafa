@@ -47,7 +47,7 @@ class FrontendProductController extends Controller
         ->paginate(12);
     }
 
-    $categories = Category::where(['status' => 1])->get();
+    $categories = Category::all();
     // atur benner
     $productpage_banner_section = Adverisement::where('key', 'productpage_banner_section')->first();
     $productpage_banner_section = json_decode($productpage_banner_section?->value);

@@ -11,7 +11,7 @@ class HomePageSettingController extends Controller
 {
     public function index()
     {
-        $categories = Category::where('status', 1)->get();
+        $categories = Category::all();
         $popularCategorySection = HomeSetting::where('key', 'popular_category_section')->first();
         $sliderSectionOne = HomeSetting::where('key', 'product_slider_section_one')->first();
         $sliderSectionTwo = HomeSetting::where('key', 'product_slider_section_two')->first();

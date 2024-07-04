@@ -38,7 +38,7 @@ class PaymentController extends Controller
         $order->user_id = Auth::user()->id;
         $order->sub_total = getCartTotal();
         $order->amount =  getFinalPayableAmount();
-        $order->currency_icon = 'Rp';
+        // $order->currency_icon = 'Rp';
         $order->product_qty = \Cart::content()->count();
         $order->payment_method = $paymentMethod;
         $order->payment_status = $paymentStatus;
@@ -72,7 +72,6 @@ class PaymentController extends Controller
         $transaction->transaction_id = $transactionId;
         $transaction->payment_method = $paymentMethod;
         $transaction->amount = getFinalPayableAmount();
-        $transaction->amount_real_currency = $paidAmount;
         $transaction->save();
 
     }

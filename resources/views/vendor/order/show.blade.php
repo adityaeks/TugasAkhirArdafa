@@ -6,13 +6,13 @@
 @extends('vendor.layouts.master')
 
 @section('title')
-    {{ $settings->site_name }} || Product
+    UMKM Lowayu || Product
 @endsection
 
 @section('content')
     <!--=============================
-        DASHBOARD START
-      ==============================-->
+            DASHBOARD START
+          ==============================-->
     <section id="wsus__dashboard">
         <div class="container-fluid">
             @include('vendor.layouts.sidebar')
@@ -24,8 +24,8 @@
                         <div class="wsus__dashboard_profile">
 
                             <!--============================
-                            INVOICE PAGE START
-                        ==============================-->
+                                INVOICE PAGE START
+                            ==============================-->
                             <section id="" class="invoice-print">
                                 <div class="">
                                     <div class="wsus__invoice_area">
@@ -98,30 +98,23 @@
                                                                     $total += $product->unit_price * $product->qty;
                                                                 @endphp
                                                                 <tr>
-                                                                    <td class="name">
-                                                                        <p>{{ $product->product_name }}</p>
-                                                                        @foreach ($variants as $key => $item)
-                                                                            <span>{{ $key }} :
-                                                                                {{ $item->name }}(
-                                                                                {{ $settings->currency_icon }}{{ $item->price }}
-                                                                                )</span>
-                                                                        @endforeach
-                                                                    </td>
+
                                                                     <td class="amount">
                                                                         {{ $product->vendor->shop_name }}
                                                                     </td>
                                                                     <td class="amount">
-                                                                        {{ $settings->currency_icon }}
-                                                                        {{ $product->unit_price }}
+                                                                        Rp
+                                                                        {{ number_format($product->unit_price, 0, ',', '.') }}
                                                                     </td>
+
 
                                                                     <td class="quentity">
                                                                         {{ $product->qty }}
                                                                     </td>
                                                                     <td class="total">
-                                                                        {{ $settings->currency_icon }}
-                                                                        {{ $product->unit_price * $product->qty }}
+                                                                        Rp {{ number_format($product->unit_price * $product->qty, 0, ',', '.') }}
                                                                     </td>
+
                                                                 </tr>
                                                             @endif
                                                         @endforeach
@@ -131,16 +124,12 @@
                                             </div>
                                         </div>
                                         <div class="wsus__invoice_footer">
-
-                                            <p><span>Total Amount:</span> {{ $settings->currency_icon }}
-                                                {{ $total }} </p>
+                                            <p><span>Total Amount:</span> Rp {{ number_format($total, 0, ',', '.') }} </p>
                                         </div>
+
                                     </div>
                                 </div>
-                            </section>
-                            <!--============================
-                            INVOICE PAGE END
-                        ==============================-->
+
 
                             <div class="row">
                                 {{-- <div class="col-md-4">
@@ -171,8 +160,8 @@
         </div>
     </section>
     <!--=============================
-        DASHBOARD START
-      ==============================-->
+            DASHBOARD START
+          ==============================-->
 @endsection
 
 @push('scripts')
