@@ -15,20 +15,10 @@
                                 <div class="exzoom_img_box">
                                     <ul class='exzoom_img_ul'>
                                         <li><img class="zoom ing-fluid w-100" src="{{ asset($product->thumb_image) }}"
-                                                alt="product"></li>
-                                        @foreach ($product->productImageGalleries as $productImage)
-                                            <li><img class="zoom ing-fluid w-100" src="{{ asset($productImage->image) }}"
-                                                    alt="product"></li>
-                                        @endforeach
+                                                alt="product">
+                                        </li>
                                     </ul>
                                 </div>
-                                <div class="exzoom_nav"></div>
-                                <p class="exzoom_btn">
-                                    <a href="javascript:void(0);" class="exzoom_prev_btn"> <i
-                                            class="far fa-chevron-left"></i> </a>
-                                    <a href="javascript:void(0);" class="exzoom_next_btn"> <i
-                                            class="far fa-chevron-right"></i> </a>
-                                </p>
                             </div>
                         </div>
                     </div>
@@ -68,13 +58,7 @@
                                     <li><a style="border: 1px solid gray; padding: 7px 11px; border-radius: 100%;"
                                             href="javascript:;" class="add_to_wishlist" data-id="{{ $product->id }}"><i
                                                 class="fal fa-heart"></i></a></li>
-                                    <li>
-                                        <button type="button"
-                                            style="border: 1px solid gray; padding: 7px 11px; margin-left: 7px; border-radius: 100%; background-color: #0088cc"
-                                            class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                            <i class="far fa-comment-alt text-light"></i>
-                                        </button>
-                                    </li>
+
                                 </ul>
                             </form>
                         </div>
@@ -147,26 +131,4 @@
             </div>
         </div>
     </section>
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Send Message</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="" class="message_modal">
-                        @csrf
-                        <div class="form-group">
-                            <label for="">Message</label>
-                            <textarea name="message" class="form-control mt-2 message-box"></textarea>
-                            <input type="hidden" name="receiver_id" value="{{ $product->vendor->user_id }}">
-                        </div>
-                        <button type="submit" class="btn add_cart mt-4 send-button">Send</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection

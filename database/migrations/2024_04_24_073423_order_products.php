@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('product_name');
             $table->string('unit_price');
             $table->integer('qty');
+            $table->integer('weight');
 
             $table->timestamps();
         });

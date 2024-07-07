@@ -1,18 +1,15 @@
 <?php
 
 use App\Http\Controllers\Backend\ManageUserController;
-use App\Http\Controllers\Backend\MessageController;
 use App\Http\Controllers\Backend\AboutController;
 use App\Http\Controllers\Backend\AdminController;
 use App\Http\Controllers\Backend\AdminListController;
-use App\Http\Controllers\Backend\AdminReviewController;
 use App\Http\Controllers\Backend\AdminVendorProfileController;
 use App\Http\Controllers\Backend\AdvertisementController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\CodSettingController;
 use App\Http\Controllers\Backend\CouponController;
 use App\Http\Controllers\Backend\CustomerListController;
-use App\Http\Controllers\Backend\FlashSaleController;
 use App\Http\Controllers\Backend\HomePageSettingController;
 use App\Http\Controllers\Backend\OrderController;
 use App\Http\Controllers\Backend\PaymentSettingController;
@@ -21,7 +18,6 @@ use App\Http\Controllers\Backend\ProductImageGalleryController;
 use App\Http\Controllers\Backend\ProfileController;
 use App\Http\Controllers\Backend\SellerProductController;
 use App\Http\Controllers\Backend\SettingController;
-use App\Http\Controllers\Backend\ShippingRuleController;
 use App\Http\Controllers\Backend\SliderController;
 use App\Http\Controllers\Backend\TermsAndConditionController;
 use App\Http\Controllers\Backend\TransactionController;
@@ -32,7 +28,6 @@ use Illuminate\Support\Facades\Route;
 
 
 /** Admin Routes */
-
 Route::get('dashboard', [AdminController::class, 'dashboard'])->name('dashbaord');
 
 /** Profile Routes */
@@ -48,8 +43,6 @@ Route::put('change-status', [CategoryController::class, 'changeStatus'])->name('
 Route::resource('kategori', CategoryController::class);
 Route::delete('produk/{id}', [ProductController::class, 'destroy'])->name('admin.produk.destroy');
 
-
-
 /** Vendor Profile routes */
 Route::resource('vendor-profile', AdminVendorProfileController::class);
 
@@ -60,11 +53,6 @@ Route::resource('produk', ProductController::class);
 /** Products image gallery route */
 Route::resource('produk-image-gallery', ProductImageGalleryController::class);
 
-
-/** reviews routes */
-Route::get('reviews', [AdminReviewController::class, 'index'])->name('reviews.index');
-Route::put('reviews/change-status', [AdminReviewController::class, 'changeStatus'])->name('reviews.change-status');
-
 // seller produk
 Route::get('seller-products', [SellerProductController::class, 'index'])->name('seller-produk.index');
 Route::get('seller-pending-products', [SellerProductController::class, 'pendingProducts'])->name('seller-pending-produk.index');
@@ -73,10 +61,6 @@ Route::put('change-approve-status', [SellerProductController::class, 'changeAppr
 /** Coupon Routes */
 Route::put('kupon/change-status', [CouponController::class, 'changeStatus'])->name('kupon.change-status');
 Route::resource('kupon', CouponController::class);
-
-/** Coupon Routes */
-Route::put('shipping-rule/change-status', [ShippingRuleController::class, 'changeStatus'])->name('shipping-rule.change-status');
-Route::resource('shipping-rule', ShippingRuleController::class);
 
 /** Order routes */
 Route::get('payment-status', [OrderController::class, 'changePaymentStatus'])->name('payment.status');
@@ -95,15 +79,12 @@ Route::resource('order', OrderController::class);
 /** Order Transaction route */
 Route::get('transaction', [TransactionController::class, 'index'])->name('transaction');
 
-
 /** settings routes */
 Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
 Route::put('generale-setting-update', [SettingController::class, 'generalSettingUpdate'])->name('generale-setting-update');
 Route::put('email-setting-update', [SettingController::class, 'emailConfigSettingUpdate'])->name('email-setting-update');
 Route::put('logo-setting-update', [SettingController::class, 'logoSettingUpdate'])->name('logo-setting-update');
 Route::put('pusher-setting-update', [SettingController::class, 'pusherSettingUpdate'])->name('pusher-setting-update');
-
-
 
 /** home page setting route */
 Route::get('home-page-setting', [HomePageSettingController::class, 'index'])->name('home-page-setting');

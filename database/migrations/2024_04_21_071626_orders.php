@@ -18,6 +18,7 @@ return new class extends Migration
             $table->double('sub_total');
             $table->double('amount');
             $table->integer('product_qty');
+            $table->integer('product_weight');
             $table->string('payment_method');
             $table->integer('payment_status');
             $table->text('order_address');

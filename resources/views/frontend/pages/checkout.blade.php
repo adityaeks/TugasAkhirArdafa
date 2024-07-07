@@ -60,15 +60,6 @@ UMKM Lowayu || Checkout
                                             <span>cost: (Rp{{$method->cost}})</span>
                                         </label>
                                     </div>
-                                @elseif ($method->type === 'flat_cost')
-                                    <div class="form-check">
-                                        <input class="form-check-input shipping_method" type="radio" name="exampleRadios" id="exampleRadios1"
-                                            value="{{$method->id}}" data-id="{{$method->cost}}">
-                                        <label class="form-check-label" for="exampleRadios1">
-                                            {{$method->name}}
-                                            <span>cost: (Rp{{$method->cost}})</span>
-                                        </label>
-                                    </div>
                                 @endif
                             @endforeach
 

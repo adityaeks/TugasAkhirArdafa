@@ -187,7 +187,7 @@
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
                 <a href="{{ route('admin.vendor-list.index') }}">
                     <div class="card card-statistic-1">
-                        <div class="card-icon bg-warning">
+                        <div class="card-icon bg-info">
                             <i class="far fa-file"></i>
                         </div>
                         <div class="card-wrap">
@@ -205,7 +205,7 @@
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
                 <a href="{{ route('admin.customer.index') }}">
                     <div class="card card-statistic-1">
-                        <div class="card-icon bg-warning">
+                        <div class="card-icon bg-info">
                             <i class="far fa-file"></i>
                         </div>
                         <div class="card-wrap">

@@ -16,7 +16,7 @@
             <li
                 class="dropdown {{ setActive(['admin.kategori.*', 'admin.sub-kategori.*', 'admin.child-kategori.*']) }}">
                 <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-list"></i>
-                    <span>Manage Categories</span></a>
+                    <span>Kelola Kategori</span></a>
                 <ul class="dropdown-menu">
                     <li class="{{ setActive(['admin.kategori.*']) }}"><a class="nav-link"
                             href="{{ route('admin.kategori.index') }}">kategori</a></li>
@@ -31,11 +31,8 @@
                     'admin.seller-pending-produk.*',
                 ]) }}">
                 <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-box"></i>
-                    <span>Manage produk</span></a>
+                    <span>Kelola Produk</span></a>
                 <ul class="dropdown-menu">
-                    <li class="{{ setActive(['admin.produk.*', 'admin.produk-image-gallery.*']) }}">
-                        <a class="nav-link" href="{{ route('admin.produk.index') }}">Admin produk</a>
-                    </li>
                     <li class="{{ setActive(['admin.seller-produk.*']) }}"><a class="nav-link"
                             href="{{ route('admin.seller-produk.index') }}">Seller produk</a></li>
                     <li class="{{ setActive(['admin.seller-pending-produk.*']) }}"><a class="nav-link"
@@ -97,7 +94,7 @@
                     'admin.terms-and-conditions.index',
                 ]) }}">
                 <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-cog"></i>
-                    <span>Manage Website</span></a>
+                    <span>Kelola Website</span></a>
                 <ul class="dropdown-menu">
                     <li class="{{ setActive(['admin.slider.*']) }}"><a class="nav-link"
                             href="{{ route('admin.slider.index') }}">Slider</a></li>
@@ -133,22 +130,15 @@
                     <li class="{{ setActive(['admin.customer.index']) }}"><a class="nav-link"
                             href="{{ route('admin.customer.index') }}">Customer list</a></li>
                     <li class="{{ setActive(['admin.vendor-list.index']) }}"><a class="nav-link"
-                            href="{{ route('admin.vendor-list.index') }}">Vendor list</a></li>
-
-                    <li class="{{ setActive(['admin.vendor-requests.index']) }}"><a class="nav-link"
-                            href="{{ route('admin.vendor-requests.index') }}">Pending vendors</a></li>
-
-                    <li class="{{ setActive(['admin.admin-list.index']) }}"><a class="nav-link"
-                            href="{{ route('admin.admin-list.index') }}">Admin Lists</a></li>
-
+                            href="{{ route('admin.vendor-list.index') }}">Seller list</a></li>
                     <li class="{{ setActive(['admin.manage-user.index']) }}"><a class="nav-link"
-                            href="{{ route('admin.manage-user.index') }}">Manage user</a></li>
+                            href="{{ route('admin.manage-user.index') }}">Kelola user</a></li>
 
                 </ul>
             </li>
 
-            <li><a class="nav-link" href="{{ route('admin.settings.index') }}"><i class="fas fa-wrench"></i>
-                    <span>Settings</span></a></li>
+            {{-- <li><a class="nav-link" href="{{ route('admin.settings.index') }}"><i class="fas fa-wrench"></i>
+                    <span>Settings</span></a></li> --}}
 
         </ul>
 
