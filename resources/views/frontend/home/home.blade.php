@@ -1,6 +1,6 @@
 @extends('frontend.layouts.master')
 @section('title')
-{{$settings->site_name}} || Home
+UMKM Lowayu || Home
 @endsection
 
 @section('content')

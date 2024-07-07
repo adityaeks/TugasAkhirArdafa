@@ -6,9 +6,6 @@ UMKM Lowayu || Login
 
 @section('content')
 
-    <!--============================
-       LOGIN/REGISTER PAGE START
-    ==============================-->
     <section id="wsus__login_register">
         <div class="container">
             <div class="row">
@@ -79,6 +76,10 @@ UMKM Lowayu || Login
                                             <i class="far fa-envelope"></i>
                                             <input id="email" type="email" name="email" value="{{old('email')}}" type="text" placeholder="Email">
                                         </div>
+                                        <div class="wsus__login_input">
+                                            <i class="far fa-map-marker-alt"></i>
+                                            <input id="address" type="text" name="address" value="{{old('address')}}" type="text" placeholder="Address">
+                                        </div>
 
 
                                         <div class="wsus__login_input">
@@ -102,7 +103,5 @@ UMKM Lowayu || Login
             </div>
         </div>
     </section>
-    <!--============================
-       LOGIN/REGISTER PAGE END
-    ==============================-->
+
 @endsection

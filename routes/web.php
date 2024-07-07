@@ -70,7 +70,7 @@ Route::get('coupon-calculation', [CartController::class, 'couponCalculation'])->
 
 /** vendor page routes */
 Route::get('vendor', [HomeController::class, 'vendorPage'])->name('vendor.index');
-Route::get('vendor-product/{id}', [HomeController::class, 'vendorProductsPage'])->name('vendor.products');
+Route::get('vendor-produk/{id}', [HomeController::class, 'vendorProductsPage'])->name('vendor.produk');
 
 /** about page route */
 Route::get('about', [PageController::class, 'about'])->name('about');
@@ -83,9 +83,6 @@ Route::post('contact', [PageController::class, 'handleContactForm'])->name('hand
 /** Product track route */
 Route::get('product-traking', [ProductTrackController::class, 'index'])->name('product-traking.index');
 
-/** blog routes */
-Route::get('blog-details/{slug}', [BlogController::class, 'blogDetails'])->name('blog-details');
-Route::get('blog', [BlogController::class, 'blog'])->name('blog');
 
 /** Product routes */
 Route::get('show-product-modal/{id}', [HomeController::class, 'ShowProductModal'])->name('show-product-modal');
@@ -104,10 +101,6 @@ Route::group(['middleware' =>['auth', 'verified'], 'prefix' => 'user', 'as' => '
     Route::put('profile', [UserProfileController::class, 'updateProfile'])->name('profile.update'); // user.profile.update
     Route::post('profile', [UserProfileController::class, 'updatePassword'])->name('profile.update.password');
 
-    /** Message Route */
-    Route::get('messages', [UserMessageController::class, 'index'])->name('messages.index');
-    Route::post('send-message', [UserMessageController::class, 'sendMessage'])->name('send-message');
-    Route::get('get-messages', [UserMessageController::class, 'getMessages'])->name('get-messages');
 
     /** User Address Route */
     Route::resource('address', UserAddressController::class);
@@ -128,8 +121,6 @@ Route::group(['middleware' =>['auth', 'verified'], 'prefix' => 'user', 'as' => '
     /** product review routes */
     Route::post('review', [ReviewController::class, 'create'])->name('review.create');
 
-    /** blog comment routes */
-    Route::post('blog-comment', [BlogController::class, 'comment'])->name('blog-comment');
 
     /** Checkout routes */
     Route::get('checkout', [CheckOutController::class, 'index'])->name('checkout');

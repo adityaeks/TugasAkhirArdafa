@@ -1,7 +1,7 @@
 @extends('frontend.layouts.master')
 
 @section('title')
-{{$settings->site_name}} || Flash Sale
+UMKM Lowayu || Flash Sale
 @endsection
 
 @section('content')

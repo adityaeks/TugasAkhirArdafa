@@ -21,7 +21,7 @@ class AdminProfileSeeder extends Seeder
         $vendor->shop_name = 'Admin Shop';
         $vendor->phone = '12321312';
         $vendor->email = 'admin@gmail.com';
-        $vendor->address = 'Usa';
+        $vendor->address = 'Lowayu';
         $vendor->description = 'shop description';
         $vendor->user_id = $user->id;
         $vendor->save();

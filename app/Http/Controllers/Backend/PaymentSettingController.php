@@ -13,12 +13,9 @@ class PaymentSettingController extends Controller
 {
     public function index()
     {
-        $paypalSetting = PaypalSetting::first();
-        $stripeSetting = StripeSetting::first();
-        $razorpaySetting = RazorpaySetting::first();
         $codSetting = CodSetting::first();
 
 
-        return view('admin.payment-settings.index', compact('paypalSetting', 'stripeSetting', 'razorpaySetting', 'codSetting'));
+        return view('admin.payment-settings.index', compact('codSetting'));
     }
 }

@@ -11,16 +11,13 @@ class MailHelper
 
         $config = [
             'transport' => 'smtp',
-            'host' => $emailConfig->host,
-            'port' => $emailConfig->port,
-            'encryption' => $emailConfig->encryption,
-            'username' => $emailConfig->username,
-            'password' => $emailConfig->password,
+            'host' => 'sandbox.smtp.mailtrap.io',
+            'port' => '2525',
+            'encryption' => 'tls',
+            'username' => '2c9949550db4d0',
+            'password' => '8317a85018137e',
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN'),
         ];
-
-        config(['mail.mailers.smtp' => $config]);
-        config(['mail.from.address' => $emailConfig->email]);
     }
 }

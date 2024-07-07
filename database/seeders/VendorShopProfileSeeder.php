@@ -21,7 +21,7 @@ class VendorShopProfileSeeder extends Seeder
         $vendor->shop_name = 'Vendor Shop';
         $vendor->phone = '12321312';
         $vendor->email = 'vendor@gmail.com';
-        $vendor->address = 'Usa';
+        $vendor->address = 'Lowayu';
         $vendor->description = 'shop description';
         $vendor->user_id = $user->id;
         $vendor->status = 1;

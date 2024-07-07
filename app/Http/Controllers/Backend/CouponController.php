@@ -14,7 +14,7 @@ class CouponController extends Controller
      */
     public function index(CouponDataTable $dataTable)
     {
-        return $dataTable->render('admin.coupon.index');
+        return $dataTable->render('admin.kupon.index');
     }
 
     /**
@@ -22,7 +22,7 @@ class CouponController extends Controller
      */
     public function create()
     {
-        return view('admin.coupon.create');
+        return view('admin.kupon.create');
     }
 
     /**
@@ -59,7 +59,7 @@ class CouponController extends Controller
 
         toastr('Created Successfully', 'success', 'Success');
 
-        return redirect()->route('admin.coupons.index');
+        return redirect()->route('admin.kupon.index');
 
     }
 
@@ -77,7 +77,7 @@ class CouponController extends Controller
     public function edit(string $id)
     {
         $coupon = Coupon::findOrFail($id);
-        return view('admin.coupon.edit', compact('coupon'));
+        return view('admin.kupon.edit', compact('coupon'));
     }
 
     /**
@@ -112,7 +112,7 @@ class CouponController extends Controller
 
         toastr('Updated Successfully', 'success', 'Success');
 
-        return redirect()->route('admin.coupons.index');
+        return redirect()->route('admin.kupon.index');
     }
 
     /**

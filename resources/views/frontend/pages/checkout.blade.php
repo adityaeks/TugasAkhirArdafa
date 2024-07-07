@@ -1,31 +1,10 @@
 @extends('frontend.layouts.master')
 
 @section('title')
-{{$settings->site_name}} || Checkout
+UMKM Lowayu || Checkout
 @endsection
 
 @section('content')
-    <!--============================
-        BREADCRUMB START
-    ==============================-->
-    <section id="wsus__breadcrumb">
-        <div class="wsus_breadcrumb_overlay">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <h4>check out</h4>
-                        <ul>
-                            <li><a href="{{route('home')}}">home</a></li>
-                            <li><a href="javascript:;">check out</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!--============================
-        BREADCRUMB END
-    ==============================-->
 
 
     <!--============================
@@ -78,27 +57,19 @@
                                             value="{{$method->id}}" data-id="{{$method->cost}}">
                                         <label class="form-check-label" for="exampleRadios1">
                                             {{$method->name}}
-                                            <span>cost: ({{$settings->currency_icon}}{{$method->cost}})</span>
-                                        </label>
-                                    </div>
-                                @elseif ($method->type === 'flat_cost')
-                                    <div class="form-check">
-                                        <input class="form-check-input shipping_method" type="radio" name="exampleRadios" id="exampleRadios1"
-                                            value="{{$method->id}}" data-id="{{$method->cost}}">
-                                        <label class="form-check-label" for="exampleRadios1">
-                                            {{$method->name}}
-                                            <span>cost: ({{$settings->currency_icon}}{{$method->cost}})</span>
+                                            <span>cost: (Rp{{$method->cost}})</span>
                                         </label>
                                     </div>
                                 @endif
                             @endforeach
 
                             <div class="wsus__order_details_summery">
-                                <p>subtotal: <span>{{$settings->currency_icon}}{{getCartTotal()}}</span></p>
-                                <p>biaya pengiriman(+): <span id="shipping_fee">{{$settings->currency_icon}}0</span></p>
-                                <p>kupon(-): <span>{{$settings->currency_icon}}{{getCartDiscount()}}</span></p>
-                                <p><b>total:</b> <span><b id="total_amount" data-id="{{getMainCartTotal()}}">{{$settings->currency_icon}}{{getMainCartTotal()}}</b></span></p>
+                                <p>subtotal: <span>Rp{{ number_format(getCartTotal(), 0, ',', '.') }}</span></p>
+                                <p>biaya pengiriman(+): <span id="shipping_fee">Rp{{ number_format(0, 0, ',', '.') }}</span></p>
+                                <p>kupon(-): <span>Rp{{ number_format(getCartDiscount(), 0, ',', '.') }}</span></p>
+                                <p><b>total:</b> <span><b id="total_amount" data-id="{{ getMainCartTotal() }}">Rp{{ number_format(getMainCartTotal(), 0, ',', '.') }}</b></span></p>
                             </div>
+
                             <div class="terms_area">
                                 <div class="form-check">
                                     <input class="form-check-input agree_term" type="checkbox" value="" id="flexCheckChecked3"
@@ -221,9 +192,9 @@
             let totalAmount = currentTotalAmount + shippingFee;
 
             $('#shipping_method_id').val($(this).val());
-            $('#shipping_fee').text("{{$settings->currency_icon}}"+shippingFee);
+            $('#shipping_fee').text("Rp"+shippingFee);
 
-            $('#total_amount').text("{{$settings->currency_icon}}"+totalAmount)
+            $('#total_amount').text("Rp"+totalAmount)
         })
 
         $('.shipping_address').on('click', function(){

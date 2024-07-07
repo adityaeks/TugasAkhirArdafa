@@ -63,7 +63,6 @@
                         <p>
                             {{$sidebarProduct->price}}
                         </p>
-                        <small>Variants total: {{$sidebarProduct->options->variants_total}}</small>
                         <br>
                         <small>Qty: {{$sidebarProduct->qty}}</small>
                     </div>

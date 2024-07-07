@@ -1,37 +1,10 @@
 @extends('frontend.layouts.master')
 
 @section('title')
-{{$settings->site_name}} || Forgot Password
+UMKM Lowayu|| Forgot Password
 @endsection
 
 @section('content')
-
-    <!--============================
-        BREADCRUMB START
-    ==============================-->
-    <section id="wsus__breadcrumb">
-        <div class="wsus_breadcrumb_overlay">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <h4>forget password</h4>
-                        <ul>
-                            <li><a href="#">login</a></li>
-                            <li><a href="#">forget password</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!--============================
-        BREADCRUMB END
-    ==============================-->
-
-
-    <!--============================
-        FORGET PASSWORD START
-    ==============================-->
     <section id="wsus__login_register">
         <div class="container">
             <div class="row">
@@ -57,7 +30,4 @@
             </div>
         </div>
     </section>
-    <!--============================
-        FORGET PASSWORD END
-    ==============================-->
 @endsection

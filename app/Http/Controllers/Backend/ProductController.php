@@ -25,7 +25,7 @@ class ProductController extends Controller
      */
     public function index(ProductDataTable $dataTable)
     {
-        return $dataTable->render('admin.product.index');
+        return $dataTable->render('admin.produk.index');
     }
 
     /**
@@ -34,7 +34,7 @@ class ProductController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('admin.product.create', compact('categories'));
+        return view('admin.produk.create', compact('categories'));
     }
 
     /**
@@ -48,6 +48,7 @@ class ProductController extends Controller
             'category' => ['required'],
             'price' => ['required'],
             'qty' => ['required'],
+            'weight' => ['required'],
             'short_description' => ['required', 'max: 600'],
             'long_description' => ['required'],
             'status' => ['required']
@@ -62,9 +63,8 @@ class ProductController extends Controller
         $product->slug = Str::slug($request->name);
         $product->vendor_id = Auth::user()->vendor->id;
         $product->category_id = $request->category;
-        $product->sub_category_id = $request->sub_category;
-        $product->child_category_id = $request->child_category;
         $product->qty = $request->qty;
+        $product->weight = $request->weight;
         $product->short_description = $request->short_description;
         $product->long_description = $request->long_description;
         $product->price = $request->price;
@@ -78,7 +78,7 @@ class ProductController extends Controller
 
         toastr('Created Successfully!', 'success');
 
-        return redirect()->route('admin.products.index');
+        return redirect()->route('admin.produk.index');
 
     }
 
@@ -97,7 +97,7 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
         $categories = Category::all();
-        return view('admin.product.edit', compact('product', 'categories'));
+        return view('admin.produk.edit', compact('product', 'categories'));
     }
 
     /**
@@ -111,6 +111,7 @@ class ProductController extends Controller
             'category' => ['required'],
             'price' => ['required'],
             'qty' => ['required'],
+            'weight' => ['required'],
             'short_description' => ['required', 'max: 600'],
             'long_description' => ['required'],
             'status' => ['required']
@@ -126,6 +127,7 @@ class ProductController extends Controller
         $product->slug = Str::slug($request->name);
         $product->category_id = $request->category;
         $product->qty = $request->qty;
+        $product->weight = $request->weight;
         $product->short_description = $request->short_description;
         $product->long_description = $request->long_description;
         $product->price = $request->price;
@@ -138,7 +140,7 @@ class ProductController extends Controller
 
         toastr('Updated Successfully!', 'success');
 
-        return redirect()->route('admin.products.index');
+        return redirect()->route('admin.produk.index');
 
     }
 
@@ -148,32 +150,28 @@ class ProductController extends Controller
     public function destroy(string $id)
     {
         $product = Product::findOrFail($id);
-        if(OrderProduct::where('product_id',$product->id)->count() > 0){
-            return response(['status' => 'error', 'message' => 'This product have orders can\'t delete it.']);
+
+        // Cek apakah produk memiliki pesanan
+        if(OrderProduct::where('product_id', $product->id)->count() > 0){
+            return response(['status' => 'error', 'message' => 'Produk ini memiliki pesanan, tidak bisa dihapus.']);
         }
 
-        /** Delte the main product image */
+        // Hapus gambar utama produk
         $this->deleteImage($product->thumb_image);
 
-        /** Delete product gallery images */
+        // Hapus gambar galeri produk
         $galleryImages = ProductImageGallery::where('product_id', $product->id)->get();
         foreach($galleryImages as $image){
             $this->deleteImage($image->image);
             $image->delete();
         }
 
-        /** Delete product variants if exist */
-        $variants = ProductVariant::where('product_id', $product->id)->get();
-
-        foreach($variants as $variant){
-            $variant->productVariantItems()->delete();
-            $variant->delete();
-        }
-
+        // Hapus produk itu sendiri
         $product->delete();
 
-        return response(['status' => 'success', 'message' => 'Deleted Successfully!']);
+        return response(['status' => 'success', 'message' => 'Berhasil dihapus!']);
     }
+
 
     public function changeStatus(Request $request)
     {

@@ -10,7 +10,7 @@
   <title>
     @yield('title')
   </title>
-  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="icon" type="image/png" href="{{asset('frontend/images/umkm.png')}}">
   <link rel="stylesheet" href="{{asset('frontend/css/all.min.css')}}">
   <link rel="stylesheet" href="{{asset('frontend/css/bootstrap.min.css')}}">
   <link rel="stylesheet" href="{{asset('frontend/css/select2.min.css')}}">
@@ -38,10 +38,6 @@
         id: "{{ auth()->user()->id }}",
         name: "{{ auth()->user()->nmae }}",
         image: "{{ asset(auth()->user()->image) }}"
-    }
-    const PUSHER = {
-        key: "{{ $pusherSetting->pusher_key }}",
-        cluster: "{{ $pusherSetting->pusher_cluster }}"
     }
   </script>
     @vite(['resources/js/app.js', 'resources/js/frontend.js'])

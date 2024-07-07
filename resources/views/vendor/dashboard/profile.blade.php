@@ -1,7 +1,7 @@
 @extends('vendor.layouts.master')
 
 @section('title')
-{{$settings->site_name}} || User Profile
+UMKM Lowayu || User Profile
 @endsection
 
 @section('content')

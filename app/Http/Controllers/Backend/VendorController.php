@@ -62,10 +62,6 @@ class VendorController extends Controller
             $query->where('vendor_id', Auth::user()->vendor->id);
         })->sum('sub_total');
 
-        $totalReviews = ProductReview::whereHas('product', function($query){
-            $query->where('vendor_id', Auth::user()->vendor->id);
-        })->count();
-
 
 
         return view('vendor.dashboard.dashboard', compact(
@@ -79,7 +75,6 @@ class VendorController extends Controller
             'monthEarnings',
             'yearEarnings',
             'toalEarnings',
-            'totalReviews'
         ));
     }
 }

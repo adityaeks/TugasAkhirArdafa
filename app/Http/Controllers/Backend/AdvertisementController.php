@@ -32,7 +32,7 @@ class AdvertisementController extends Controller
         $cartpage_banner_section = json_decode($cartpage_banner_section?->value);
 
 
-        return view('admin.advertisement.index', compact('homepage_secion_banner_one',
+        return view('admin.iklan.index', compact('homepage_secion_banner_one',
              'homepage_secion_banner_two',
              'homepage_secion_banner_three',
              'homepage_secion_banner_four',

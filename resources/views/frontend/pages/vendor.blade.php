@@ -1,13 +1,10 @@
 @extends('frontend.layouts.master')
 
 @section('title')
-    {{ $settings->site_name }} || Vendor
+    UMKM Lowayu || Seller
 @endsection
 
 @section('content')
-    <!--============================
-              VENDORS START
-            ==============================-->
     <section id="wsus__product_page" class="wsus__vendors">
         <div class="container">
             <div class="row">
@@ -25,7 +22,7 @@
                                                 {{ $vendor->phone }}</a>
                                             <a href="javascript:;"><i class="fal fa-envelope"></i>
                                                 {{ $vendor->email }}</a>
-                                            <a href="{{ route('vendor.products', $vendor->id) }}" class="common_btn">visit
+                                            <a href="{{ route('vendor.produk', $vendor->id) }}" class="common_btn">visit
                                                 store</a>
                                         </div>
                                     </div>

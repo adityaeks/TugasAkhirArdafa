@@ -24,16 +24,15 @@ class VendorProductDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
         ->addColumn('action', function($query){
-            $editBtn = "<a href='".route('vendor.products.edit', $query->id)."' class='btn btn-primary'><i class='far fa-edit'></i></a>";
-            $deleteBtn = "<a href='".route('vendor.products.destroy', $query->id)."' class='btn btn-danger delete-item' ><i class='far fa-trash-alt'></i></a>";
+            $editBtn = "<a href='".route('vendor.produk.edit', $query->id)."' class='btn btn-primary'><i class='far fa-edit'></i></a>";
+            $deleteBtn = "<a href='".route('vendor.produk.destroy', $query->id)."' class='btn btn-danger delete-item' ><i class='far fa-trash-alt'></i></a>";
 
             $moreBtn = '<div class="btn-group dropstart" style="margin-left:3px">
                 <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fas fa-cog"></i>
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item has-icon" href="'.route('vendor.products-image-gallery.index', ['product' => $query->id]).'"> Image Gallery</a></li>
-                    <li><a class="dropdown-item has-icon" href="'.route('vendor.products-variant.index', ['product' => $query->id]).'"> Variants</a></li>
+                    <li><a class="dropdown-item has-icon" href="'.route('vendor.produk-image-gallery.index', ['product' => $query->id]).'"> Image Gallery</a></li>
                 </ul>
             </div>';
 
@@ -81,6 +80,9 @@ class VendorProductDataTable extends DataTable
                 return '<i class="badge bg-warning">Pending</i>';
             }
         })
+        ->addColumn('price', function($query){
+            return 'Rp ' . number_format($query->price, 0, ',', '.');
+        })
         ->rawColumns(['image', 'type', 'status', 'action', 'approved'])
         ->setRowId('id');
 
@@ -125,7 +127,7 @@ class VendorProductDataTable extends DataTable
             Column::make('id'),
             Column::make('image')->width(150),
             Column::make('name'),
-            Column::make('price'),
+            Column::make('price')->width(150),
             Column::make('approved'),
             Column::make('type')->width(150),
             Column::make('status'),

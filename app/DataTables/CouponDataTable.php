@@ -24,13 +24,13 @@ class CouponDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addColumn('action', function($query){
-                $editBtn = "<a href='".route('admin.coupons.edit', $query->id)."' class='btn btn-primary'><i class='far fa-edit'></i></a>";
-                $deleteBtn = "<a href='".route('admin.coupons.destroy', $query->id)."' class='btn btn-danger ml-2 delete-item'><i class='far fa-trash-alt'></i></a>";
+                $editBtn = "<a href='".route('admin.kupon.edit', $query->id)."' class='btn btn-primary'><i class='far fa-edit'></i></a>";
+                $deleteBtn = "<a href='".route('admin.kupon.destroy', $query->id)."' class='btn btn-danger ml-2 delete-item'><i class='far fa-trash-alt'></i></a>";
 
                 return $editBtn.$deleteBtn;
             })
             ->addColumn('discount', function($query){
-                return GeneralSetting::first()->currency_icon.$query->discount;
+                return 'Rp' . number_format($query->discount, 0, ',', '.');
             })
             ->addColumn('status', function($query){
                 if($query->status == 1){
@@ -89,6 +89,7 @@ class CouponDataTable extends DataTable
 
             Column::make('id'),
             Column::make('name'),
+            Column::make('code'),
             Column::make('discount_type'),
             Column::make('discount'),
             Column::make('start_date'),

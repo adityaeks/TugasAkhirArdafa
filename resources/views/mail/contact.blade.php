@@ -8,5 +8,6 @@
 </head>
 <body>
     {{$contactMessage}}
+    <p>From: {{ $email }}</p>
 </body>
 </html>

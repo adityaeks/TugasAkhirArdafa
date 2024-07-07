@@ -1,5 +1,5 @@
 @php
-    $categories = \App\Models\Category::where('status', 1)->get();
+    $categories = \App\Models\Category::all();
 @endphp
 
 
@@ -30,8 +30,6 @@
                         <li><a class="{{ setActive(['home']) }}" href="{{ url('/') }}">home</a></li>
 
                         <li><a class="{{ setActive(['vendor.index']) }}" href="{{ route('vendor.index') }}">seller</a>
-                        </li>
-                        <li><a class="{{ setActive(['flash-sale']) }}" href="{{ route('flash-sale') }}">flash Sale</a>
                         </li>
                         <li><a class="{{ setActive(['about']) }}" href="{{ route('about') }}">about</a></li>
                         <li><a class="{{ setActive(['contact']) }}" href="{{ route('contact') }}">contact</a></li>
@@ -130,10 +128,6 @@
                         <li><a href="{{ route('about') }}">about us</a></li>
                         <li><a href="{{ route('contact') }}">contact</a></li>
 
-
-
-                        {{-- <li><a href="{{ route('product-traking.index') }}">track order</a></li> --}}
-                        <li><a href="{{ route('flash-sale') }}">flash sale</a></li>
                     </ul>
                 </div>
             </div>

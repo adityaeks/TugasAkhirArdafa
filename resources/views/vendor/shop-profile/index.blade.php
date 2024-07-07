@@ -1,13 +1,10 @@
 @extends('vendor.layouts.master')
 
 @section('title')
-{{$settings->site_name}} || Shop Profile
+UMKM Lowayu || Shop Profile
 @endsection
 
 @section('content')
-  <!--=============================
-    DASHBOARD START
-  ==============================-->
   <section id="wsus__dashboard">
     <div class="container-fluid">
         @include('vendor.layouts.sidebar')
@@ -56,10 +53,7 @@
                         <label>Facebook</label>
                         <input type="text" class="form-control" name="fb_link" value="{{$profile->fb_link}}">
                     </div>
-                    <div class="form-group wsus__input">
-                        <label>Twitter</label>
-                        <input type="text" class="form-control" name="tw_link" value="{{$profile->tw_link}}">
-                    </div>
+                   
                     <div class="form-group wsus__input">
                         <label>Instagram</label>
                         <input type="text" class="form-control" name="insta_link" value="{{$profile->insta_link}}">
@@ -75,7 +69,4 @@
       </div>
     </div>
   </section>
-  <!--=============================
-    DASHBOARD START
-  ==============================-->
 @endsection

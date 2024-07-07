@@ -23,7 +23,7 @@ class ProductImageGalleryDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addColumn('action', function($query){
-                $deleteBtn = "<a href='".route('admin.products-image-gallery.destroy', $query->id)."' class='btn btn-danger ml-2 delete-item'><i class='far fa-trash-alt'></i></a>";
+                $deleteBtn = "<a href='".route('admin.produk-image-gallery.destroy', $query->id)."' class='btn btn-danger ml-2 delete-item'><i class='far fa-trash-alt'></i></a>";
 
                 return $deleteBtn;
             })
@@ -35,7 +35,7 @@ class ProductImageGalleryDataTable extends DataTable
     }
 
     /**
-     * Get the query source of dataTable.
+     * get quesry foto databale
      */
     public function query(ProductImageGallery $model): QueryBuilder
     {
