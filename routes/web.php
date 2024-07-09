@@ -126,6 +126,7 @@ Route::group(['middleware' =>['auth', 'verified'], 'prefix' => 'user', 'as' => '
     Route::get('checkout', [CheckOutController::class, 'index'])->name('checkout');
     Route::post('checkout/address-create', [CheckOutController::class, 'createAddress'])->name('checkout.address.create');
     Route::post('checkout/form-submit', [CheckOutController::class, 'checkOutFormSubmit'])->name('checkout.form-submit');
+    Route::post('checkout/shipping-fee', [CheckOutController::class, 'shippingFee'])->name('checkout.shipping_fee');
 
     /** Payment Routes */
     Route::get('payment', [PaymentController::class, 'index'])->name('payment');

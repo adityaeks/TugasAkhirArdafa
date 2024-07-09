@@ -117,8 +117,6 @@ class PaymentController extends Controller
         $this->clearSession();
 
         return redirect()->route('user.payment.success');
-
-
     }
 
 }

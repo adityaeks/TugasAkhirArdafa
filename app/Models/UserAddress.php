@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class UserAddress extends Model
 {
     use HasFactory;
+    public static function findByID(string $id)
+    {
+        return UserAddress::findOrFail($id);
+    }
 }
