@@ -6,8 +6,8 @@
 
 @section('content')
     <!--============================
-                            CHECK OUT PAGE START
-                        ==============================-->
+                                        CHECK OUT PAGE START
+                                    ==============================-->
     <section id="wsus__cart_view">
         <div class="container">
             <div class="row">
@@ -54,20 +54,20 @@
                 </div>
                 <div class="col-xl-4 col-lg-5">
                     <div class="wsus__order_details" id="sticky_sidebar">
-                        <p class="wsus__product">Metode Pengiriman</p>
-                        @foreach ($shippingMethods as $method)
-                            @if ($method->type === 'min_cost' && getCartTotal() >= $method->min_cost)
-                                <div class="form-check">
-                                    <input class="form-check-input shipping_method" type="radio" name="exampleRadios"
-                                        id="exampleRadios1" value="{{ $method->id }}" data-id="{{ $method->cost }}">
-                                    <label class="form-check-label" for="exampleRadios1">
-                                        {{ $method->name }}
-                                        <span>cost: (Rp{{ $method->cost }})</span>
-                                    </label>
-                                </div>
-                            @endif
-                        @endforeach
-                        <h5 class="mb-0"><i class='bx bxs-truck'></i> Delivery Service</h5>
+                        {{-- <p class="wsus__product">Metode Pengiriman</p>
+                    @foreach ($shippingMethods as $method)
+                        @if ($method->type === 'min_cost' && getCartTotal() >= $method->min_cost)
+                            <div class="form-check">
+                                <input class="form-check-input shipping_method" type="radio" name="exampleRadios"
+                                    id="exampleRadios1" value="{{ $method->id }}" data-id="{{ $method->cost }}">
+                                <label class="form-check-label" for="exampleRadios1">
+                                    {{ $method->name }}
+                                    <span>cost: (Rp{{ $method->cost }})</span>
+                                </label>
+                            </div>
+                        @endif
+                    @endforeach --}}
+                        <h5 class="mb-0"><i class='fa fa-truck'></i> Delivery Service</h5>
                         <div class="mt-3">
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input courier-code" type="radio" name="courier" id="inlineRadio1"
@@ -109,7 +109,7 @@
                         <form action="" id="checkOutForm">
                             <input type="hidden" name="shipping_method_id" value="" id="shipping_method_id">
                             <input type="hidden" name="shipping_address_id" value="" id="shipping_address_id">
-
+                            <input type="hidden" name="delivery_service" value="" id="delivery_service">
                         </form>
                         <a href="" id="submitCheckoutForm" class="common_btn">Place Order</a>
                     </div>
@@ -204,8 +204,8 @@
         </div>
     </div>
     <!--============================
-                            CHECK OUT PAGE END
-                        ==============================-->
+                                        CHECK OUT PAGE END
+                                    ==============================-->
 @endsection
 
 @push('scripts')
@@ -220,31 +220,36 @@
             $('input[type="radio"]').prop('checked', false);
             $('#shipping_method_id').val("");
             $('#shipping_address_id').val("");
+            $('#delivery_service').val("");
 
             $('.shipping_method').on('click', function() {
                 let shippingFee = $(this).data('id');
-                let currentTotalAmount = $('#total_amount').data('id')
+                let currentTotalAmount = $('#total_amount').data('id');
                 let totalAmount = currentTotalAmount + shippingFee;
 
                 $('#shipping_method_id').val($(this).val());
                 $('#shipping_fee').text("Rp" + shippingFee);
 
-                $('#total_amount').text("Rp" + totalAmount)
-            })
+                $('#total_amount').text("Rp" + totalAmount);
+            });
 
             $('.shipping_address').on('click', function() {
                 $('#shipping_address_id').val($(this).data('id'));
-            })
+            });
+
+            $('.courier-code').on('click', function() {
+                $('#delivery_service').val($(this).val());
+            });
 
             // submit checkout form
             $('#submitCheckoutForm').on('click', function(e) {
                 e.preventDefault();
-                if ($('#shipping_method_id').val() == "") {
-                    toastr.error('Shipping method is requred');
-                } else if ($('#shipping_address_id').val() == "") {
-                    toastr.error('Shipping address is requred');
+                if ($('#shipping_address_id').val() == "") {
+                    toastr.error('Shipping address is required');
+                } else if ($('#delivery_service').val() == "") {
+                    toastr.error('Delivery service is required');
                 } else if (!$('.agree_term').prop('checked')) {
-                    toastr.error('You have to agree website terms and conditions');
+                    toastr.error('You have to agree to the website terms and conditions');
                 } else {
                     $.ajax({
                         url: "{{ route('user.checkout.form-submit') }}",
@@ -266,23 +271,19 @@
                         }
                     })
                 }
+            });
 
 
+        });
 
-            })
-        })
-        $('.delivery_address').change(function(){
+        $('.delivery_address').change(function() {
             $('.courier-code').removeAttr('checked');
             $('.available-services').hide();
-
-        })
+        });
 
         $('.courier-code').click(function() {
             let courier = $(this).val();
             let addressID = $('.delivery_address:checked').val();
-
-            console.log(courier);
-            console.log(addressID);
 
             $.ajax({
                 url: "checkout/shipping-fee",
@@ -295,9 +296,22 @@
                 success: function(result) {
                     $('.available-services').show();
                     $('.available-services').html(result);
+
+                    // Update shipping fee display
+                    if (result.hasOwnProperty('shipping_fee')) {
+                        let shippingFee = parseInt(result.shipping_fee);
+                        $('#shipping_fee').text("Rp" + shippingFee.toLocaleString());
+
+                        // Update grand total display
+                        let currentTotalAmount = parseInt($('#total_amount').data('id'));
+                        let totalAmount = currentTotalAmount + shippingFee;
+                        $('#total_amount').text("Rp" + total_amount.toLocaleString());
+                    } else {
+                        console.error("Shipping fee not found in response:", result);
+                    }
                 },
                 error: function(e) {
-                    console.log(e);
+                    console.log("Error fetching shipping fee:", e);
                 }
             });
         });

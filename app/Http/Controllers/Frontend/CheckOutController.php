@@ -53,13 +53,14 @@ class CheckOutController extends Controller
     }
 
     public function checkOutFormSubmit(Request $request)
-    {
-       $request->validate([
-        'shipping_method_id' => ['required', 'integer'],
+{
+   $request->validate([
+        'shipping_method_id' => ['nullable', 'integer'],
         'shipping_address_id' => ['required', 'integer'],
-       ]);
+   ]);
 
-       $shippingMethod = ShippingRule::findOrFail($request->shipping_method_id);
+   if ($request->filled('shipping_method_id')) {
+       $shippingMethod = ShippingRule::find($request->shipping_method_id);
        if($shippingMethod){
            Session::put('shipping_method', [
                 'id' => $shippingMethod->id,
@@ -68,13 +69,16 @@ class CheckOutController extends Controller
                 'cost' => $shippingMethod->cost
            ]);
        }
-       $address = UserAddress::findOrFail($request->shipping_address_id)->toArray();
-       if($address){
-           Session::put('address', $address);
-       }
+   }
 
-       return response(['status' => 'success', 'redirect_url' => route('user.payment')]);
-    }
+   $address = UserAddress::findOrFail($request->shipping_address_id)->toArray();
+   if($address){
+       Session::put('address', $address);
+   }
+
+   return response(['status' => 'success', 'redirect_url' => route('user.payment')]);
+}
+
 
 
 
@@ -99,65 +103,94 @@ class CheckOutController extends Controller
         return $this->loadTheme('available_services', ['services' => $availableServices]);
     }
 
+    public function choosePackage(Request $request)
+    {
+        $addressId = $request->get('address_id');
+        $address = UserAddress::find($addressId);
+        $orders = auth()->user()->orders;
+
+        $availableServices = $this->calculateShippingFee($orders, $address, $request->get('courier'));
+
+        $selectedPackage = null;
+        if (!empty($availableServices)) {
+            foreach ($availableServices as $service) {
+                if ($service['service'] === $request->get('delivery_package')) {
+                    $selectedPackage = $service;
+                    continue;
+                }
+            }
+        }
+
+        if ($selectedPackage == null) {
+            return [];
+        }
+        // dd($orders);
+
+        return [
+            'shipping_fee' => number_format($selectedPackage['cost']),
+            'grand_total' => number_format($orders->sum('amount') + $selectedPackage['cost']),
+        ];
+    }
 
 
 
     private function calculateShippingFee($orders, $address, $courier)
-{
-    $shippingFees = [];
+    {
+        $shippingFees = [];
 
-    try {
-        $client = new Client([
-            'verify' => false, // Nonaktifkan verifikasi SSL
-        ]);
+        try {
+            $client = new Client([
+                'verify' => false, // Nonaktifkan verifikasi SSL
+            ]);
 
-        // Debugging sebelum request HTTP
-        // dd("Sebelum mengirimkan request HTTP ke API ongkir");
+            // Debugging sebelum request HTTP
+            // dd("Sebelum mengirimkan request HTTP ke API ongkir");
 
-        $response = $client->post(env('API_ONGKIR_BASE_URL') . 'cost', [
-            'headers' => [
-                'key' => env('API_ONGKIR_KEY'),
-            ],
-            'form_params' => [
-                'origin' => env('API_ONGKIR_ORIGIN'),
-                'destination' => $address->city,
-                'weight' => $orders->sum('product_weight'), // Pastikan ini menjumlahkan berat dari semua order
-                'courier' => $courier,
-            ],
-        ]);
+            $response = $client->post(env('API_ONGKIR_BASE_URL') . 'cost', [
+                'headers' => [
+                    'key' => env('API_ONGKIR_KEY'),
+                ],
+                'form_params' => [
+                    'origin' => env('API_ONGKIR_ORIGIN'),
+                    'destination' => $address->city,
+                    'weight' => $orders->sum('product_weight'), // Pastikan ini menjumlahkan berat dari semua order
+                    'courier' => $courier,
+                ],
+            ]);
 
-        // Debugging setelah menerima response
-        // dd("Response diterima: " . $response->getBody());
+            // Debugging setelah menerima response
+            // dd("Response diterima: " . $response->getBody());
 
-        $shippingFees = json_decode($response->getBody(), true);
+            $shippingFees = json_decode($response->getBody(), true);
 
-        // Debugging sebelum dd
-        // dd("Shipping fees: " . json_encode($shippingFees));
-    } catch (\Exception $e) {
-        // Debugging untuk eksepsi
-        // dd("Terjadi kesalahan: " . $e->getMessage());
+            // Debugging sebelum dd
+            // dd("Shipping fees: " . json_encode($shippingFees));
+        } catch (\Exception $e) {
+            // Debugging untuk eksepsi
+            // dd("Terjadi kesalahan: " . $e->getMessage());
 
-        return [];
-    }
-    $availableServices = [];
-    if (!empty($shippingFees['rajaongkir']['results'])) {
-        foreach ($shippingFees['rajaongkir']['results'] as $cost) {
-            if (!empty($cost['costs'])) {
-                foreach ($cost['costs'] as $costDetail) {
-                    $availableServices[] = [
-                        'service' => $costDetail['service'],
-                        'description' => $costDetail['description'],
-                        'etd' => $costDetail['cost'][0]['etd'],
-                        'cost' => $costDetail['cost'][0]['value'],
-                        'courier' => $courier,
-                        'address_id' => $address->id,
-                    ];
+            return [];
+        }
+        $availableServices = [];
+        if (!empty($shippingFees['rajaongkir']['results'])) {
+            foreach ($shippingFees['rajaongkir']['results'] as $cost) {
+                if (!empty($cost['costs'])) {
+                    foreach ($cost['costs'] as $costDetail) {
+                        $availableServices[] = [
+                            'service' => $costDetail['service'],
+                            'description' => $costDetail['description'],
+                            'etd' => $costDetail['cost'][0]['etd'],
+                            'cost' => $costDetail['cost'][0]['value'],
+                            'courier' => $courier,
+                            'address_id' => $address->id,
+                        ];
+                    }
                 }
             }
         }
+        // dd($availableServices);
+        return $availableServices;
     }
-    return $availableServices;
-}
 
 
     protected function loadTheme($view, $data = [])
