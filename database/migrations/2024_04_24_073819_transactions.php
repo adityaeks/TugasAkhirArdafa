@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('transaction_id');
             $table->string('payment_method');
             $table->double('amount');
+            $table->double('total_amount');
             $table->timestamps();
         });
     }

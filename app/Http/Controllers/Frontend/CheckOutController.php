@@ -124,13 +124,19 @@ class CheckOutController extends Controller
         if ($selectedPackage == null) {
             return [];
         }
-        // dd($orders);
+
+        // Simpan biaya pengiriman, kurir, dan layanan di sesi
+        Session::put('shipping_fee', $selectedPackage['cost']);
+        Session::put('courier', $selectedPackage['courier']);
+        Session::put('service', $selectedPackage['service']);
 
         return [
             'shipping_fee' => number_format($selectedPackage['cost']),
             'grand_total' => number_format($orders->sum('amount') + $selectedPackage['cost']),
         ];
     }
+
+
 
 
 
