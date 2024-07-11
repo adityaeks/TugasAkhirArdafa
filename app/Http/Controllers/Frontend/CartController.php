@@ -32,56 +32,68 @@ class CartController extends Controller
 
     public function addToCart(Request $request)
     {
-
         $product = Product::findOrFail($request->product_id);
 
         // cek stock produk
         if($product->qty === 0){
             return response(['status' => 'error', 'message' => 'Stok produk habis']);
-        }elseif($product->qty < $request->qty){
+        } elseif($product->qty < $request->qty){
             return response(['status' => 'error', 'message' => 'Jumlah stok tidak tersedia']);
         }
 
         // cek diskon
-        $productPrice = 0;
+        $productPrice = checkDiscount($product) ? $product->offer_price : $product->price;
 
-        if(checkDiscount($product)){
-            $productPrice = $product->offer_price;
-        }else {
-            $productPrice = $product->price;
-        }
+        $cartData = [
+            'id' => $product->id,
+            'name' => $product->name,
+            'qty' => $request->qty,
+            'price' => $productPrice,
+            'weight' => $product->weight * $request->qty, // Menggunakan berat produk dari database dan mengalikannya dengan jumlah
+            'options' => [
+                'image' => $product->thumb_image,
+                'slug' => $product->slug,
+            ]
+        ];
 
-        $cartData = [];
-        $cartData['id'] = $product->id;
-        $cartData['name'] = $product->name;
-        $cartData['qty'] = $request->qty;
-        $cartData['price'] = $productPrice;
-        $cartData['weight'] = 10;
-        $cartData['options']['image'] = $product->thumb_image;
-        $cartData['options']['slug'] = $product->slug;
+        // \Log::info('Adding to cart: ', $cartData);
+
 
         Cart::add($cartData);
 
         return response(['status' => 'success', 'message' => 'Berhasil ditambahkan ke keranjang!']);
     }
 
+
     /** Update product quantity */
     public function updateProductQty(Request $request)
     {
-        $productId = Cart::get($request->rowId)->id;
+        $cartItem = Cart::get($request->rowId);
+        $productId = $cartItem->id;
         $product = Product::findOrFail($productId);
 
-        // check product quantity
+        // cek stok produk
         if($product->qty === 0){
             return response(['status' => 'error', 'message' => 'Stok produk habis']);
-        }elseif($product->qty < $request->qty){
+        } elseif($product->qty < $request->qty){
             return response(['status' => 'error', 'message' => 'Jumlah stok tidak tersedia']);
         }
 
-        Cart::update($request->rowId, $request->quantity);
+        $weight = $product->weight * $request->qty; // Menggunakan berat produk dari database dan mengalikannya dengan jumlah baru
+
+        Cart::update($request->rowId, ['qty' => $request->qty, 'weight' => $weight]);
         $productTotal = $this->getProductTotal($request->rowId);
 
         return response(['status' => 'success', 'message' => 'Stok Produk di update!', 'product_total' => $productTotal]);
+    }
+
+    public function getTotalWeight()
+    {
+        $totalWeight = 0;
+        foreach (Cart::content() as $item) {
+            $totalWeight += $item->weight;
+        }
+        return $totalWeight;
     }
 
     /** get product total */

@@ -20,7 +20,7 @@
         <div class="col-4 col-md-4 col-lg-5">{{ $service['service'] }} ({{$service['description']}})</div>
         <div class="col-3 col-md-2 col-lg-2">{{ $service['etd']}}</div>
         <div class="col-3 text-lg-end text-start text-md-end col-md-3">
-            <span class="fw-bold">IDR {{ $service['cost'] }}</span>
+            <span class="fw-bold">IDR {{ number_format($service['cost'], 0, ',', '.') }}</span>
         </div>
     </div>
 </li>
