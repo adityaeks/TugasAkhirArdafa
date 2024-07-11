@@ -41,10 +41,12 @@ class PaymentController extends Controller
         $product = Product::find($item->id);
 
         // Log product weight
-        \Log::info('Product ID: ' . $item->id . ' - Weight: ' . $product->weight);
+        // \Log::info('Product ID: ' . $item->id . ' - Weight: ' . $product->weight);
 
         // Calculate total weight
         $totalWeight += $item->qty * $product->weight;
+        // $totalWeight += $item->weight;
+
     }
 
     $order = new Order();
@@ -88,6 +90,8 @@ class PaymentController extends Controller
     $transaction->payment_method = $paymentMethod;
     $transaction->amount = getFinalPayableAmount();
     $transaction->save();
+
+    // dd($cartItems);
 }
 
 

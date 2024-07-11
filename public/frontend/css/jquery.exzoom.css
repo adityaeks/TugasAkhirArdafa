@@ -50,7 +50,7 @@
 }
 
 .exzoom .exzoom_nav .exzoom_nav_inner span {
-  border: 1px solid #2A9CF5;
+  border: 1px solid #e64946;
   overflow: hidden;
   position: relative;
   float: left;
@@ -63,7 +63,7 @@
 }
 
 .exzoom .exzoom_nav .exzoom_nav_inner span.current {
-  border: 4px solid #2A9CF5;
+  border: 4px solid #e64946;
 }
 
 .exzoom .exzoom_nav .exzoom_nav_inner span img {

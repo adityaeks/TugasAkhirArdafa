@@ -27,8 +27,10 @@ class TransactionDataTable extends DataTable
                 return '#'.$query->order->invocie_id;
             })
             ->addColumn('amount_in_base_currency', function($query){
-                return $query->amount.' '.$query->order->currency_name;
+                $amount = number_format($query->amount, 0, ',', '.'); // Memformat menjadi Rupiah
+                return 'IDR ' . $amount . ' ' . $query->order->currency_name;
             })
+
             ->addColumn('amount_in_real_currency', function($query){
                 return $query->amount_real_currency.' '.$query->amount_real_currency_name;
             })
@@ -83,7 +85,7 @@ class TransactionDataTable extends DataTable
             Column::make('transaction_id'),
             Column::make('payment_method'),
             Column::make('amount_in_base_currency'),
-            Column::make('amount_in_real_currency'),
+            // Column::make('amount_in_real_currency'),
 
         ];
     }

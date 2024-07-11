@@ -17,7 +17,7 @@ a {
 .wsus__mobile_menu_icon {
   width: 30px;
   height: 30px;
-  background: #2a9cf5;
+  background: #e64946;
   color: #fff;
   text-align: center;
   line-height: 30px;
@@ -36,7 +36,7 @@ a {
 
 .wsus__mobile_menu_icon:hover {
   color: #fff;
-  background: #0363ae;
+  background: #a32523;
 }
 
 .wsus__mobile_menu_close {
@@ -62,7 +62,7 @@ a {
 }
 
 .wsus__mobile_menu_close:hover {
-  background: #2a9cf5;
+  background: #e64946;
 }
 
 #wsus__mobile_menu {
@@ -90,9 +90,9 @@ a {
 
 .mobile_menu_lan li a {
   height: 30px;
-  background: #2a9cf5;
+  background: #e64946;
   color: #fff;
-  border: 1px solid #2a9cf5;
+  border: 1px solid #e64946;
   text-align: center;
   line-height: 30px;
   margin-left: 10px;
@@ -156,9 +156,9 @@ a {
 .wsus__mobile_menu_header_icon li a {
   width: 31px;
   height: 31px;
-  background: #2a9cf5;
+  background: #e64946;
   color: #fff;
-  border: 1px solid #2a9cf5;
+  border: 1px solid #e64946;
   text-align: center;
   line-height: 30px;
   margin-right: 15px;
@@ -174,8 +174,8 @@ a {
 
 .wsus__mobile_menu_header_icon li a:hover {
   background: transparent;
-  color: #2a9cf5;
-  border-color: #2a9cf5;
+  color: #e64946;
+  border-color: #e64946;
 }
 
 #wsus__mobile_menu form {
@@ -245,8 +245,8 @@ a {
 
 #wsus__mobile_menu .nav-pills .nav-link.active,
 #wsus__mobile_menu #pills-tab li button:hover {
-  color: #2a9cf5 !important;
-  border-color: #2a9cf5 !important;
+  color: #e64946 !important;
+  border-color: #e64946 !important;
 }
 
 .wsus_mobile_menu_category {
@@ -281,7 +281,7 @@ a {
 .wsus_mobile_menu_category li:hover > a,
 .wsus__mobile_menu_main_menu li:hover > a,
 .wsus__mobile_menu_main_menu .accordion-button:hover {
-  color: #2a9cf5 !important;
+  color: #e64946 !important;
 }
 
 .wsus__mobile_menu_main_menu {
