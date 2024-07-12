@@ -1,12 +1,32 @@
 <script>
     $(document).ready(function() {
+        let productWeights = {};
+
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
 
-        // add product into cart
+        function getTotalWeight() {
+            $.ajax({
+                method: 'GET',
+                url: "{{ route('cart.total-weight') }}",
+                success: function(data) {
+                    $('#cart-total-weight').text(data + ' grams'); // Menampilkan total berat produk
+                    console.log('Total Weight:', data); // Log total berat produk untuk debugging
+
+                    // Simpan data berat produk dalam JSON
+                    productWeights.totalWeight = data;
+                    console.log('Product Weights JSON:', JSON.stringify(productWeights));
+                },
+                error: function(data) {
+                    console.error('Error fetching total weight:', data);
+                }
+            });
+        }
+
+        // Add product into cart
         $(document).on('submit', '.shopping-cart-form', function(e) {
             e.preventDefault();
             let formData = $(this).serialize();
@@ -16,20 +36,20 @@
                 data: formData,
                 url: "{{ route('add-to-cart') }}",
                 success: function(data) {
-                    if(data.status === 'success'){
-                        getCartCount()
-                        fetchSidebarCartProducts()
+                    if (data.status === 'success') {
+                        getCartCount();
+                        fetchSidebarCartProducts();
                         $('.mini_cart_actions').removeClass('d-none');
                         toastr.success(data.message);
-                    }else if (data.status === 'error'){
+                    } else if (data.status === 'error') {
                         toastr.error(data.message);
                     }
                 },
                 error: function(data) {
-
+                    console.error('Error adding product to cart:', data);
                 }
-            })
-        })
+            });
+        });
 
         function getCartCount() {
             $.ajax({
@@ -39,9 +59,9 @@
                     $('#cart-count').text(data);
                 },
                 error: function(data) {
-
+                    console.error('Error fetching cart count:', data);
                 }
-            })
+            });
         }
 
         function fetchSidebarCartProducts() {
@@ -63,27 +83,28 @@
                             <div class="wsus__cart_text">
                                 <a class="wsus__cart_title" href="{{ url('product-detail') }}/${product.options.slug}">${product.name}</a>
                                 <p>${product.price}</p>
-                                <small>Variants total: ${product.options.variants_total}</small>
-                                <br>
                                 <small>Qty: ${product.qty}</small>
+                                <div class="total-weight">
+                                    Total Berat: <span id="cart-total-weight">0 grams</span>
+                                </div>
                             </div>
-                        </li>`
+                        </li>`;
                     }
 
                     $('.mini_cart_wrapper').html(html);
 
                     getSidebarCartSubtoal();
-
+                    getTotalWeight(); // Panggil fungsi ini untuk memperbarui total berat
                 },
                 error: function(data) {
-
+                    console.error('Error fetching sidebar cart products:', data);
                 }
-            })
+            });
         }
 
-        // reomove product from sidebar cart
+        // Remove product from sidebar cart
         $('body').on('click', '.remove_sidebar_product', function(e) {
-            e.preventDefault()
+            e.preventDefault();
             let rowId = $(this).data('id');
             $.ajax({
                 method: 'POST',
@@ -93,82 +114,85 @@
                 },
                 success: function(data) {
                     let productId = '#mini_cart_' + rowId;
-                    $(productId).remove()
+                    $(productId).remove();
 
-                    getSidebarCartSubtoal()
+                    getSidebarCartSubtoal();
+                    getTotalWeight(); // Panggil fungsi ini untuk memperbarui total berat
 
                     if ($('.mini_cart_wrapper').find('li').length === 0) {
                         $('.mini_cart_actions').addClass('d-none');
                         $('.mini_cart_wrapper').html(
-                            '<li class="text-center">Cart Is Empty!</li>');
+                            '<li class="text-center">Keranjang Kosong!</li>');
                     }
-                    toastr.success(data.message)
+                    toastr.success(data.message);
                 },
                 error: function(data) {
-                    console.log(data);
+                    console.error('Error removing product:', data);
                 }
-            })
-        })
+            });
+        });
 
-        // get sidebar cart sub total
+        // Get sidebar cart sub total
         function getSidebarCartSubtoal() {
             $.ajax({
                 method: 'GET',
                 url: "{{ route('cart.sidebar-product-total') }}",
                 success: function(data) {
-                    $('#mini_cart_subtotal').text("" + data);
+                    $('#mini_cart_subtotal').text(data);
                 },
                 error: function(data) {
-
+                    console.error('Error fetching sidebar cart subtotal:', data);
                 }
-            })
+            });
         }
 
-        // add product to wishlist
-        $('.add_to_wishlist').on('click', function(e){
+        // Add product to wishlist
+        $('.add_to_wishlist').on('click', function(e) {
             e.preventDefault();
             let id = $(this).data('id');
 
             $.ajax({
                 method: 'GET',
-                url: "{{route('wishlist.store')}}",
-                data: {id:id},
-                success:function(data){
-                    if(data.status === 'success'){
-                        $('#wishlist_count').text(data.count)
+                url: "{{ route('wishlist.store') }}",
+                data: {
+                    id: id
+                },
+                success: function(data) {
+                    if (data.status === 'success') {
+                        $('#wishlist_count').text(data.count);
                         toastr.success(data.message);
-                    }else if(data.status === 'error'){
+                    } else if (data.status === 'error') {
                         toastr.error(data.message);
                     }
                 },
-                error: function(data){
-                    console.log(data);
+                error: function(data) {
+                    console.error('Error adding to wishlist:', data);
                 }
-            })
-        })
+            });
+        });
 
-
-
-        $('.show_product_modal').on('click', function(){
+        $('.show_product_modal').on('click', function() {
             let id = $(this).data('id');
 
             $.ajax({
-                mehtod: 'GET',
-                url: '{{ route("show-product-modal", ":id" ) }}'.replace(":id", id),
-                beforeSend: function(){
-                    $('.product-modal-content').html('<span class="loader"></span>')
+                method: 'GET',
+                url: '{{ route('show-product-modal', ':id') }}'.replace(":id", id),
+                beforeSend: function() {
+                    $('.product-modal-content').html('<span class="loader"></span>');
                 },
-                success: function(response){
-                    $('.product-modal-content').html(response)
+                success: function(response) {
+                    $('.product-modal-content').html(response);
                 },
-                error: function(xhr, status, error){
-
+                error: function(xhr, status, error) {
+                    console.error('Error showing product modal:', error);
                 },
-                complete: function(){
-
+                complete: function() {
+                    // Any additional actions after completion
                 }
-            })
-        })
+            });
+        });
 
-    })
+        // Call the function initially to display total weight on page load
+        getTotalWeight();
+    });
 </script>

@@ -5,9 +5,6 @@
 @endsection
 
 @section('content')
-    <!--============================
-                                        CHECK OUT PAGE START
-                                    ==============================-->
     <section id="wsus__cart_view">
         <div class="container">
             <div class="row">
@@ -16,8 +13,7 @@
                         <div class="d-flex">
                             <h5>Detail Pengiriman </h5>
                             <a href="javascript:;" style="margin-left:auto;" class="common_btn" data-bs-toggle="modal"
-                                data-bs-target="#exampleModal">Tambah
-                                alamat baru</a>
+                                data-bs-target="#exampleModal">Tambah alamat baru</a>
                         </div>
 
                         <div class="row">
@@ -54,19 +50,6 @@
                 </div>
                 <div class="col-xl-4 col-lg-5">
                     <div class="wsus__order_details" id="sticky_sidebar">
-                        {{-- <p class="wsus__product">Metode Pengiriman</p>
-                    @foreach ($shippingMethods as $method)
-                        @if ($method->type === 'min_cost' && getCartTotal() >= $method->min_cost)
-                            <div class="form-check">
-                                <input class="form-check-input shipping_method" type="radio" name="exampleRadios"
-                                    id="exampleRadios1" value="{{ $method->id }}" data-id="{{ $method->cost }}">
-                                <label class="form-check-label" for="exampleRadios1">
-                                    {{ $method->name }}
-                                    <span>cost: (Rp{{ $method->cost }})</span>
-                                </label>
-                            </div>
-                        @endif
-                    @endforeach --}}
                         <h5 class="mb-0"><i class='fa fa-truck'></i> Delivery Service</h5>
                         <div class="mt-3">
                             <div class="form-check form-check-inline">
@@ -106,10 +89,11 @@
                                 </label>
                             </div>
                         </div>
-                        <form action="" id="checkOutForm">
+                        <form action="{{ route('user.checkout.submit') }}" id="checkOutForm">
                             <input type="hidden" name="shipping_method_id" value="" id="shipping_method_id">
                             <input type="hidden" name="shipping_address_id" value="" id="shipping_address_id">
                             <input type="hidden" name="delivery_service" value="" id="delivery_service">
+                            <input type="hidden" name="delivery_package" value="" id="delivery_package">
                         </form>
                         <a href="" id="submitCheckoutForm" class="common_btn">Place Order</a>
                     </div>
@@ -203,9 +187,6 @@
             </div>
         </div>
     </div>
-    <!--============================
-                                        CHECK OUT PAGE END
-                                    ==============================-->
 @endsection
 
 @push('scripts')
@@ -217,10 +198,31 @@
                 }
             });
 
+            // JSON data for total weight
+            var productWeights = [{
+                    "id": 1,
+                    "weight": 1.5
+                },
+                {
+                    "id": 2,
+                    "weight": 2.0
+                },
+                // Tambahkan data produk lainnya di sini
+            ];
+
+            // Menghitung total berat produk dari JSON
+            function calculateTotalWeight() {
+                let totalWeight = 0;
+                productWeights.forEach(function(product) {
+                    totalWeight += product.weight;
+                });
+                return totalWeight;
+            }
+
             $('input[type="radio"]').prop('checked', false);
             $('#shipping_method_id').val("");
             $('#shipping_address_id').val("");
-            $('#delivery_service').val("");
+            $('#delivery_package').val("");
 
             $('.shipping_method').on('click', function() {
                 let shippingFee = $(this).data('id');
@@ -228,17 +230,20 @@
                 let totalAmount = currentTotalAmount + shippingFee;
 
                 $('#shipping_method_id').val($(this).val());
-                $('#shipping_fee').text("Rp" + shippingFee);
+                $('#shipping_fee').text("Rp" + shippingFee.toLocaleString());
 
-                $('#total_amount').text("Rp" + totalAmount);
+                $('#total_amount').text("Rp" + totalAmount.toLocaleString());
             });
 
             $('.shipping_address').on('click', function() {
                 $('#shipping_address_id').val($(this).data('id'));
             });
 
+            $('.delivery-package').on('click', function() {
+                $('#delivery_package').val($(this).val());
+            });
             $('.courier-code').on('click', function() {
-                $('#delivery_service').val($(this).val());
+                $('#delivery_package').val($(this).val());
             });
 
             // submit checkout form
@@ -246,7 +251,7 @@
                 e.preventDefault();
                 if ($('#shipping_address_id').val() == "") {
                     toastr.error('Shipping address is required');
-                } else if ($('#delivery_service').val() == "") {
+                } else if ($('#delivery_package').val() == "") {
                     toastr.error('Delivery service is required');
                 } else if (!$('.agree_term').prop('checked')) {
                     toastr.error('You have to agree to the website terms and conditions');
@@ -273,47 +278,69 @@
                 }
             });
 
-
-        });
-
-        $('.delivery_address').change(function() {
-            $('.courier-code').removeAttr('checked');
-            $('.available-services').hide();
-        });
-
-        $('.courier-code').click(function() {
-            let courier = $(this).val();
-            let addressID = $('.delivery_address:checked').val();
-
-            $.ajax({
-                url: "checkout/shipping-fee",
-                method: "POST",
-                data: {
-                    address_id: addressID,
-                    courier: courier,
-                    _token: $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(result) {
-                    $('.available-services').show();
-                    $('.available-services').html(result);
-
-                    // Update shipping fee display
-                    if (result.hasOwnProperty('shipping_fee')) {
-                        let shippingFee = parseInt(result.shipping_fee);
-                        $('#shipping_fee').text("Rp" + shippingFee.toLocaleString());
-
-                        // Update grand total display
-                        let currentTotalAmount = parseInt($('#total_amount').data('id'));
-                        let totalAmount = currentTotalAmount + shippingFee;
-                        $('#total_amount').text("Rp" + total_amount.toLocaleString());
-                    } else {
-                        console.error("Shipping fee not found in response:", result);
-                    }
-                },
-                error: function(e) {
-                    console.log("Error fetching shipping fee:", e);
-                }
+            $('.delivery_address').change(function() {
+                $('.courier-code').removeAttr('checked');
+                $('.available-services').hide();
             });
+
+            $('.courier-code').click(function() {
+                let courier = $(this).val();
+                let addressID = $('.delivery_address:checked').val();
+                let totalWeight = calculateTotalWeight(); // Mengambil total berat produk dari JSON
+
+                $.ajax({
+                    url: "checkout/shipping-fee",
+                    method: "POST",
+                    data: {
+                        address_id: addressID,
+                        courier: courier,
+                        total_weight: totalWeight, // Kirim total berat produk dari JSON
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(result) {
+                        $('.available-services').show();
+                        $('.available-services').html(result);
+
+                        // Update shipping fee display
+                        if (result.hasOwnProperty('shipping_fee')) {
+                            let shippingFee = parseInt(result.shipping_fee);
+                            $('#shipping_fee').text("Rp" + shippingFee.toLocaleString());
+
+                            // Update grand total display
+                            let currentTotalAmount = parseInt($('#total_amount').data('id'));
+                            let totalAmount = currentTotalAmount + shippingFee;
+                            $('#total_amount').text("Rp" + totalAmount.toLocaleString());
+                        } else {
+                            console.error("Shipping fee not found in response:", result);
+                        }
+                    },
+                    error: function(e) {
+                        console.log("Error fetching shipping fee:", e);
+                    }
+                });
+            });
+
+
+            function calculateTotalWeight() {
+                let totalWeight = 0;
+                productWeights.forEach(function(product) {
+                    totalWeight += product.weight;
+                });
+                return totalWeight;
+            }
+
+            // Memanggil fungsi untuk menghitung dan menampilkan total berat pada halaman checkout
+            function displayTotalWeight() {
+                let totalWeight = calculateTotalWeight();
+                $('#cart-total-weight').text(totalWeight + ' grams'); // Menampilkan total berat produk
+                console.log('Total Weight:', totalWeight); // Log total berat produk untuk debugging
+
+                // Di sini Anda dapat memproses total berat produk sesuai kebutuhan, misalnya untuk menghitung biaya pengiriman atau menyimpan dalam formulir checkout
+                // Contoh: $('#total_weight_field').val(totalWeight);
+            }
+
+            // Panggil fungsi untuk menampilkan total berat saat halaman checkout dimuat
+            displayTotalWeight();
         });
     </script>
 @endpush

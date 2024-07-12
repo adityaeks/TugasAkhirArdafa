@@ -57,6 +57,7 @@ class CheckOutController extends Controller
    $request->validate([
         'shipping_method_id' => ['nullable', 'integer'],
         'shipping_address_id' => ['required', 'integer'],
+        // 'delivery_service' => ['required'],
    ]);
 
    if ($request->filled('shipping_method_id')) {
@@ -80,28 +81,37 @@ class CheckOutController extends Controller
 }
 
 
+    public function setTotalProductWeight(Request $request)
+    {
+        $totalProductWeight = $request->total_weight;
+        Session::put('total_product_weight', $totalProductWeight);
+
+        return response()->json(['status' => 'success']);
+    }
 
 
     public function shippingFee(Request $request)
-    {
-        // Ambil address_id dari request
-        $addressId = $request->get('address_id');
+{
+    // Ambil address_id dari request
+    $addressId = $request->get('address_id');
 
-        // Cari alamat berdasarkan address_id
-        $address = UserAddress::find($addressId);
+    // Cari alamat berdasarkan address_id
+    $address = UserAddress::find($addressId);
 
-        // Dapatkan semua order terkait dengan pengguna yang sedang login
-        $orders = auth()->user()->orders;
+    // Ambil berat produk dari request
+    $productWeight = $request->get('total_weight', 0); // Default value jika tidak ada berat produk
 
-        // Debugging untuk memastikan metode dipanggil
-        // dd("Memanggil calculateShippingFee"); // Tambahkan ini untuk memastikan metode dipanggil
+    // Dapatkan semua order terkait dengan pengguna yang sedang login
+    // $orders = auth()->user()->orders;
 
-        // Hitung biaya pengiriman
-        $availableServices = $this->calculateShippingFee($orders, $address, $request->get('courier'));
+    // Hitung biaya pengiriman
+    $availableServices = $this->calculateShippingFee($addressId, $address, $request->get('courier'), $productWeight);
 
-        // Mengembalikan view dengan data yang sudah diproses
-        return $this->loadTheme('available_services', ['services' => $availableServices]);
-    }
+    // Mengembalikan view dengan data yang sudah diproses
+    return $this->loadTheme('available_services', ['services' => $availableServices]);
+}
+
+
 
     public function choosePackage(Request $request)
     {
@@ -109,7 +119,10 @@ class CheckOutController extends Controller
         $address = UserAddress::find($addressId);
         $orders = auth()->user()->orders;
 
-        $availableServices = $this->calculateShippingFee($orders, $address, $request->get('courier'));
+        // Mengambil berat produk dari sesi sebelumnya
+        $productWeight = Session::get('product_weight', 0); // Default value jika tidak ada berat produk
+
+        $availableServices = $this->calculateShippingFee($orders, $address, $request->get('courier'), $productWeight);
 
         $selectedPackage = null;
         if (!empty($availableServices)) {
@@ -135,48 +148,29 @@ class CheckOutController extends Controller
             'grand_total' => number_format($orders->sum('amount') + $selectedPackage['cost']),
         ];
     }
+    private function calculateShippingFee($orders, $address, $courier, $productWeight)
+{
+    $shippingFees = [];
 
+    try {
+        $client = new Client([
+            'verify' => false, // Nonaktifkan verifikasi SSL
+        ]);
 
+        $response = $client->post(env('API_ONGKIR_BASE_URL') . 'cost', [
+            'headers' => [
+                'key' => env('API_ONGKIR_KEY'),
+            ],
+            'form_params' => [
+                'origin' => env('API_ONGKIR_ORIGIN'),
+                'destination' => $address->city,
+                'weight' => $productWeight, // Menggunakan berat produk yang telah disimpan sebelumnya
+                'courier' => $courier,
+            ],
+        ]);
 
+        $shippingFees = json_decode($response->getBody(), true);
 
-
-    private function calculateShippingFee($orders, $address, $courier)
-    {
-        $shippingFees = [];
-
-        try {
-            $client = new Client([
-                'verify' => false, // Nonaktifkan verifikasi SSL
-            ]);
-
-            // Debugging sebelum request HTTP
-            // dd("Sebelum mengirimkan request HTTP ke API ongkir");
-
-            $response = $client->post(env('API_ONGKIR_BASE_URL') . 'cost', [
-                'headers' => [
-                    'key' => env('API_ONGKIR_KEY'),
-                ],
-                'form_params' => [
-                    'origin' => env('API_ONGKIR_ORIGIN'),
-                    'destination' => $address->city,
-                    'weight' => $orders->sum('product_weight'), // Pastikan ini menjumlahkan berat dari semua order
-                    'courier' => $courier,
-                ],
-            ]);
-
-            // Debugging setelah menerima response
-            // dd("Response diterima: " . $response->getBody());
-
-            $shippingFees = json_decode($response->getBody(), true);
-
-            // Debugging sebelum dd
-            // dd("Shipping fees: " . json_encode($shippingFees));
-        } catch (\Exception $e) {
-            // Debugging untuk eksepsi
-            // dd("Terjadi kesalahan: " . $e->getMessage());
-
-            return [];
-        }
         $availableServices = [];
         if (!empty($shippingFees['rajaongkir']['results'])) {
             foreach ($shippingFees['rajaongkir']['results'] as $cost) {
@@ -194,9 +188,14 @@ class CheckOutController extends Controller
                 }
             }
         }
-        // dd($availableServices);
+
         return $availableServices;
+    } catch (\Exception $e) {
+        Log::error('Error calculating shipping fee: ' . $e->getMessage());
+        return [];
     }
+}
+
 
 
     protected function loadTheme($view, $data = [])
