@@ -19,12 +19,33 @@
                     // Simpan data berat produk dalam JSON
                     productWeights.totalWeight = data;
                     console.log('Product Weights JSON:', JSON.stringify(productWeights));
+
+                    // Kirim data berat produk ke server
+                    $.ajax({
+                        method: 'POST',
+                        url: "{{ route('user.set-total-weight') }}", // Gunakan prefix 'user.' jika route berada di dalam grup user
+                        data: {
+                            total_weight: data
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            console.log('Total weight saved to session');
+                        },
+                        error: function(response) {
+                            console.error('Error saving total weight to session:',
+                                response);
+                        }
+                    });
                 },
                 error: function(data) {
                     console.error('Error fetching total weight:', data);
                 }
             });
         }
+
+
 
         // Add product into cart
         $(document).on('submit', '.shopping-cart-form', function(e) {

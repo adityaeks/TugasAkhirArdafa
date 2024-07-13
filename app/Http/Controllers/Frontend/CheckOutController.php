@@ -86,6 +86,7 @@ class CheckOutController extends Controller
         $totalProductWeight = $request->total_weight;
         Session::put('total_product_weight', $totalProductWeight);
 
+        // dd($totalProductWeight);
         return response()->json(['status' => 'success']);
     }
 
@@ -98,11 +99,8 @@ class CheckOutController extends Controller
     // Cari alamat berdasarkan address_id
     $address = UserAddress::find($addressId);
 
-    // Ambil berat produk dari request
-    $productWeight = $request->get('total_weight', 0); // Default value jika tidak ada berat produk
-
-    // Dapatkan semua order terkait dengan pengguna yang sedang login
-    // $orders = auth()->user()->orders;
+    // Ambil berat produk dari sesi
+    $productWeight = Session::get('total_product_weight', 0); // Default value jika tidak ada berat produk
 
     // Hitung biaya pengiriman
     $availableServices = $this->calculateShippingFee($addressId, $address, $request->get('courier'), $productWeight);
@@ -110,6 +108,7 @@ class CheckOutController extends Controller
     // Mengembalikan view dengan data yang sudah diproses
     return $this->loadTheme('available_services', ['services' => $availableServices]);
 }
+
 
 
 
@@ -188,6 +187,7 @@ class CheckOutController extends Controller
                 }
             }
         }
+        // dd($shippingFees);
 
         return $availableServices;
     } catch (\Exception $e) {

@@ -123,6 +123,7 @@ Route::group(['middleware' =>['auth', 'verified'], 'prefix' => 'user', 'as' => '
     /** product review routes */
     Route::post('review', [ReviewController::class, 'create'])->name('review.create');
 
+    Route::post('/set-total-weight', [CheckOutController::class, 'setTotalProductWeight'])->name('set-total-weight');
 
     /** Checkout routes */
     Route::get('checkout', [CheckOutController::class, 'index'])->name('checkout');
