@@ -27,43 +27,44 @@ class CartController extends Controller
         $cartpage_banner_section = Adverisement::where('key', 'cartpage_banner_section')->first();
         $cartpage_banner_section = json_decode($cartpage_banner_section?->value);
 
+        // dd($cartItems);
         return view('frontend.pages.cart-detail', compact('cartItems', 'cartpage_banner_section'));
     }
 
     public function addToCart(Request $request)
     {
-
         $product = Product::findOrFail($request->product_id);
 
-        // cek stock produk
-        if($product->qty === 0){
+        // Cek stock produk
+        if ($product->qty === 0) {
             return response(['status' => 'error', 'message' => 'Stok produk habis']);
-        }elseif($product->qty < $request->qty){
+        } elseif ($product->qty < $request->qty) {
             return response(['status' => 'error', 'message' => 'Jumlah stok tidak tersedia']);
         }
 
-        // cek diskon
-        $productPrice = 0;
+        // Cek diskon
+        $productPrice = checkDiscount($product) ? $product->offer_price : $product->price;
 
-        if(checkDiscount($product)){
-            $productPrice = $product->offer_price;
-        }else {
-            $productPrice = $product->price;
-        }
-
-        $cartData = [];
-        $cartData['id'] = $product->id;
-        $cartData['name'] = $product->name;
-        $cartData['qty'] = $request->qty;
-        $cartData['price'] = $productPrice;
-        $cartData['weight'] = 10;
-        $cartData['options']['image'] = $product->thumb_image;
-        $cartData['options']['slug'] = $product->slug;
+        $cartData = [
+            'id' => $product->id,
+            'name' => $product->name,
+            'qty' => $request->qty,
+            'price' => $productPrice,
+            'weight' => $product->weight * $request->qty,
+            'options' => [
+                'image' => $product->thumb_image,
+                'slug' => $product->slug,
+            ]
+        ];
 
         Cart::add($cartData);
+        // dd($product);
+
 
         return response(['status' => 'success', 'message' => 'Berhasil ditambahkan ke keranjang!']);
     }
+
+
 
     /** Update product quantity */
     public function updateProductQty(Request $request)
@@ -71,17 +72,38 @@ class CartController extends Controller
         $productId = Cart::get($request->rowId)->id;
         $product = Product::findOrFail($productId);
 
-        // check product quantity
-        if($product->qty === 0){
-            return response(['status' => 'error', 'message' => 'Stok produk habis']);
-        }elseif($product->qty < $request->qty){
-            return response(['status' => 'error', 'message' => 'Jumlah stok tidak tersedia']);
+        // Check product quantity
+        if ($product->qty === 0) {
+            return response(['status' => 'error', 'message' => 'Product stock out']);
+        } elseif ($product->qty < $request->quantity) {
+            return response(['status' => 'error', 'message' => 'Quantity not available in our stock']);
         }
 
         Cart::update($request->rowId, $request->quantity);
         $productTotal = $this->getProductTotal($request->rowId);
 
-        return response(['status' => 'success', 'message' => 'Stok Produk di update!', 'product_total' => $productTotal]);
+        // Get product weight
+        $cartItem = Cart::get($request->rowId);
+        $productWeight = $cartItem->weight * $request->quantity;
+
+        return response([
+            'status' => 'success',
+            'message' => 'Product Quantity Updated!',
+            'product_total' => $productTotal,
+            'product_weight' => $productWeight
+        ]);
+    }
+
+
+    public function getTotalWeightAjax()
+    {
+        $totalWeight = 0;
+
+        foreach (Cart::content() as $item) {
+            $totalWeight += $item->weight * $item->qty;
+        }
+
+        return response()->json($totalWeight);
     }
 
     /** get product total */
@@ -127,6 +149,10 @@ class CartController extends Controller
 
     /** Get all cart products */
     public function getCartProducts()
+    {
+        return Cart::content();
+    }
+    public function getCartWeight()
     {
         return Cart::content();
     }

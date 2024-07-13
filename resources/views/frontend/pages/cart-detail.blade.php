@@ -121,7 +121,7 @@ UMKM Lowayu || Cart Details
             }
         });
 
-        // incriment product quantity
+        // Increment product quantity
         $('.product-increment').on('click', function(){
             let input = $(this).siblings('.product-qty');
             let quantity = parseInt(input.val()) + 1;
@@ -138,24 +138,26 @@ UMKM Lowayu || Cart Details
                 success: function(data){
                     if(data.status === 'success'){
                         let productId = '#'+rowId;
-                        let totalAmount = ('Rp')+data.product_total
-                        $(productId).text(totalAmount)
+                        let totalAmount = ('Rp') + data.product_total;
+                        $(productId).text(totalAmount);
 
-                        renderCartSubTotal()
-                        calculateCouponDescount()
+                        renderCartSubTotal();
+                        calculateCouponDescount();
 
-                        toastr.success(data.message)
-                    }else if (data.status === 'error'){
-                        toastr.error(data.message)
+                        toastr.success(data.message);
+
+                        console.log('Updated Weight:', data.product_weight); // Menampilkan berat produk yang diperbarui
+                    } else if (data.status === 'error'){
+                        toastr.error(data.message); // Tampilkan notifikasi kesalahan
                     }
                 },
                 error: function(data){
-
+                    console.error('Error updating quantity:', data);
                 }
-            })
-        })
+            });
+        });
 
-        // decrement product quantity
+        // Decrement product quantity
         $('.product-decrement').on('click', function(){
             let input = $(this).siblings('.product-qty');
             let quantity = parseInt(input.val()) - 1;
@@ -177,70 +179,69 @@ UMKM Lowayu || Cart Details
                 success: function(data){
                     if(data.status === 'success'){
                         let productId = '#'+rowId;
-                        let totalAmount = "Rp"+data.product_total
-                        $(productId).text(totalAmount)
+                        let totalAmount = "Rp" + data.product_total;
+                        $(productId).text(totalAmount);
 
-                        renderCartSubTotal()
-                        calculateCouponDescount()
+                        renderCartSubTotal();
+                        calculateCouponDescount();
 
-                        toastr.success(data.message)
-                    }else if (data.status === 'error'){
-                        toastr.error(data.message)
+                        toastr.success(data.message);
+
+                        console.log('Updated Weight:', data.product_weight); // Menampilkan berat produk yang diperbarui
+                    } else if (data.status === 'error'){
+                        toastr.error(data.message); // Tampilkan notifikasi kesalahan
                     }
                 },
                 error: function(data){
-
+                    console.error('Error updating quantity:', data);
                 }
-            })
+            });
+        });
 
-        })
-
-        // clear cart
+        // Clear cart
         $('.clear_cart').on('click', function(e){
             e.preventDefault();
             Swal.fire({
-                    title: 'Are you sure?',
-                    text: "This action will clear your cart!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, clear it!'
-                    }).then((result) => {
-                    if (result.isConfirmed) {
-
-                        $.ajax({
-                            type: 'get',
-                            url: "{{route('clear.cart')}}",
-                            success: function(data){
-                                if(data.status === 'success'){
-                                    window.location.reload();
-                                }
-                            },
-                            error: function(xhr, status, error){
-                                console.log(error);
+                title: 'Are you sure?',
+                text: "This action will clear your cart!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, clear it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'GET',
+                        url: "{{route('clear.cart')}}",
+                        success: function(data){
+                            if(data.status === 'success'){
+                                window.location.reload();
                             }
-                        })
-                    }
-                })
-        })
+                        },
+                        error: function(xhr, status, error){
+                            console.log(error);
+                        }
+                    });
+                }
+            });
+        });
 
-        // get subtotal of cart and put it on dom
+        // Get subtotal of cart and put it on DOM
         function renderCartSubTotal(){
             $.ajax({
                 method: 'GET',
                 url: "{{ route('cart.sidebar-product-total') }}",
                 success: function(data) {
-                    $('#sub_total').text("Rp"+data);
+                    $('#sub_total').text("Rp" + data);
                 },
                 error: function(data) {
-                    console.log(data);
+                    console.error('Error fetching cart subtotal:', data);
                 }
-            })
+            });
         }
 
-        // applay coupon on cart
-
+        // Apply coupon on cart
         $('#coupon_form').on('submit', function(e){
             e.preventDefault();
             let formData = $(this).serialize();
@@ -249,38 +250,37 @@ UMKM Lowayu || Cart Details
                 url: "{{ route('apply-coupon') }}",
                 data: formData,
                 success: function(data) {
-                   if(data.status === 'error'){
-                    toastr.error(data.message)
-                   }else if (data.status === 'success'){
-                    calculateCouponDescount()
-                    toastr.success(data.message)
-                   }
+                    if(data.status === 'error'){
+                        toastr.error(data.message);
+                    } else if (data.status === 'success'){
+                        calculateCouponDescount();
+                        toastr.success(data.message);
+                    }
                 },
                 error: function(data) {
-                    console.log(data);
+                    console.error('Error applying coupon:', data);
                 }
-            })
+            });
+        });
 
-        })
-
-        // calculate discount amount
+        // Calculate discount amount
         function calculateCouponDescount(){
             $.ajax({
                 method: 'GET',
                 url: "{{ route('coupon-calculation') }}",
                 success: function(data) {
                     if(data.status === 'success'){
-                        $('#discount').text('Rp'+data.discount);
-                        $('#cart_total').text('Rp'+data.cart_total);
+                        $('#discount').text('Rp' + data.discount);
+                        $('#cart_total').text('Rp' + data.cart_total);
                     }
                 },
                 error: function(data) {
-                    console.log(data);
+                    console.error('Error calculating coupon discount:', data);
                 }
-            })
+            });
         }
-
-
-    })
+    });
 </script>
+
+
 @endpush
