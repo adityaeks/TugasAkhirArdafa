@@ -33,36 +33,41 @@ class CartController extends Controller
 
     public function addToCart(Request $request)
     {
-        $product = Product::findOrFail($request->product_id);
+        \Log::info('Product ID: ' . $request->product_id);
 
-        // Cek stock produk
-        if ($product->qty === 0) {
-            return response(['status' => 'error', 'message' => 'Stok produk habis']);
-        } elseif ($product->qty < $request->qty) {
-            return response(['status' => 'error', 'message' => 'Jumlah stok tidak tersedia']);
+        try {
+            $product = Product::findOrFail($request->product_id);
+
+            // Cek stock produk
+            if ($product->qty === 0) {
+                return response(['status' => 'error', 'message' => 'Stok produk habis']);
+            } elseif ($product->qty < $request->qty) {
+                return response(['status' => 'error', 'message' => 'Jumlah stok tidak tersedia']);
+            }
+
+            // Cek diskon
+            $productPrice = checkDiscount($product) ? $product->offer_price : $product->price;
+
+            $cartData = [
+                'id' => $product->id,
+                'name' => $product->name,
+                'qty' => $request->qty,
+                'price' => $productPrice,
+                'weight' => $product->weight * $request->qty,
+                'options' => [
+                    'image' => $product->thumb_image,
+                    'slug' => $product->slug,
+                ]
+            ];
+
+            Cart::add($cartData);
+            return response(['status' => 'success', 'message' => 'Berhasil ditambahkan ke keranjang!']);
+        } catch (\Exception $e) {
+            \Log::error('Error adding product to cart: ' . $e->getMessage());
+            return response(['status' => 'error', 'message' => 'Produk tidak ditemukan.'], 404);
         }
-
-        // Cek diskon
-        $productPrice = checkDiscount($product) ? $product->offer_price : $product->price;
-
-        $cartData = [
-            'id' => $product->id,
-            'name' => $product->name,
-            'qty' => $request->qty,
-            'price' => $productPrice,
-            'weight' => $product->weight * $request->qty,
-            'options' => [
-                'image' => $product->thumb_image,
-                'slug' => $product->slug,
-            ]
-        ];
-
-        Cart::add($cartData);
-        // dd($product);
-
-
-        return response(['status' => 'success', 'message' => 'Berhasil ditambahkan ke keranjang!']);
     }
+
 
 
 

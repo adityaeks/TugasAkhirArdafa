@@ -4,12 +4,8 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Adverisement;
-use App\Models\Brand;
 use App\Models\Category;
-use App\Models\ChildCategory;
 use App\Models\Product;
-use App\Models\ProductReview;
-use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 

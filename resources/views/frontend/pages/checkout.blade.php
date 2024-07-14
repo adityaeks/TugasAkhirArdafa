@@ -63,9 +63,9 @@
                                 <label class="form-check-label" for="inlineRadio2">POS</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input courier-code" type="radio" name="courier" id="inlineRadio2"
+                                <input class="form-check-input courier-code" type="radio" name="courier" id="inlineRadio3"
                                     value="tiki">
-                                <label class="form-check-label" for="inlineRadio2">TIKI</label>
+                                <label class="form-check-label" for="inlineRadio3">TIKI</label>
                             </div>
                         </div>
 
@@ -94,8 +94,10 @@
                             <input type="hidden" name="shipping_address_id" value="" id="shipping_address_id">
                             <input type="hidden" name="delivery_service" value="" id="delivery_service">
                             <input type="hidden" name="delivery_package" value="" id="delivery_package">
+                            <input type="hidden" name="total_qty" id="total_qty">
+                            <input type="hidden" name="total_price" id="total_price">
                         </form>
-                        <a href="" id="submitCheckoutForm" class="common_btn">Place Order</a>
+                        <a href="javascript:;" id="submitCheckoutForm" class="common_btn">Place Order</a>
                     </div>
                 </div>
             </div>
@@ -154,18 +156,16 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="wsus__check_single_form">
-                                            <input type="text" placeholder="Town / City *" name="city"
+                                            <input type="text" placeholder="City *" name="city"
                                                 value="{{ old('city') }}">
                                         </div>
                                     </div>
-
                                     <div class="col-md-6">
                                         <div class="wsus__check_single_form">
-                                            <input type="text" placeholder="Zip *" name="zip"
+                                            <input type="text" placeholder="Post code *" name="zip"
                                                 value="{{ old('zip') }}">
                                         </div>
                                     </div>
-
                                     <div class="col-md-12">
                                         <div class="wsus__check_single_form">
                                             <input type="text" placeholder="Address *" name="address"
@@ -173,21 +173,23 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-xl-12">
+                                    <div class="col-md-12">
                                         <div class="wsus__check_single_form">
-                                            <button type="submit" class="btn btn-primary">Save changes</button>
+                                            <button class="common_btn" type="submit">save address</button>
                                         </div>
                                     </div>
+
                                 </div>
                             </form>
-
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
 @endsection
+
 
 @push('scripts')
     <script>
@@ -198,14 +200,18 @@
                 }
             });
 
-            // JSON data for total weight
-            var productWeights = [{
+            // JSON data for products
+            var products = [{
                     "id": 1,
-                    "weight": 1.5
+                    "weight": 1.5,
+                    "price": 10000,
+                    "qty": 2
                 },
                 {
                     "id": 2,
-                    "weight": 2.0
+                    "weight": 2.0,
+                    "price": 15000,
+                    "qty": 1
                 },
                 // Tambahkan data produk lainnya di sini
             ];
@@ -213,10 +219,35 @@
             // Menghitung total berat produk dari JSON
             function calculateTotalWeight() {
                 let totalWeight = 0;
-                productWeights.forEach(function(product) {
-                    totalWeight += product.weight;
+                products.forEach(function(product) {
+                    totalWeight += product.weight * product.qty;
                 });
                 return totalWeight;
+            }
+
+            // Menghitung total qty dari JSON
+            function calculateTotalQty() {
+                let totalQty = 0;
+                products.forEach(function(product) {
+                    totalQty += product.qty;
+                });
+                return totalQty;
+            }
+
+            // Menghitung total harga dari JSON
+            function calculateTotalPrice() {
+                let totalPrice = 0;
+                products.forEach(function(product) {
+                    totalPrice += product.price * product.qty;
+                });
+                return totalPrice;
+            }
+
+            function updateFormValues() {
+                let totalQty = calculateTotalQty();
+                let totalPrice = calculateTotalPrice();
+                $('#total_qty').val(totalQty);
+                $('#total_price').val(totalPrice);
             }
 
             $('input[type="radio"]').prop('checked', false);
@@ -226,7 +257,7 @@
 
             $('.shipping_method').on('click', function() {
                 let shippingFee = $(this).data('id');
-                let currentTotalAmount = $('#total_amount').data('id');
+                let currentTotalAmount = parseInt($('#total_amount').data('id'));
                 let totalAmount = currentTotalAmount + shippingFee;
 
                 $('#shipping_method_id').val($(this).val());
@@ -242,6 +273,7 @@
             $('.delivery-package').on('click', function() {
                 $('#delivery_package').val($(this).val());
             });
+
             $('.courier-code').on('click', function() {
                 $('#delivery_package').val($(this).val());
             });
@@ -256,17 +288,32 @@
                 } else if (!$('.agree_term').prop('checked')) {
                     toastr.error('You have to agree to the website terms and conditions');
                 } else {
+                    // Mendapatkan token
+                    var token = '{{ csrf_token() }}'; // Ini mendapatkan token dari Laravel
+
+                    // Mengambil nilai total_qty dan total_price dari form
+                    var totalQty = $('#total_qty').val();
+                    var totalPrice = $('#total_price').val();
+
+                    // Mengirim data dengan tambahan token, total_qty, dan total_price
                     $.ajax({
                         url: "{{ route('user.checkout.form-submit') }}",
                         method: 'POST',
-                        data: $('#checkOutForm').serialize(),
+                        data: {
+                            _token: token,
+                            shipping_address_id: $('#shipping_address_id').val(),
+                            delivery_service: $('#delivery_service').val(),
+                            delivery_package: $('#delivery_package').val(),
+                            total_qty: totalQty,
+                            total_price: totalPrice
+                        },
                         beforeSend: function() {
                             $('#submitCheckoutForm').html(
-                                '<i class="fas fa-spinner fa-spin fa-1x"></i>')
+                                '<i class="fas fa-spinner fa-spin fa-1x"></i>');
                         },
                         success: function(data) {
                             if (data.status === 'success') {
-                                $('#submitCheckoutForm').text('Place Order')
+                                $('#submitCheckoutForm').text('Place Order');
                                 // redirect user to next page
                                 window.location.href = data.redirect_url;
                             }
@@ -274,9 +321,10 @@
                         error: function(data) {
                             console.log(data);
                         }
-                    })
+                    });
                 }
             });
+
 
             $('.delivery_address').change(function() {
                 $('.courier-code').removeAttr('checked');
@@ -285,6 +333,7 @@
 
             $('.courier-code').click(function() {
                 let courier = $(this).val();
+                $('#delivery_service').val($(this).val());
                 let addressID = $('.delivery_address:checked').val();
                 let totalWeight = calculateTotalWeight(); // Mengambil total berat produk dari JSON
 
@@ -320,15 +369,6 @@
                 });
             });
 
-
-            function calculateTotalWeight() {
-                let totalWeight = 0;
-                productWeights.forEach(function(product) {
-                    totalWeight += product.weight;
-                });
-                return totalWeight;
-            }
-
             // Memanggil fungsi untuk menghitung dan menampilkan total berat pada halaman checkout
             function displayTotalWeight() {
                 let totalWeight = calculateTotalWeight();
@@ -341,6 +381,7 @@
 
             // Panggil fungsi untuk menampilkan total berat saat halaman checkout dimuat
             displayTotalWeight();
+            updateFormValues(); // Panggil untuk mengupdate total qty dan total price
         });
     </script>
 @endpush

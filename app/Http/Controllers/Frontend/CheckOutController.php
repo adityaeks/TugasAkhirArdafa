@@ -53,32 +53,37 @@ class CheckOutController extends Controller
     }
 
     public function checkOutFormSubmit(Request $request)
-{
-   $request->validate([
-        'shipping_method_id' => ['nullable', 'integer'],
-        'shipping_address_id' => ['required', 'integer'],
-        // 'delivery_service' => ['required'],
-   ]);
+    {
 
-   if ($request->filled('shipping_method_id')) {
-       $shippingMethod = ShippingRule::find($request->shipping_method_id);
-       if($shippingMethod){
-           Session::put('shipping_method', [
-                'id' => $shippingMethod->id,
-                'name' => $shippingMethod->name,
-                'type' => $shippingMethod->type,
-                'cost' => $shippingMethod->cost
-           ]);
-       }
-   }
+        dd($request->all());
+        $request->validate([
+            'shipping_method_id' => ['nullable', 'integer'],
+            'shipping_address_id' => ['required', 'integer'],
+            'delivery_service' => ['required'],
+            'total_qty' => ['required', 'integer'],
+            'total_price' => ['required', 'numeric'],
+        ]);
 
-   $address = UserAddress::findOrFail($request->shipping_address_id)->toArray();
-   if($address){
-       Session::put('address', $address);
-   }
+        if ($request->filled('shipping_method_id')) {
+            $shippingMethod = ShippingRule::find($request->shipping_method_id);
+            if($shippingMethod){
+                Session::put('shipping_method', [
+                    'id' => $shippingMethod->id,
+                    'name' => $shippingMethod->name,
+                    'type' => $shippingMethod->type,
+                    'cost' => $shippingMethod->cost
+                ]);
+            }
+        }
 
-   return response(['status' => 'success', 'redirect_url' => route('user.payment')]);
-}
+        $address = UserAddress::findOrFail($request->shipping_address_id)->toArray();
+        if($address){
+            Session::put('address', $address);
+        }
+
+        return response(['status' => 'success', 'redirect_url' => route('user.payment')]);
+    }
+
 
 
     public function setTotalProductWeight(Request $request)
