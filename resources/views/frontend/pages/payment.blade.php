@@ -5,29 +5,7 @@ UMKM Lowayu || Payment
 @endsection
 
 @section('content')
-    <section id="wsus__breadcrumb">
-        <div class="wsus_breadcrumb_overlay">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <h4>payment</h4>
-                        <ul>
-                            <li><a href="{{route('home')}}">home</a></li>
-                            <li><a href="javascript:;">payment</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!--============================
-        BREADCRUMB END
-    ==============================-->
 
-
-    <!--============================
-        PAYMENT PAGE START
-    ==============================-->
     <section id="wsus__cart_view">
         <div class="container">
             <div class="wsus__pay_info_area">
@@ -36,13 +14,12 @@ UMKM Lowayu || Payment
                         <div class="wsus__payment_menu" id="sticky_sidebar">
                             <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
                                 aria-orientation="vertical">
-
-
                                 <button class="nav-link common_btn" id="v-pills-profile-tab" data-bs-toggle="pill"
                                 data-bs-target="#v-pills-cod" type="button" role="tab"
                                 aria-controls="v-pills-stripe" aria-selected="false">COD</button>
-
-
+                                <button class="nav-link common_btn" id="v-pills-profile-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-cod" type="button" role="tab"
+                                aria-controls="v-pills-stripe" aria-selected="false">COD</button>
                             </div>
                         </div>
                     </div>
@@ -50,8 +27,6 @@ UMKM Lowayu || Payment
                         <div class="tab-content" id="v-pills-tabContent" id="sticky_sidebar">
 
                             @include('frontend.pages.payment-gateway.cod')
-
-
 
                         </div>
                     </div>
