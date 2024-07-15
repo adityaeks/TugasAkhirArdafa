@@ -19,5 +19,5 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::post('payments', [PaymentController::class,'create']);
+Route::post('payments', [PaymentController::class,'storeOrder']);
 Route::post('webhooks/midtrans', [PaymentController::class,'webhook']);
