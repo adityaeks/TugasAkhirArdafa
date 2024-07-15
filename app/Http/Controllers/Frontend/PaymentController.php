@@ -6,10 +6,12 @@ use App\Models\CodSetting;
 use App\Models\GeneralSetting;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Stripe\Charge;
 use Stripe\Stripe;
@@ -30,7 +32,7 @@ class PaymentController extends Controller
         return view('frontend.pages.payment-success');
     }
 
-    public function storeOrder($paymentMethod, $paymentStatus, $transactionId, $paidAmount)
+    public function storeOrder($paymentMethod, $paymentStatus, $transactionId, $paidAmount, $request)
     {
         $cartItems = \Cart::content();
         $totalWeight = 0;
@@ -60,6 +62,7 @@ class PaymentController extends Controller
         $order->order_status = 'pending';
         $order->save();
 
+
         foreach ($cartItems as $item) {
             $product = Product::find($item->id);
             $orderProduct = new OrderProduct();
@@ -87,7 +90,76 @@ class PaymentController extends Controller
         $transaction->courier = $courier; // Simpan kurir
         $transaction->service = $service; // Simpan layanan
         $transaction->save();
+
+
     }
+
+    public function create(Request $request)
+{
+    $params = [
+        'transaction_details' => [
+            'order_id' => \Str::uuid(),
+            'gross_amount' => $request->price,
+        ],
+        'item_details' => [
+            [
+                'price' => $request->price,
+                'quantity' => 1,
+                'name' => $request->item_name,
+            ]
+        ],
+        'customer_details' => [
+            'first_name' => $request->customer_firstname,
+            'email' => $request->customer_email,
+        ],
+        'enabled_payments' => ['credit_card', 'bca_va', 'bni_va', 'bri_va']
+    ];
+
+    $auth = base64_encode(config('midtrans.serverKey'));
+
+    try {
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'Authorization' => "Basic $auth",
+        ])->withOptions([
+            'verify' => false, // Abaikan SSL certificate
+        ])->post('https://app.sandbox.midtrans.com/snap/v1/transactions', $params);
+
+        $responseBody = $response->json();
+
+        \Log::info('Midtrans Response', ['response' => $responseBody]);
+
+        if (!$response->successful()) {
+            \Log::error('Midtrans API call failed', ['response' => $responseBody]);
+            return response()->json(['error' => 'Failed to communicate with Midtrans API'], 500);
+        }
+
+        if (!isset($responseBody['redirect_url'])) {
+            \Log::error('Redirect URL not found in Midtrans response', ['response' => $responseBody]);
+            return response()->json(['error' => 'Failed to retrieve redirect URL from Midtrans'], 500);
+        }
+
+        $payment = new Payment;
+        $payment->order_id = $params['transaction_details']['order_id'];
+        $payment->status = 'pending';
+        $payment->price = $request->price;
+        $payment->customer_firstname = $request->customer_firstname;
+        $payment->customer_email = $request->customer_email;
+        $payment->item_name = $request->item_name;
+        $payment->checkout_link = $responseBody['redirect_url'];
+        $payment->save();
+
+        return response()->json($responseBody);
+    } catch (\Exception $e) {
+        \Log::error('Error communicating with Midtrans API', ['exception' => $e]);
+        return response()->json(['error' => 'Failed to communicate with Midtrans API', 'message' => $e->getMessage()], 500);
+    }
+}
+
+
+
+
+
 
     public function clearSession()
     {
