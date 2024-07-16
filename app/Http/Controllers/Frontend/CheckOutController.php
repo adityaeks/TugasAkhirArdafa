@@ -24,7 +24,22 @@ class CheckOutController extends Controller
     {
         $addresses = UserAddress::where('user_id', Auth::user()->id)->get();
         $shippingMethods = ShippingRule::where('status', 1)->get();
-        return view('frontend.pages.checkout', compact('addresses', 'shippingMethods'));
+        try {
+            $client = new Client([
+                'verify' => false, // Nonaktifkan verifikasi SSL
+            ]);
+            $response = Http::setCLient($client)->withHeaders([
+                'key' => env('API_ONGKIR_KEY')
+            ])->get('https://api.rajaongkir.com/starter/province');
+
+            $provinces = json_decode($response->getBody(), true);
+            // dd($provinces['rajaongkir']['results']);
+            return view('frontend.pages.checkout', compact('addresses', 'shippingMethods', 'provinces'));
+        }catch (\Exception $e) {
+            Log::error('Error calculating shipping fee: ' . $e->getMessage());
+            return [];
+
+        }
     }
 
     public function createAddress(Request $request)
@@ -198,9 +213,6 @@ class CheckOutController extends Controller
     return $this->loadTheme('available_services', ['services' => $availableServices]);
 }
 
-
-
-
     public function choosePackage(Request $request)
     {
         $addressId = $request->get('address_id');
@@ -284,6 +296,34 @@ class CheckOutController extends Controller
         return [];
     }
 }
+
+
+    public function getProvinces()
+    {
+        $response = Http::withHeaders([
+            'key' => env('API_ONGKIR_KEY')
+        ])->get('https://api.rajaongkir.com/starter/province');
+
+        $provinces = json_decode($response->getBody(), true);
+
+        return view('frontend.pages.checkout', compact('provinces'));
+    }
+
+    public function getCities($provinceId)
+    {
+        $response = Http::withHeaders([
+            'key' => env('API_ONGKIR_KEY')
+        ])->get('https://api.rajaongkir.com/starter/city', [
+            'province' => $provinceId
+        ]);
+
+        $cities = $response['rajaongkir']['results'] ?? [];  // Add null coalescing operator
+
+        return response()->json($cities);
+    }
+
+
+
 
 
 

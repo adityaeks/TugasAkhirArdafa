@@ -150,6 +150,24 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="wsus__check_single_form">
+                                            <select id="province" class="select_2" name="province">
+                                                <option value="">Select Province</option>
+                                                @foreach ($provinces['rajaongkir']['results'] as $province)
+                                                    <option value="{{ $province['province_id'] }}">
+                                                        {{ $province['province'] }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="wsus__check_single_form">
+                                            <select id="city" class="select_2" name="city">
+                                                <option value="">Select City</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="wsus__check_single_form">
                                             <input type="text" placeholder="State *" name="state"
                                                 value="{{ old('state') }}">
                                         </div>
@@ -300,10 +318,11 @@
                             total_price: totalPrice
                         },
                         success: function(data) {
-                            if (data.status === 'success' && data.redirect_url) {
+                            console.log(data);
+                            if (data.redirect_url) {
                                 console.log('AJAX request successful');
                                 window.location.href = data
-                                .redirect_url; // Redirect to Snap Midtrans
+                                    .redirect_url; // Redirect to Snap Midtrans
                             } else {
                                 toastr.error('Failed to get redirect URL from server');
                             }
@@ -371,6 +390,24 @@
                 console.log('Total Weight:', totalWeight);
             }
 
+            document.addEventListener("DOMContentLoaded", function() {
+                document.getElementById('province').addEventListener('change', function() {
+                    const provinceId = this.value;
+                    fetch(`checkout/cities/${provinceId}`)
+                        .then(response => response.json())
+                        .then(cities => {
+                            const citySelect = document.getElementById('city');
+                            citySelect.innerHTML = '<option value="">Select City</option>';
+                            cities.forEach(city => {
+                                const option = document.createElement('option');
+                                option.value = city.city_id;
+                                option.text = city.city_name;
+                                citySelect.add(option);
+                            });
+                        })
+                        .catch(error => console.error('Error fetching cities:', error));
+                });
+            });
 
             displayTotalWeight();
             updateFormValues();
