@@ -34,52 +34,52 @@ class PaymentController extends Controller
 
     public function storeOrder(Request $request)
     {
-        // $cartItems = \Cart::content();
-        // $totalWeight = 0;
-        // $shippingFee = Session::get('shipping_fee', 0); // Ambil biaya pengiriman dari sesi
+        $cartItems = \Cart::content();
+        $totalWeight = 0;
+        $shippingFee = Session::get('shipping_fee', 0); // Ambil biaya pengiriman dari sesi
         $courier = Session::get('courier'); // Ambil kurir dari sesi
         $service = Session::get('service'); // Ambil layanan dari sesi
 
-        // foreach($cartItems as $item) {
-        //     $product = Product::find($item->id);
-        //     $totalWeight += $item->qty * $product->weight;
-        // }
+        foreach($cartItems as $item) {
+            $product = Product::find($item->id);
+            $totalWeight += $item->qty * $product->weight;
+        }
 
-        // $order = new Order();
-        // $order->invoice_id = rand(1, 999999);
-        // $order->user_id = Auth::user()->id;
-        // $order->sub_total = getCartTotal();
-        // $order->amount = getFinalPayableAmount() + $shippingFee; // Tambahkan biaya pengiriman ke jumlah total
-        // $order->product_qty = $cartItems->sum('qty');
-        // $order->product_weight = $totalWeight;
-        // $order->payment_method = $paymentMethod;
-        // $order->payment_status = $paymentStatus;
-        // $order->order_address = json_encode(Session::get('address'));
-        // $order->shipping_method = json_encode(Session::get('shipping_method'));
-        // $order->courier = $courier; // Simpan kurir
-        // $order->service = $service; // Simpan layanan
-        // $order->coupon = json_encode(Session::get('coupon'));
-        // $order->order_status = 'pending';
-        // $order->save();
+        $order = new Order();
+        $order->invoice_id = rand(1, 999999);
+        $order->user_id = Auth::user()->id;
+        $order->sub_total = getCartTotal();
+        $order->amount = getFinalPayableAmount() + $shippingFee; // Tambahkan biaya pengiriman ke jumlah total
+        $order->product_qty = $cartItems->sum('qty');
+        $order->product_weight = $totalWeight;
+        $order->payment_method = $paymentMethod;
+        $order->payment_status = $paymentStatus;
+        $order->order_address = json_encode(Session::get('address'));
+        $order->shipping_method = json_encode(Session::get('shipping_method'));
+        $order->courier = $courier; // Simpan kurir
+        $order->service = $service; // Simpan layanan
+        $order->coupon = json_encode(Session::get('coupon'));
+        $order->order_status = 'pending';
+        $order->save();
 
 
-        // foreach ($cartItems as $item) {
-        //     $product = Product::find($item->id);
-        //     $orderProduct = new OrderProduct();
-        //     $orderProduct->order_id = $order->id;
-        //     $orderProduct->product_id = $product->id;
-        //     $orderProduct->vendor_id = $product->vendor_id;
-        //     $orderProduct->product_name = $product->name;
-        //     $orderProduct->unit_price = $item->price;
-        //     $orderProduct->qty = $item->qty;
-        //     $orderProduct->weight = $product->weight * $item->qty;
-        //     $orderProduct->courier = $courier; // Simpan kurir
-        //     $orderProduct->service = $service; // Simpan layanan
-        //     $orderProduct->save();
+        foreach ($cartItems as $item) {
+            $product = Product::find($item->id);
+            $orderProduct = new OrderProduct();
+            $orderProduct->order_id = $order->id;
+            $orderProduct->product_id = $product->id;
+            $orderProduct->vendor_id = $product->vendor_id;
+            $orderProduct->product_name = $product->name;
+            $orderProduct->unit_price = $item->price;
+            $orderProduct->qty = $item->qty;
+            $orderProduct->weight = $product->weight * $item->qty;
+            $orderProduct->courier = $courier; // Simpan kurir
+            $orderProduct->service = $service; // Simpan layanan
+            $orderProduct->save();
 
-        //     $product->qty -= $item->qty;
-        //     $product->save();
-        // }
+            $product->qty -= $item->qty;
+            $product->save();
+        }
 
         $params = [
             'payment_type'=> $request->channel,
@@ -128,7 +128,7 @@ class PaymentController extends Controller
             $transaction = new Transaction();
             $transaction->order_id = $params['transaction_details']['order_id'];
             $transaction->status = 'pending';
-            $transaction->transaction_id = $transactionId;
+            // $transaction->transaction_id = $transactionId;
             $transaction->user_name = $request->name;
             $transaction->payment_method = 'midtrans';
             $transaction->product_name = $request->name;

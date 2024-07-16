@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Frontend\CheckOutController;
 use App\Http\Controllers\Frontend\PaymentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -19,5 +20,6 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::post('payments', [PaymentController::class,'storeOrder']);
+// Route::post('payments', [PaymentController::class,'storeOrder']);
+Route::post('payments', [CheckOutController::class,'checkOutFormSubmit']);
 Route::post('webhooks/midtrans', [PaymentController::class,'webhook']);

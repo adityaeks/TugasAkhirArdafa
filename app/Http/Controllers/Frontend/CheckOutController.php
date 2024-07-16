@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Frontend;
 use GuzzleHttp\Client;
 use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\OrderProduct;
+use App\Models\Product;
 use App\Models\ShippingRule;
+use App\Models\Transaction;
 use App\Models\UserAddress;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -12,6 +16,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Gloudemans\Shoppingcart\Facades\Cart;
 
 class CheckOutController extends Controller
 {
@@ -54,34 +59,113 @@ class CheckOutController extends Controller
 
     public function checkOutFormSubmit(Request $request)
     {
+        $cartItems = Cart::content();
+        $itemDetails = [];
+        $totalAmount = 0;
+        $totalWeight = 0;
 
-        // dd($request->all());
-        $request->validate([
-            'shipping_method_id' => ['nullable', 'integer'],
-            'shipping_address_id' => ['required', 'integer'],
-            'delivery_service' => ['required'],
-            'total_qty' => ['required', 'integer'],
-            'total_price' => ['required', 'numeric'],
-        ]);
+        foreach ($cartItems as $item) {
+            $product = Product::find($item->id);
+            $itemDetails[] = [
+                'id' => $item->id,
+                'price' => $item->price,
+                'quantity' => $item->qty,
+                'name' => $item->name,
+            ];
+            $totalAmount += $item->price * $item->qty;
+            $totalWeight += $product->weight * $item->qty;
+        }
 
-        if ($request->filled('shipping_method_id')) {
-            $shippingMethod = ShippingRule::find($request->shipping_method_id);
-            if($shippingMethod){
-                Session::put('shipping_method', [
-                    'id' => $shippingMethod->id,
-                    'name' => $shippingMethod->name,
-                    'type' => $shippingMethod->type,
-                    'cost' => $shippingMethod->cost
-                ]);
+        $params = [
+            'transaction_details' => [
+                'order_id' => \Str::uuid(),
+                'gross_amount' => $totalAmount,
+            ],
+            'item_details' => $itemDetails,
+            'customer_details' => [
+                'first_name' => $request->user_name,
+            ],
+            'enabled_payments' => ['credit_card', 'bca_va', 'bni_va', 'bri_va']
+        ];
+
+        $auth = base64_encode(config('midtrans.serverKey'));
+
+        try {
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'Authorization' => "Basic $auth",
+            ])->withOptions([
+                'verify' => false,
+            ])->post('https://app.sandbox.midtrans.com/snap/v1/transactions', $params);
+
+            $responseBody = $response->json();
+
+            if (!$response->successful()) {
+                return response()->json(['error' => 'Failed to communicate with Midtrans API'], 500);
             }
-        }
 
-        $address = UserAddress::findOrFail($request->shipping_address_id)->toArray();
-        if($address){
-            Session::put('address', $address);
-        }
+            if (!isset($responseBody['redirect_url'])) {
+                return response()->json(['error' => 'Failed to retrieve redirect URL from Midtrans'], 500);
+            }
 
-        return response(['status' => 'success', 'redirect_url' => route('user.payment')]);
+            // Save to orders table
+            $order = new Order();
+            $order->invoice_id = rand(1, 999999);
+            $order->user_id = Auth::user()->id;
+            $order->sub_total = getCartTotal();
+            $order->amount = getFinalPayableAmount() + $request->shipping_fee;
+            $order->product_qty = $cartItems->sum('qty');
+            $order->product_weight = $totalWeight;
+            $order->payment_method = 'midtrans';
+            $order->status = 'pending';
+            $order->order_address = json_encode(Session::get('address'));
+            $order->shipping_method = json_encode(Session::get('shipping_method'));
+            $order->courier = $request->courier;
+            $order->service = $request->service;
+            $order->coupon = json_encode(Session::get('coupon'));
+            $order->order_status = 'pending';
+            $order->save();
+
+            // Save to order_products table
+            foreach ($cartItems as $item) {
+                $product = Product::find($item->id);
+                $orderProduct = new OrderProduct();
+                $orderProduct->order_id = $order->id;
+                $orderProduct->product_id = $product->id;
+                $orderProduct->vendor_id = $product->vendor_id;
+                $orderProduct->product_name = $product->name;
+                $orderProduct->unit_price = $item->price;
+                $orderProduct->qty = $item->qty;
+                $orderProduct->weight = $product->weight * $item->qty;
+                $orderProduct->courier = $request->courier;
+                $orderProduct->service = $request->service;
+                $orderProduct->save();
+
+                $product->qty -= $item->qty;
+                $product->save();
+            }
+
+            // Save transaction with redirect URL
+            $transaction = new Transaction();
+            $transaction->order_id = $params['transaction_details']['order_id'];
+            $transaction->status = 'pending';
+            // $transaction->transaction_id = $transactionId;
+            $transaction->user_name = $request->user_name;
+            $transaction->payment_method = 'midtrans';
+            $transaction->product_name = implode(', ', $cartItems->pluck('name')->toArray());
+            $transaction->amount = $totalAmount;
+            $transaction->checkout_link = $responseBody['redirect_url'];
+            $transaction->save();
+
+            if (isset($responseBody['transaction_id'])) {
+                $transaction->transaction_id = $responseBody['transaction_id'];
+            }
+
+
+            return response()->json($responseBody);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to communicate with Midtrans API', 'message' => $e->getMessage()], 500);
+        }
     }
 
 

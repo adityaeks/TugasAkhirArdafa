@@ -43,35 +43,35 @@
         });
 
         // Handle form submission
-        $('#submitCheckoutForm').on('click', function(e) {
-            e.preventDefault();
-            if ($('#shipping_address_id').val() == "") {
-                toastr.error('Shipping address is required');
-            } else if ($('#delivery_package').val() == "") {
-                toastr.error('Delivery pacgkage is required');
-            } else if (!$('.agree_term').prop('checked')) {
-                toastr.error('You have to agree to the website terms and conditions');
-            } else {
-                $.ajax({
-                    url: "{{ route('user.checkout.form-submit') }}",
-                    method: 'POST',
-                    data: $('#checkOutForm').serialize(),
-                    beforeSend: function() {
-                        $('#submitCheckoutForm').html(
-                            '<i class="fas fa-spinner fa-spin fa-1x"></i>')
-                    },
-                    success: function(data) {
-                        if (data.status === 'success') {
-                            $('#submitCheckoutForm').text('Place Order');
-                            window.location.href = data.redirect_url;
-                        }
-                    },
-                    error: function(data) {
-                        console.log(data);
-                    }
-                });
-            }
-        });
+        // $('#submitCheckoutForm').on('click', function(e) {
+        //     e.preventDefault();
+        //     if ($('#shipping_address_id').val() == "") {
+        //         toastr.error('Shipping address is required');
+        //     } else if ($('#delivery_package').val() == "") {
+        //         toastr.error('Delivery pacgkage is required');
+        //     } else if (!$('.agree_term').prop('checked')) {
+        //         toastr.error('You have to agree to the website terms and conditions');
+        //     } else {
+        //         $.ajax({
+        //             url: "{{ route('user.checkout.form-submit') }}",
+        //             method: 'POST',
+        //             data: $('#checkOutForm').serialize(),
+        //             beforeSend: function() {
+        //                 $('#submitCheckoutForm').html(
+        //                     '<i class="fas fa-spinner fa-spin fa-1x"></i>')
+        //             },
+        //             success: function(data) {
+        //                 if (data.status === 'success') {
+        //                     $('#submitCheckoutForm').text('Place Order');
+        //                     window.location.href = data.redirect_url;
+        //                 }
+        //             },
+        //             error: function(data) {
+        //                 console.log(data);
+        //             }
+        //         });
+        //     }
+        // });
     });
 
 

@@ -61,6 +61,7 @@ class CartController extends Controller
             ];
 
             Cart::add($cartData);
+            // dd($cartData);
             return response(['status' => 'success', 'message' => 'Berhasil ditambahkan ke keranjang!']);
         } catch (\Exception $e) {
             \Log::error('Error adding product to cart: ' . $e->getMessage());
