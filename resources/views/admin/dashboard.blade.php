@@ -17,7 +17,7 @@
                                 <h4>Todays Orders</h4>
                             </div>
                             <div class="card-body">
-                                {{ $todaysOrder }}
+                                {{-- {{ $todaysOrder }} --}}
                             </div>
                         </div>
                     </div>
@@ -34,7 +34,7 @@
                                 <h4>Todays Peding Orders</h4>
                             </div>
                             <div class="card-body">
-                                {{ $todaysPendingOrder }}
+                                {{-- {{ $todaysPendingOrder }} --}}
                             </div>
                         </div>
                     </div>
@@ -123,7 +123,7 @@
                                 <h4>Todays Earnings</h4>
                             </div>
                             <div class="card-body">
-                                {{ $todaysEarnings }}
+                                {{-- {{ $todaysEarnings }} --}}
                             </div>
                         </div>
                     </div>
@@ -141,7 +141,7 @@
                                 <h4>This Month Earnings</h4>
                             </div>
                             <div class="card-body">
-                                {{ $monthEarnings }}
+                                {{-- {{ $monthEarnings }} --}}
                             </div>
                         </div>
                     </div>
@@ -159,7 +159,7 @@
                                 <h4>This Years Earnings</h4>
                             </div>
                             <div class="card-body">
-                                {{ $yearEarnings }}
+                                {{-- {{ $yearEarnings }} --}}
                             </div>
                         </div>
                     </div>

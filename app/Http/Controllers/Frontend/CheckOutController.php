@@ -100,7 +100,7 @@ class CheckOutController extends Controller
             'customer_details' => [
                 'first_name' => $request->user_name,
             ],
-            'enabled_payments' => ['credit_card', 'bca_va', 'bni_va', 'bri_va']
+            'enabled_payments' => ['credit_card', 'bca_va', 'bni_va', 'bri_va', 'gopay', 'shopeepay', 'dana']
         ];
 
         $auth = base64_encode(config('midtrans.serverKey'));
@@ -159,12 +159,11 @@ class CheckOutController extends Controller
                 $product->qty -= $item->qty;
                 $product->save();
             }
-
             // Save transaction with redirect URL
             $transaction = new Transaction();
             $transaction->order_id = $params['transaction_details']['order_id'];
+            $transaction->transaction_id = $params['transaction_id'];
             $transaction->status = 'pending';
-            // $transaction->transaction_id = $transactionId;
             $transaction->user_name = $request->user_name;
             $transaction->payment_method = 'midtrans';
             $transaction->product_name = implode(', ', $cartItems->pluck('name')->toArray());
@@ -172,9 +171,14 @@ class CheckOutController extends Controller
             $transaction->checkout_link = $responseBody['redirect_url'];
             $transaction->save();
 
-            if (isset($responseBody['transaction_id'])) {
-                $transaction->transaction_id = $responseBody['transaction_id'];
-            }
+              // Save transaction_id from Midtrans
+            // if (isset($responseBody['transaction_id'])) {
+            //     $transaction->transaction_id = $responseBody['transaction_id'];
+            //     $transaction->save();
+            // }
+
+             // Clear session after checkout
+             $this->clearSession();
 
 
             return response()->json($responseBody);
@@ -183,7 +187,16 @@ class CheckOutController extends Controller
         }
     }
 
-
+    public function clearSession()
+    {
+        \Cart::destroy();
+        Session::forget('address');
+        Session::forget('shipping_method');
+        Session::forget('shipping_fee'); // Hapus biaya pengiriman dari sesi
+        Session::forget('courier'); // Hapus kurir dari sesi
+        Session::forget('service'); // Hapus layanan dari sesi
+        Session::forget('coupon');
+    }
 
     public function setTotalProductWeight(Request $request)
     {
@@ -222,6 +235,7 @@ class CheckOutController extends Controller
         // Mengambil berat produk dari sesi sebelumnya
         $productWeight = Session::get('product_weight', 0); // Default value jika tidak ada berat produk
 
+        // dd($productWeight);
         $availableServices = $this->calculateShippingFee($orders, $address, $request->get('courier'), $productWeight);
 
         $selectedPackage = null;
@@ -242,6 +256,7 @@ class CheckOutController extends Controller
         Session::put('shipping_fee', $selectedPackage['cost']);
         Session::put('courier', $selectedPackage['courier']);
         Session::put('service', $selectedPackage['service']);
+        dd($request->all());
 
         return [
             'shipping_fee' => number_format($selectedPackage['cost']),

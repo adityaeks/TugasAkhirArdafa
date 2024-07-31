@@ -5,14 +5,12 @@
             <li class="dropdown active">
                 <a href="{{ route('admin.dashbaord') }}" class="nav-link"><i
                         class="fas fa-fire"></i><span>Dashboard</span></a>
-
             </li>
             <li class="menu-header">Ecommerce</li>
-            {{-- <li class="{{ setActive(['admin.vendor-profile.index']) }}"><a class="nav-link"
-                    href="{{ route('admin.vendor-profile.index') }}"><i class="fas fa-columns"></i>
-                    <span>Profil Admin Shop</span></a>
-            </li> --}}
-
+            <li class="{{ setActive(['home']) }}"><a class="nav-link"
+                    href="{{ url('/') }}"><i class="fa fa-home"></i>
+                    <span>Home</span></a>
+            </li>
             <li
                 class="dropdown {{ setActive(['admin.kategori.*', 'admin.sub-kategori.*', 'admin.child-kategori.*']) }}">
                 <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-list"></i>
@@ -136,9 +134,6 @@
 
                 </ul>
             </li>
-
-            {{-- <li><a class="nav-link" href="{{ route('admin.settings.index') }}"><i class="fas fa-wrench"></i>
-                    <span>Settings</span></a></li> --}}
 
         </ul>
 
