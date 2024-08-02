@@ -168,18 +168,6 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="wsus__check_single_form">
-                                            <input type="text" placeholder="State *" name="state"
-                                                value="{{ old('state') }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="wsus__check_single_form">
-                                            <input type="text" placeholder="City *" name="city"
-                                                value="{{ old('city') }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="wsus__check_single_form">
                                             <input type="text" placeholder="Post code *" name="zip"
                                                 value="{{ old('zip') }}">
                                         </div>
@@ -390,22 +378,32 @@
                 console.log('Total Weight:', totalWeight);
             }
 
-            document.addEventListener("DOMContentLoaded", function() {
-                document.getElementById('province').addEventListener('change', function() {
-                    const provinceId = this.value;
-                    fetch(`checkout/cities/${provinceId}`)
-                        .then(response => response.json())
-                        .then(cities => {
-                            const citySelect = document.getElementById('city');
-                            citySelect.innerHTML = '<option value="">Select City</option>';
-                            cities.forEach(city => {
-                                const option = document.createElement('option');
-                                option.value = city.city_id;
-                                option.text = city.city_name;
-                                citySelect.add(option);
-                            });
-                        })
-                        .catch(error => console.error('Error fetching cities:', error));
+            $(document).ready(function() {
+                $('#province').change(function() {
+                    var provinceId = $(this).val();
+                    if (provinceId) {
+                        $.ajax({
+                            url: 'checkout/cities/' + provinceId,
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function(data) {
+                                $('#city').empty();
+                                $('#city').append(
+                                    '<option value="">Select City</option>');
+                                $.each(data, function(key, value) {
+                                    $('#city').append('<option value="' + value
+                                        .city_id + '">' + value.city_name +
+                                        '</option>');
+                                });
+                            },
+                            error: function(xhr, status, error) {
+                                console.log('Error: ' + error);
+                            }
+                        });
+                    } else {
+                        $('#city').empty();
+                        $('#city').append('<option value="">Select City</option>');
+                    }
                 });
             });
 

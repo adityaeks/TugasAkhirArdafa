@@ -17,30 +17,30 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Gloudemans\Shoppingcart\Facades\Cart;
+use LDAP\Result;
 
 class CheckOutController extends Controller
 {
     public function index()
-    {
-        $addresses = UserAddress::where('user_id', Auth::user()->id)->get();
-        $shippingMethods = ShippingRule::where('status', 1)->get();
-        try {
-            $client = new Client([
-                'verify' => false, // Nonaktifkan verifikasi SSL
-            ]);
-            $response = Http::setCLient($client)->withHeaders([
-                'key' => env('API_ONGKIR_KEY')
-            ])->get('https://api.rajaongkir.com/starter/province');
+{
+    $addresses = UserAddress::where('user_id', Auth::user()->id)->get();
+    $shippingMethods = ShippingRule::where('status', 1)->get();
+    try {
+        $client = new Client([
+            'verify' => false, // Nonaktifkan verifikasi SSL
+        ]);
+        $response = Http::setCLient($client)->withHeaders([
+            'key' => env('API_ONGKIR_KEY')
+        ])->get('https://api.rajaongkir.com/starter/province');
 
-            $provinces = json_decode($response->getBody(), true);
-            // dd($provinces['rajaongkir']['results']);
-            return view('frontend.pages.checkout', compact('addresses', 'shippingMethods', 'provinces'));
-        }catch (\Exception $e) {
-            Log::error('Error calculating shipping fee: ' . $e->getMessage());
-            return [];
-
-        }
+        $provinces = json_decode($response->getBody(), true);
+        return view('frontend.pages.checkout', compact('addresses', 'shippingMethods', 'provinces'));
+    } catch (\Exception $e) {
+        Log::error('Error calculating shipping fee: ' . $e->getMessage());
+        return [];
     }
+}
+
 
     public function createAddress(Request $request)
     {
@@ -49,7 +49,6 @@ class CheckOutController extends Controller
             'phone' => ['required', 'max:200'],
             'email' => ['required', 'email'],
             'country' => ['required', 'max: 200'],
-            'state' => ['required', 'max: 200'],
             'city' => ['required', 'max: 200'],
             'zip' => ['required', 'max: 200'],
             'address' => ['required', 'max: 200']
@@ -61,7 +60,7 @@ class CheckOutController extends Controller
         $address->phone = $request->phone;
         $address->email = $request->email;
         $address->country = $request->country;
-        $address->state = $request->state;
+        $address->province = $request->province;
         $address->city = $request->city;
         $address->zip = $request->zip;
         $address->address = $request->address;
@@ -327,16 +326,25 @@ class CheckOutController extends Controller
 
     public function getCities($provinceId)
     {
-        $response = Http::withHeaders([
-            'key' => env('API_ONGKIR_KEY')
-        ])->get('https://api.rajaongkir.com/starter/city', [
-            'province' => $provinceId
-        ]);
+        try {
+            $client = new Client([
+                'verify' => false, // Nonaktifkan verifikasi SSL
+            ]);
+            $response = Http::setCLient($client)->withHeaders([
+                'key' => env('API_ONGKIR_KEY')
+            ])->get('https://api.rajaongkir.com/starter/city', [
+                'province' => $provinceId
+            ]);
 
-        $cities = $response['rajaongkir']['results'] ?? [];  // Add null coalescing operator
-
-        return response()->json($cities);
+            $cities = json_decode($response->getBody(), true);
+            // dd($cities['rajaongkir']['result']);
+            return response()->json($cities['rajaongkir']['results']);
+        } catch (\Exception $e) {
+            Log::error('Error fetching cities: ' . $e->getMessage());
+            return response()->json([]);
+        }
     }
+
 
 
 
