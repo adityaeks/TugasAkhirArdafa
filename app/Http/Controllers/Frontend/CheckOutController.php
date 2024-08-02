@@ -79,6 +79,7 @@ class CheckOutController extends Controller
         $totalAmount = 0;
         $totalWeight = 0;
 
+
         foreach ($cartItems as $item) {
             $product = Product::find($item->id);
             $itemDetails[] = [
@@ -162,9 +163,9 @@ class CheckOutController extends Controller
             // Save transaction with redirect URL
             $transaction = new Transaction();
             $transaction->order_id = $params['transaction_details']['order_id'];
-            $transaction->transaction_id = $params['transaction_id'];
+            // $transaction->transaction_id = $params['transaction_id'];
             $transaction->status = 'pending';
-            $transaction->user_name = $request->user_name;
+            $transaction->user_name = Auth::user()->name;
             $transaction->payment_method = 'midtrans';
             $transaction->product_name = implode(', ', $cartItems->pluck('name')->toArray());
             $transaction->amount = $totalAmount;

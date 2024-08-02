@@ -1,8 +1,5 @@
 <?php
 
-use App\Http\Controllers\Backend\AdminController;
-use App\Http\Controllers\Backend\VendorController;
-use App\Http\Controllers\Frontend\BlogController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\FlashSaleController;
 use App\Http\Controllers\Frontend\FrontendProductController;
@@ -13,11 +10,7 @@ use App\Http\Controllers\Frontend\UserProfileController;
 use App\Http\Controllers\Frontend\CheckOutController;
 use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\Frontend\PaymentController;
-use App\Http\Controllers\Frontend\ProductTrackController;
-use App\Http\Controllers\Frontend\ReviewController;
-use App\Http\Controllers\Frontend\UserMessageController;
 use App\Http\Controllers\Frontend\UserOrderController;
-use App\Http\Controllers\Frontend\UserVendorReqeustController;
 use App\Http\Controllers\Frontend\WishlistController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -52,7 +45,6 @@ Route::get('products', [FrontendProductController::class, 'productsIndex'])->nam
 Route::get('product-detail/{slug}', [FrontendProductController::class, 'showProduct'])->name('product-detail');
 Route::get('change-product-list-view', [FrontendProductController::class, 'chageListView'])->name('change-product-list-view');
 
-
 /** Cart routes */
 Route::post('add-to-cart', [CartController::class, 'addToCart'])->name('add-to-cart');
 Route::get('cart-details', [CartController::class, 'cartDetails'])->name('cart-details');
@@ -82,17 +74,10 @@ Route::get('terms-and-conditions', [PageController::class, 'termsAndCondition'])
 Route::get('contact', [PageController::class, 'contact'])->name('contact');
 Route::post('contact', [PageController::class, 'handleContactForm'])->name('handle-contact-form');
 
-/** Product track route */
-Route::get('product-traking', [ProductTrackController::class, 'index'])->name('product-traking.index');
-
-
 /** Product routes */
 Route::get('show-product-modal/{id}', [HomeController::class, 'ShowProductModal'])->name('show-product-modal');
 /** add product in wishlist */
 Route::get('wishlist/add-product', [WishlistController::class, 'addToWishlist'])->name('wishlist.store');
-
-
-
 
 
 
@@ -114,15 +99,6 @@ Route::group(['middleware' =>['auth', 'verified'], 'prefix' => 'user', 'as' => '
     Route::get('wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
     Route::get('wishlist/remove-product/{id}', [WishlistController::class, 'destory'])->name('wishlist.destory');
 
-    Route::get('reviews', [ReviewController::class, 'index'])->name('review.index');
-
-    /** Vendor request route */
-    Route::get('vendor-request', [UserVendorReqeustController::class, 'index'])->name('vendor-request.index');
-    Route::post('vendor-request', [UserVendorReqeustController::class, 'create'])->name('vendor-request.create');
-
-    /** product review routes */
-    Route::post('review', [ReviewController::class, 'create'])->name('review.create');
-
     Route::post('/set-total-weight', [CheckOutController::class, 'setTotalProductWeight'])->name('set-total-weight');
 
     /** Checkout routes */
@@ -139,17 +115,4 @@ Route::group(['middleware' =>['auth', 'verified'], 'prefix' => 'user', 'as' => '
     Route::get('payment', [PaymentController::class, 'index'])->name('payment');
     Route::get('payment-success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
 
-    /** Paypal routes */
-    Route::get('paypal/payment', [PaymentController::class, 'payWithPaypal'])->name('paypal.payment');
-    Route::get('paypal/success', [PaymentController::class, 'paypalSuccess'])->name('paypal.success');
-    Route::get('paypal/cancel', [PaymentController::class, 'paypalCancel'])->name('paypal.cancel');
-
-    /** Stripe routes */
-    Route::post('stripe/payment', [PaymentController::class, 'payWithStripe'])->name('stripe.payment');
-
-    /** Razorpay routes */
-    Route::post('razorpay/payment', [PaymentController::class, 'payWithRazorPay'])->name('razorpay.payment');
-
-    /** COD routes */
-    Route::get('cod/payment', [PaymentController::class, 'payWithCod'])->name('cod.payment');
 });

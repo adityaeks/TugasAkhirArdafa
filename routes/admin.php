@@ -50,9 +50,6 @@ Route::resource('vendor-profile', AdminVendorProfileController::class);
 Route::put('product/change-status', [ProductController::class, 'changeStatus'])->name('produk.change-status');
 Route::resource('produk', ProductController::class);
 
-/** Products image gallery route */
-Route::resource('produk-image-gallery', ProductImageGalleryController::class);
-
 // seller produk
 Route::get('seller-products', [SellerProductController::class, 'index'])->name('seller-produk.index');
 Route::get('seller-pending-products', [SellerProductController::class, 'pendingProducts'])->name('seller-pending-produk.index');
@@ -81,10 +78,6 @@ Route::get('transaction', [TransactionController::class, 'index'])->name('transa
 
 /** settings routes */
 Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
-Route::put('generale-setting-update', [SettingController::class, 'generalSettingUpdate'])->name('generale-setting-update');
-Route::put('email-setting-update', [SettingController::class, 'emailConfigSettingUpdate'])->name('email-setting-update');
-Route::put('logo-setting-update', [SettingController::class, 'logoSettingUpdate'])->name('logo-setting-update');
-Route::put('pusher-setting-update', [SettingController::class, 'pusherSettingUpdate'])->name('pusher-setting-update');
 
 /** home page setting route */
 Route::get('home-page-setting', [HomePageSettingController::class, 'index'])->name('home-page-setting');
@@ -133,13 +126,6 @@ Route::put('about/update', [AboutController::class, 'update'])->name('about.upda
 /** terms and conditons routes */
 Route::get('terms-and-conditions', [TermsAndConditionController::class, 'index'])->name('terms-and-conditions.index');
 Route::put('terms-and-conditions/update', [TermsAndConditionController::class, 'update'])->name('terms-and-conditions.update');
-
-
-
-/** Payment settings routes */
-Route::get('payment-settings', [PaymentSettingController::class, 'index'])->name('payment-settings.index');
-Route::put('cod-setting/{id}', [CodSettingController::class, 'update'])->name('cod-setting.update');
-
 
 
 

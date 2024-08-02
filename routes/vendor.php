@@ -25,9 +25,6 @@ Route::resource('shop-profile', VendorShopProfileController::class);
 Route::put('produk/change-status', [VendorProductController::class, 'changeStatus'])->name('produk.change-status');
 Route::resource('produk', VendorProductController::class);
 
-/** Products image gallery route */
-Route::resource('produk-image-gallery', VendorProductImageGalleryController::class);
-
 
 /** Orders route */
 Route::get('orders', [VendorOrderController::class, 'index'])->name('orders.index');

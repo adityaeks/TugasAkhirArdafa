@@ -21,5 +21,5 @@ use Illuminate\Support\Facades\Route;
 // });
 
 // Route::post('payments', [PaymentController::class,'storeOrder']);
-Route::post('payments', [CheckOutController::class,'checkOutFormSubmit']);
+// Route::post('payments', [CheckOutController::class,'checkOutFormSubmit']);
 Route::post('webhooks/midtrans', [PaymentController::class,'webhook']);

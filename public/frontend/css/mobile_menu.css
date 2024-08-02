@@ -130,7 +130,7 @@ a {
 
 .mobile_menu_lan .dropdown-menu li a:hover {
   background: #aad8ff73;
-  color: #007aff;
+  color: #e64946;
 }
 
 .wsus__mobile_menu_header_icon {
@@ -150,7 +150,7 @@ a {
 	text-align: center;
 	line-height: 20px;
 	font-weight: 600;
-	color: #5897fb;
+	color: #e64946;
 }
 
 .wsus__mobile_menu_header_icon li a {

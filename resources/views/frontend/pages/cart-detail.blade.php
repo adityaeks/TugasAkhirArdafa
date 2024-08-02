@@ -19,9 +19,9 @@ UMKM Lowayu || Cart Details
                                             product item
                                         </th>
 
-                                        <th class="wsus__pro_name">
-                                            product details
-                                        </th>
+                                        {{-- <th class="wsus__pro_name">
+                                            product name
+                                        </th> --}}
 
                                         <th class="wsus__pro_tk">
                                            unit price
@@ -46,15 +46,9 @@ UMKM Lowayu || Cart Details
                                         <td class="wsus__pro_img"><img src="{{asset($item->options->image)}}" alt="product"
                                                 class="img-fluid w-100">
                                         </td>
-
                                         {{-- <td class="wsus__pro_name">
-                                            <p>{!! $item->name !!}</p>
-                                            @foreach ($item->options->variants as $key => $variant)
-                                                <span>{{$key}}: {{$variant['name']}} ({{$settings->currency_icon.$variant['price']}})</span>
-                                            @endforeach
-
+                                            <h6>{{$item->name}}</h6>
                                         </td> --}}
-
                                         <td class="wsus__pro_tk">
                                             <h6>{{('Rp').$item->price}}</h6>
                                         </td>

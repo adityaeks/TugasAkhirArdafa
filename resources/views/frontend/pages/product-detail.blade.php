@@ -45,6 +45,7 @@
                             <p class="description">{!! $product->short_description !!}</p>
 
                             <form class="shopping-cart-form">
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
                                 <div class="wsus__quentity">
                                     <h5>quantity :</h5>
                                     <div class="select_number">
