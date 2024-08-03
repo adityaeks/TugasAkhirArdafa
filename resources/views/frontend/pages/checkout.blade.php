@@ -71,7 +71,7 @@
 
                         <div class="wsus__order_details_summery">
                             <p>subtotal: <span>Rp{{ number_format(getCartTotal(), 0, ',', '.') }}</span></p>
-                            <p>biaya pengiriman(+): <span id="shipping_fee">Rp{{ number_format(0, 0, ',', '.') }}</span>
+                            <p>biaya pengiriman(+): <span id="cost">Rp{{ number_format(0, 0, ',', '.') }}</span>
                             </p>
                             <p>kupon(-): <span>Rp{{ number_format(getCartDiscount(), 0, ',', '.') }}</span></p>
                             <p><b>total:</b> <span><b id="total_amount"

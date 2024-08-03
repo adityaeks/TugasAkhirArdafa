@@ -223,49 +223,57 @@ class CheckOutController extends Controller
 
     // Mengembalikan view dengan data yang sudah diproses
     return $this->loadTheme('available_services', ['services' => $availableServices]);
-}
+    }
 
     public function choosePackage(Request $request)
-    {
-        $addressId = $request->get('address_id');
-        $address = UserAddress::find($addressId);
-        $orders = auth()->user()->orders;
+{
+    Log::info('Request data:', $request->all());
 
-        // Mengambil berat produk dari sesi sebelumnya
-        $productWeight = Session::get('product_weight', 0); // Default value jika tidak ada berat produk
+    $addressId = $request->get('address_id');
+    $address = UserAddress::find($addressId);
+    $orders = auth()->user()->orders;
 
-        // dd($productWeight);
-        $availableServices = $this->calculateShippingFee($orders, $address, $request->get('courier'), $productWeight);
+    $productWeight = Session::get('total_product_weight', 0);
 
-        $selectedPackage = null;
-        if (!empty($availableServices)) {
-            foreach ($availableServices as $service) {
-                if ($service['service'] === $request->get('delivery_package')) {
-                    $selectedPackage = $service;
-                    continue;
-                }
+    $availableServices = $this->calculateShippingFee($orders, $address, $request->get('courier'), $productWeight);
+
+    Log::info('Available services:', $availableServices);
+
+    $selectedPackage = null;
+    if (!empty($availableServices)) {
+        foreach ($availableServices as $service) {
+            Log::info('Checking service:', $service);
+            if ($service['service'] === $request->get('delivery_package')) {
+                $selectedPackage = $service;
+                break;
             }
         }
-
-        if ($selectedPackage == null) {
-            return [];
-        }
-
-        // Simpan biaya pengiriman, kurir, dan layanan di sesi
-        Session::put('shipping_fee', $selectedPackage['cost']);
-        Session::put('courier', $selectedPackage['courier']);
-        Session::put('service', $selectedPackage['service']);
-        dd($request->all());
-
-        return [
-            'shipping_fee' => number_format($selectedPackage['cost']),
-            'grand_total' => number_format($orders->sum('amount') + $selectedPackage['cost']),
-        ];
     }
-    private function calculateShippingFee($orders, $address, $courier, $productWeight)
-{
-    $shippingFees = [];
 
+    if ($selectedPackage == null) {
+        return response()->json(['error' => 'No selected package found'], 400);
+    }
+
+    Session::put('shipping_fee', $selectedPackage['cost']);
+    Session::put('courier', $selectedPackage['courier']);
+    Session::put('service', $selectedPackage['service']);
+
+    Log::info('Selected package:', $selectedPackage);
+
+    $subtotal = getCartTotal();
+    $shippingFee = $selectedPackage['cost'];
+    $total = $subtotal + $shippingFee - getCartDiscount();
+
+    return response()->json([
+        'shipping_fee' => number_format($shippingFee, 0, ',', '.'),
+        'total_amount' => number_format($total, 0, ',', '.'),
+    ]);
+}
+
+
+
+private function calculateShippingFee($orders, $address, $courier, $productWeight)
+{
     try {
         $client = new Client([
             'verify' => false, // Nonaktifkan verifikasi SSL
@@ -284,6 +292,7 @@ class CheckOutController extends Controller
         ]);
 
         $shippingFees = json_decode($response->getBody(), true);
+        Log::info('Shipping fees:', $shippingFees);
 
         $availableServices = [];
         if (!empty($shippingFees['rajaongkir']['results'])) {
@@ -302,7 +311,7 @@ class CheckOutController extends Controller
                 }
             }
         }
-        // dd($shippingFees);
+        Log::info('Available services after processing:', $availableServices);
 
         return $availableServices;
     } catch (\Exception $e) {
@@ -310,6 +319,8 @@ class CheckOutController extends Controller
         return [];
     }
 }
+
+
 
 
     public function getProvinces()

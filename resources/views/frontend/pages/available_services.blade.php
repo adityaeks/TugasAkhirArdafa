@@ -41,41 +41,15 @@
         $('.delivery-package').on('click', function() {
             $('#delivery_package').val($(this).val());
         });
-
-        // Handle form submission
-        // $('#submitCheckoutForm').on('click', function(e) {
-        //     e.preventDefault();
-        //     if ($('#shipping_address_id').val() == "") {
-        //         toastr.error('Shipping address is required');
-        //     } else if ($('#delivery_package').val() == "") {
-        //         toastr.error('Delivery pacgkage is required');
-        //     } else if (!$('.agree_term').prop('checked')) {
-        //         toastr.error('You have to agree to the website terms and conditions');
-        //     } else {
-        //         $.ajax({
-        //             url: "{{ route('user.checkout.form-submit') }}",
-        //             method: 'POST',
-        //             data: $('#checkOutForm').serialize(),
-        //             beforeSend: function() {
-        //                 $('#submitCheckoutForm').html(
-        //                     '<i class="fas fa-spinner fa-spin fa-1x"></i>')
-        //             },
-        //             success: function(data) {
-        //                 if (data.status === 'success') {
-        //                     $('#submitCheckoutForm').text('Place Order');
-        //                     window.location.href = data.redirect_url;
-        //                 }
-        //             },
-        //             error: function(data) {
-        //                 console.log(data);
-        //             }
-        //         });
-        //     }
-        // });
     });
 
 
     function setShippingFee(deliveryPackage, courier, addressID) {
+        console.log('Setting shipping fee with:', {
+            deliveryPackage,
+            courier,
+            addressID
+        });
         $.ajax({
             url: "checkout/choose-package",
             method: "POST",
@@ -86,12 +60,17 @@
                 _token: $('meta[name="csrf-token"]').attr('content'),
             },
             success: function(result) {
-                $('#shipping-fee').html("IDR " + result.shipping_fee);
-                $('#total_amount').html("IDR " + result.total_amount);
+                console.log('Shipping fee response:', result);
+                if (result.shipping_fee && result.total_amount) {
+                    $('#cost').html("Rp" + result.shipping_fee);
+                    $('#total_amount').html("Rp" + result.total_amount);
+                } else {
+                    console.error('Invalid response:', result);
+                }
             },
             error: function(e) {
-                console.log(e);
+                console.error('Ajax error:', e);
             }
-        })
+        });
     }
 </script>
