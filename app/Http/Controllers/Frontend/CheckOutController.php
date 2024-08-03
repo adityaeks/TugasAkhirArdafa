@@ -77,7 +77,7 @@ class CheckOutController extends Controller
         $totalAmount = 0;
         $totalWeight = 0;
 
-
+        // Hitung detail barang
         foreach ($cartItems as $item) {
             $product = Product::find($item->id);
             $itemDetails[] = [
@@ -89,6 +89,25 @@ class CheckOutController extends Controller
             $totalAmount += $item->price * $item->qty;
             $totalWeight += $product->weight * $item->qty;
         }
+
+        // Tambahkan biaya pengiriman ke itemDetails
+        $shippingFee = Session::get('shipping_fee', 0); // Ambil biaya pengiriman dari sesi
+        $itemDetails[] = [
+            'id' => 'shipping_fee',
+            'price' => $shippingFee,
+            'quantity' => 1,
+            'name' => 'Shipping Fee',
+        ];
+
+        // Ambil biaya pengiriman dari sesi
+        $shippingFee = Session::get('shipping_fee', 0);
+        // Tambahkan biaya pengiriman ke total amount
+        $totalAmount += $shippingFee;
+
+        // Ambil nilai kupon dari sesi
+        $couponDiscount = Session::get('coupon_discount', 0);
+        // Kurangi nilai kupon dari total amount
+        $totalAmount -= $couponDiscount;
 
         $params = [
             'transaction_details' => [
@@ -127,7 +146,7 @@ class CheckOutController extends Controller
             $order->invoice_id = rand(1, 999999);
             $order->user_id = Auth::user()->id;
             $order->sub_total = getCartTotal();
-            $order->amount = getFinalPayableAmount() + $request->shipping_fee;
+            $order->amount = $totalAmount;
             $order->product_qty = $cartItems->sum('qty');
             $order->product_weight = $totalWeight;
             $order->payment_method = 'midtrans';
