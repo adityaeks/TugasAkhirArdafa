@@ -48,8 +48,8 @@ class CheckOutController extends Controller
             'name' => ['required', 'max:200'],
             'phone' => ['required', 'max:200'],
             'email' => ['required', 'email'],
-            'country' => ['required', 'max: 200'],
-            'city' => ['required', 'max: 200'],
+            'province' => ['required'],
+            'city' => ['required'],
             'zip' => ['required', 'max: 200'],
             'address' => ['required', 'max: 200']
         ]);
@@ -59,7 +59,6 @@ class CheckOutController extends Controller
         $address->name = $request->name;
         $address->phone = $request->phone;
         $address->email = $request->email;
-        $address->country = $request->country;
         $address->province = $request->province;
         $address->city = $request->city;
         $address->zip = $request->zip;

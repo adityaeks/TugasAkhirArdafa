@@ -91,6 +91,8 @@ Route::group(['middleware' =>['auth', 'verified'], 'prefix' => 'user', 'as' => '
 
     /** User Address Route */
     Route::resource('address', UserAddressController::class);
+    Route::get('address/cities/{province}', [UserAddressController::class, 'getCities']);
+
     /** Order Routes */
     Route::get('orders', [UserOrderController::class, 'index'])->name('orders.index');
     Route::get('orders/show/{id}', [UserOrderController::class, 'show'])->name('orders.show');
@@ -110,7 +112,6 @@ Route::group(['middleware' =>['auth', 'verified'], 'prefix' => 'user', 'as' => '
     Route::post('checkout/submit', [CheckOutController::class, 'checkOutFormSubmit'])->name('checkout.submit');
     Route::get('checkout/provinces', [CheckOutController::class, 'getProvinces']);
     Route::get('checkout/cities/{province}', [CheckOutController::class, 'getCities']);
-    Route::get('/checkout/cities/{province}', [CheckOutController::class, 'getCities']);
 
     /** Payment Routes */
     Route::get('payment', [PaymentController::class, 'index'])->name('payment');

@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\UserAddress;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
 class UserAddressController extends Controller
@@ -15,15 +18,41 @@ class UserAddressController extends Controller
     public function index()
     {
         $addresses = UserAddress::where('user_id', Auth::user()->id)->get();
+        $provinces = $this->getProvinces();
+
+        $cities = [];
+        foreach ($addresses as $address) {
+            // Pastikan getCities dipanggil hanya sekali untuk setiap provinsi
+            if (!isset($cities[$address->province])) {
+                $cities[$address->province] = $this->getCities($address->province);
+            }
+            $address->province_name = $provinces[$address->province] ?? 'Unknown';
+            $address->city_name = $cities[$address->province][$address->city] ?? 'Unknown';
+        }
+
         return view('frontend.dashboard.address.index', compact('addresses'));
     }
+
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        return view('frontend.dashboard.address.create');
+        try {
+            $client = new Client([
+                'verify' => false, // Nonaktifkan verifikasi SSL
+            ]);
+            $response = Http::setCLient($client)->withHeaders([
+                'key' => env('API_ONGKIR_KEY')
+            ])->get('https://api.rajaongkir.com/starter/province');
+
+            $provinces = json_decode($response->getBody(), true);
+            return view('frontend.dashboard.address.create', compact('provinces'));
+        } catch (\Exception $e) {
+            Log::error('Error calculating shipping fee: ' . $e->getMessage());
+            return [];
+        }
     }
 
     /**
@@ -35,9 +64,8 @@ class UserAddressController extends Controller
             'name' => ['required', 'max:200'],
             'email' => ['required', 'max:200', 'email'],
             'phone' => ['required', 'max:200'],
-            'country' => ['required', 'max:200'],
-            'state' => ['required', 'max:200'],
-            'city' => ['required', 'max:200'],
+            'province' => ['required'],
+            'city' => ['required'],
             'zip' => ['required', 'max:200'],
             'address' => ['required'],
         ]);
@@ -47,8 +75,7 @@ class UserAddressController extends Controller
         $address->name = $request->name;
         $address->email = $request->email;
         $address->phone = $request->phone;
-        $address->country = $request->country;
-        $address->state = $request->state;
+        $address->province = $request->province;
         $address->city = $request->city;
         $address->zip = $request->zip;
         $address->address = $request->address;
@@ -86,9 +113,8 @@ class UserAddressController extends Controller
             'name' => ['required', 'max:200'],
             'email' => ['required', 'max:200', 'email'],
             'phone' => ['required', 'max:200'],
-            'country' => ['required', 'max:200'],
-            'state' => ['required', 'max:200'],
-            'city' => ['required', 'max:200'],
+            'province' => ['required'],
+            'city' => ['required'],
             'zip' => ['required', 'max:200'],
             'address' => ['required'],
         ]);
@@ -98,8 +124,7 @@ class UserAddressController extends Controller
         $address->name = $request->name;
         $address->email = $request->email;
         $address->phone = $request->phone;
-        $address->country = $request->country;
-        $address->state = $request->state;
+        $address->province = $request->province;
         $address->city = $request->city;
         $address->zip = $request->zip;
         $address->address = $request->address;
@@ -119,5 +144,41 @@ class UserAddressController extends Controller
         $address->delete();
 
         return response(['status' => 'success', 'message' => 'Deleted Successfully!']);
+    }
+
+    private function getProvinces()
+{
+    try {
+        $client = new Client(['verify' => false]);
+        $response = Http::setClient($client)->withHeaders([
+            'key' => env('API_ONGKIR_KEY')
+        ])->get('https://api.rajaongkir.com/starter/province');
+
+        $provinces = json_decode($response->getBody(), true)['rajaongkir']['results'];
+        return collect($provinces)->pluck('province', 'province_id')->all();
+    } catch (\Exception $e) {
+        Log::error('Error fetching provinces: ' . $e->getMessage());
+        return [];
+    }
+}
+    public function getCities($provinceId)
+    {
+        try {
+            $client = new Client([
+                'verify' => false, // Nonaktifkan verifikasi SSL
+            ]);
+            $response = Http::setClient($client)->withHeaders([
+                'key' => env('API_ONGKIR_KEY')
+            ])->get('https://api.rajaongkir.com/starter/city', [
+                'province' => $provinceId
+            ]);
+
+            $cities = json_decode($response->getBody(), true);
+            // dd($cities['rajaongkir']['result']);
+            return response()->json($cities['rajaongkir']['results']);
+        } catch (\Exception $e) {
+            Log::error('Error fetching cities: ' . $e->getMessage());
+            return response()->json([]);
+        }
     }
 }

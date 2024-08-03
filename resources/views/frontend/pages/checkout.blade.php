@@ -119,13 +119,13 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="wsus__check_single_form">
-                                            <input type="text" placeholder="Name *" name="name"
+                                            <input type="text" placeholder="Nama *" name="name"
                                                 value="{{ old('name') }}">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="wsus__check_single_form">
-                                            <input type="text" placeholder="Phone *" name="phone"
+                                            <input type="text" placeholder="No. Hp *" name="phone"
                                                 value="{{ old('phone') }}">
                                         </div>
                                     </div>
@@ -133,19 +133,6 @@
                                         <div class="wsus__check_single_form">
                                             <input type="email" placeholder="Email *" name="email"
                                                 value="{{ old('email') }}">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="wsus__check_single_form">
-                                            <select class="select_2" name="country">
-                                                <option value="">Country / Region *</option>
-                                                @foreach (config('settings.country_list') as $key => $county)
-                                                    <option {{ $county === old('country') ? 'selected' : '' }}
-                                                        value="{{ $county }}">{{ $county }}</option>
-                                                @endforeach
-
-                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -168,13 +155,13 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="wsus__check_single_form">
-                                            <input type="text" placeholder="Post code *" name="zip"
+                                            <input type="text" placeholder="Kode Pos *" name="zip"
                                                 value="{{ old('zip') }}">
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="wsus__check_single_form">
-                                            <input type="text" placeholder="Address *" name="address"
+                                            <input type="text" placeholder="Alamat lengkap *" name="address"
                                                 value="{{ old('address') }}">
                                         </div>
                                     </div>
