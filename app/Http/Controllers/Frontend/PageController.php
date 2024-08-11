@@ -14,8 +14,7 @@ class PageController extends Controller
 {
     public function about()
     {
-        $about = About::first();
-        return view('frontend.pages.about', compact('about'));
+        return view('frontend.pages.about');
     }
 
     public function termsAndCondition()

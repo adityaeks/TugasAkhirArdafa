@@ -44,17 +44,19 @@
                             <div class="col-xl-4 col-lg-4">
                                 <a class="wsus__hot_deals__single" href="{{ route('product-detail', $item->slug) }}">
                                     <div class="wsus__hot_deals__single_img">
-                                        <img src="{{ asset($item->thumb_image) }}" alt="bag" class="img-fluid w-100">
+                                        <img src="{{ asset($item->thumb_image) }}" alt="bag"
+                                            class="img-fluid w-100">
                                     </div>
                                     <div class="wsus__hot_deals__single_text mt-2">
                                         <h5>{!! limitText($item->name, 52) !!}</h5>
-                                        <!-- Hapus bagian rating -->
-                                        <!-- Hapus bagian harga dengan diskon -->
                                         @if (checkDiscount($item))
-                                            <p class="wsus__tk">(Rp){{ $item->offer_price }} <del>(Rp){{ $item->price }}</del></p>
+                                            <p class="wsus__tk">Rp{{ number_format($item->offer_price, 0, ',', '.') }}
+                                                <del>Rp{{ number_format($item->price, 0, ',', '.') }}</del>
+                                            </p>
                                         @else
-                                            <p class="wsus__tk">(Rp){{ $item->price }}</p>
+                                            <p class="wsus__tk">Rp{{ number_format($item->price, 0, ',', '.') }}</p>
                                         @endif
+
                                     </div>
                                 </a>
                             </div>

@@ -22,24 +22,23 @@ use LDAP\Result;
 class CheckOutController extends Controller
 {
     public function index()
-{
-    $addresses = UserAddress::where('user_id', Auth::user()->id)->get();
-    $shippingMethods = ShippingRule::where('status', 1)->get();
-    try {
-        $client = new Client([
-            'verify' => false, // Nonaktifkan verifikasi SSL
-        ]);
-        $response = Http::setCLient($client)->withHeaders([
-            'key' => env('API_ONGKIR_KEY')
-        ])->get('https://api.rajaongkir.com/starter/province');
+    {
+        $addresses = UserAddress::where('user_id', Auth::user()->id)->get();
+        try {
+            $client = new Client([
+                'verify' => false, // Nonaktifkan verifikasi SSL
+            ]);
+            $response = Http::setCLient($client)->withHeaders([
+                'key' => env('API_ONGKIR_KEY')
+            ])->get('https://api.rajaongkir.com/starter/province');
 
-        $provinces = json_decode($response->getBody(), true);
-        return view('frontend.pages.checkout', compact('addresses', 'shippingMethods', 'provinces'));
-    } catch (\Exception $e) {
-        Log::error('Error calculating shipping fee: ' . $e->getMessage());
-        return [];
+            $provinces = json_decode($response->getBody(), true);
+            return view('frontend.pages.checkout', compact('addresses', 'provinces'));
+        } catch (\Exception $e) {
+            Log::error('Error calculating shipping fee: ' . $e->getMessage());
+            return [];
+        }
     }
-}
 
 
     public function createAddress(Request $request)
@@ -148,6 +147,7 @@ class CheckOutController extends Controller
             $order->sub_total = getCartTotal();
             $order->amount = $totalAmount;
             $order->product_qty = $cartItems->sum('qty');
+            $order->product_name = $product->name;
             $order->product_weight = $totalWeight;
             $order->payment_method = 'midtrans';
             $order->status = 'pending';
@@ -268,6 +268,7 @@ class CheckOutController extends Controller
             }
         }
     }
+    // dd($productWeight);
 
     if ($selectedPackage == null) {
         return response()->json(['error' => 'No selected package found'], 400);
@@ -291,57 +292,94 @@ class CheckOutController extends Controller
 
 
 
-private function calculateShippingFee($orders, $address, $courier, $productWeight)
-{
-    try {
-        $client = new Client([
-            'verify' => false, // Nonaktifkan verifikasi SSL
-        ]);
+    private function calculateShippingFee($orders, $address, $courier, $productWeight)
+    {
+        try {
+            $client = new Client([
+                'verify' => false, // Nonaktifkan verifikasi SSL
+            ]);
 
-        $response = $client->post(env('API_ONGKIR_BASE_URL') . 'cost', [
-            'headers' => [
-                'key' => env('API_ONGKIR_KEY'),
-            ],
-            'form_params' => [
-                'origin' => env('API_ONGKIR_ORIGIN'),
-                'destination' => $address->city,
-                'weight' => $productWeight, // Menggunakan berat produk yang telah disimpan sebelumnya
-                'courier' => $courier,
-            ],
-        ]);
+            $response = $client->post(env('API_ONGKIR_BASE_URL') . 'cost', [
+                'headers' => [
+                    'key' => env('API_ONGKIR_KEY'),
+                ],
+                'form_params' => [
+                    'origin' => env('API_ONGKIR_ORIGIN'),
+                    'destination' => $address->city,
+                    'weight' => $productWeight, // Menggunakan berat produk yang telah disimpan sebelumnya
+                    'courier' => $courier,
+                ],
+            ]);
 
-        $shippingFees = json_decode($response->getBody(), true);
-        Log::info('Shipping fees:', $shippingFees);
+            $shippingFees = json_decode($response->getBody(), true);
+            Log::info('Shipping fees:', $shippingFees);
 
-        $availableServices = [];
-        if (!empty($shippingFees['rajaongkir']['results'])) {
-            foreach ($shippingFees['rajaongkir']['results'] as $cost) {
-                if (!empty($cost['costs'])) {
-                    foreach ($cost['costs'] as $costDetail) {
-                        $availableServices[] = [
-                            'service' => $costDetail['service'],
-                            'description' => $costDetail['description'],
-                            'etd' => $costDetail['cost'][0]['etd'],
-                            'cost' => $costDetail['cost'][0]['value'],
-                            'courier' => $courier,
-                            'address_id' => $address->id,
-                        ];
+            $availableServices = [];
+            if (!empty($shippingFees['rajaongkir']['results'])) {
+                foreach ($shippingFees['rajaongkir']['results'] as $cost) {
+                    if (!empty($cost['costs'])) {
+                        foreach ($cost['costs'] as $costDetail) {
+                            $availableServices[] = [
+                                'service' => $costDetail['service'],
+                                'description' => $costDetail['description'],
+                                'etd' => $costDetail['cost'][0]['etd'],
+                                'cost' => $costDetail['cost'][0]['value'],
+                                'courier' => $courier,
+                                'address_id' => $address->id,
+                            ];
+                        }
                     }
                 }
             }
+            Log::info('Available services after processing:', $availableServices);
+
+            return $availableServices;
+        } catch (\Exception $e) {
+            Log::error('Error calculating shipping fee: ' . $e->getMessage());
+            return [];
         }
-        Log::info('Available services after processing:', $availableServices);
-
-        return $availableServices;
-    } catch (\Exception $e) {
-        Log::error('Error calculating shipping fee: ' . $e->getMessage());
-        return [];
     }
-}
 
 
 
+public function getShippingCost(Request $request)
+    {
+        $addressId = $request->input('address_id');
+        $courier = $request->input('courier');
+        $totalWeight = $request->input('total_weight');
 
+        // Ambil detail alamat berdasarkan ID
+        $address = UserAddress::find($addressId);
+        if (!$address) {
+            return response()->json(['error' => 'Address not found'], 404);
+        }
+
+        // Ambil data kota tujuan dari alamat
+        $destinationCityId = $address->city_id; // Pastikan `city_id` ada di tabel user_address
+
+        // ID kota asal (misalnya, Surabaya)
+        $originCityId = 39;
+
+        // Panggil API RajaOngkir untuk mendapatkan biaya pengiriman
+        $response = Http::withHeaders([
+            'key' => env('RAJAONGKIR_API_KEY')
+        ])->post('https://api.rajaongkir.com/starter/cost', [
+            'origin' => $originCityId,
+            'destination' => $destinationCityId,
+            'weight' => $totalWeight,
+            'courier' => $courier,
+        ]);
+
+        if ($response->failed()) {
+            return response()->json(['error' => 'Failed to fetch shipping cost'], 500);
+        }
+
+        $shippingCost = $response->json();
+
+        return response()->json([
+            'data' => $shippingCost['rajaongkir']['results'][0]['costs']
+        ]);
+    }
     public function getProvinces()
     {
         $response = Http::withHeaders([
@@ -373,12 +411,6 @@ private function calculateShippingFee($orders, $address, $courier, $productWeigh
             return response()->json([]);
         }
     }
-
-
-
-
-
-
 
     protected function loadTheme($view, $data = [])
     {

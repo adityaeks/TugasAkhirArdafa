@@ -117,7 +117,7 @@ class VendorOrderDataTable extends DataTable
     {
         return [
             Column::make('id'),
-            Column::make('invocie_id'),
+            // Column::make('invocie_id'),
             Column::make('customer'),
             Column::make('date'),
             Column::make('product_qty'),
@@ -125,7 +125,7 @@ class VendorOrderDataTable extends DataTable
             // Column::make('order_status'),
             Column::make('payment_status'),
 
-            Column::make('payment_method'),
+            // Column::make('payment_method'),
 
 
             Column::computed('action')

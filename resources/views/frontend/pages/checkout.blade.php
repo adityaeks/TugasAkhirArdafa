@@ -29,13 +29,11 @@
                                             </label>
                                         </div>
                                         <ul>
-                                            <li><span>Name :</span> {{ $address->name }}</li>
+                                            <li><span>Nama :</span> {{ $address->name }}</li>
                                             <li><span>Phone :</span> {{ $address->phone }}</li>
                                             <li><span>Email :</span> {{ $address->email }}</li>
-                                            <li><span>Country :</span> {{ $address->country }}</li>
-                                            <li><span>City :</span> {{ $address->city }}</li>
-                                            <li><span>Zip Code :</span> {{ $address->zip }}</li>
-                                            <li><span>Address :</span> {{ $address->address }}</li>
+                                            <li><span>Kode Pos :</span> {{ $address->zip }}</li>
+                                            <li><span>Alamat :</span> {{ $address->address }}</li>
                                         </ul>
                                     </div>
                                 </div>

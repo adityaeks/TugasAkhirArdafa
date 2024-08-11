@@ -13,34 +13,39 @@ class FrontendProductController extends Controller
 {
     public function productsIndex(Request $request)
 {
-    if($request->has('category')){
+    if ($request->has('category')) {
         $category = Category::where('slug', $request->category)->firstOrFail();
-        $products = Product::with(['category', 'productImageGalleries'])
-        ->where([
-            'category_id' => $category->id,
-            'status' => 1,
-            'is_approved' => 1
-        ])
-        ->when($request->has('range'), function($query) use ($request){
-            $price = explode(';', $request->range);
-            $from = $price[0];
-            $to = $price[1];
+        $products = Product::with(['category'])
+            ->where([
+                'category_id' => $category->id,
+                'status' => 1,
+                'is_approved' => 1
+            ])
+            ->when($request->has('range'), function($query) use ($request) {
+                $price = explode(';', $request->range);
+                $from = $price[0];
+                $to = $price[1];
 
-            return $query->where('price', '>=', $from)->where('price', '<=', $to);
-        })
-        ->paginate(12);
-    } elseif($request->has('search')){
-        $products = Product::with(['category', 'productImageGalleries'])
-        ->where(['status' => 1, 'is_approved' => 1])
-        ->where(function ($query) use ($request){
-            $query->where('name', 'like', '%'.$request->search.'%')
-                ->orWhere('long_description', 'like', '%'.$request->search.'%')
-                ->orWhereHas('category', function($query) use ($request){
-                    $query->where('name', 'like', '%'.$request->search.'%')
-                        ->orWhere('long_description', 'like', '%'.$request->search.'%');
-                });
-        })
-        ->paginate(12);
+                return $query->where('price', '>=', $from)->where('price', '<=', $to);
+            })
+            ->paginate(12);
+    } elseif ($request->has('search')) {
+        $products = Product::with(['category'])
+            ->where(['status' => 1, 'is_approved' => 1])
+            ->where(function ($query) use ($request) {
+                $query->where('name', 'like', '%'.$request->search.'%')
+                    ->orWhere('long_description', 'like', '%'.$request->search.'%')
+                    ->orWhereHas('category', function($query) use ($request) {
+                        $query->where('name', 'like', '%'.$request->search.'%')
+                            ->orWhere('long_description', 'like', '%'.$request->search.'%');
+                    });
+            })
+            ->paginate(12);
+    } else {
+        // Tambahkan definisi default untuk variabel $products
+        $products = Product::with(['category'])
+            ->where(['status' => 1, 'is_approved' => 1])
+            ->paginate(12);
     }
 
     $categories = Category::all();
@@ -51,9 +56,10 @@ class FrontendProductController extends Controller
     return view('frontend.pages.product', compact('products', 'categories', 'productpage_banner_section'));
 }
 
+
     public function showProduct(string $slug)
     {
-        $product = Product::with(['vendor', 'category', 'productImageGalleries'])->where('slug', $slug)->where('status', 1)->first();
+        $product = Product::with(['vendor', 'category'])->where('slug', $slug)->where('status', 1)->first();
         return view('frontend.pages.product-detail', compact('product'));
     }
 

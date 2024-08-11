@@ -18,9 +18,7 @@
                       <li><span>Name :</span> {{$address->name}}</li>
                       <li><span>Phone :</span> {{$address->phone}}</li>
                       <li><span>Email :</span> {{$address->email}}</li>
-                      <li><span>Province :</span> {{$address->province_name}}</li>
-                      <li><span>City :</span> {{$address->city_name}}</li>
-                      <li><span>Zip Code :</span> {{$address->zip}}</li>
+                      <li><span>Kode Pos :</span> {{$address->zip}}</li>
                       <li><span>Address :</span> {{$address->address}}</li>
                     </ul>
                     <div class="wsus__address_btn">

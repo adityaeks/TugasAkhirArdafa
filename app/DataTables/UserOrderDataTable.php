@@ -3,15 +3,12 @@
 namespace App\DataTables;
 
 use App\Models\Order;
-use App\Models\VendorOrder;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
-use Yajra\DataTables\Html\Editor\Editor;
-use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
 class UserOrderDataTable extends DataTable
@@ -32,49 +29,48 @@ class UserOrderDataTable extends DataTable
             ->addColumn('customer', function($query){
                 return $query->user->name;
             })
-            ->addColumn('amount', function($query){
-                return $query->currency_icon.$query->amount;
+            ->addColumn('Produk Name', function($query){
+                return $query->product_name;
+            })
+            ->addColumn('Harga', function($query) {
+                return 'Rp ' . number_format($query->amount, 0, ',', '.');
             })
             ->addColumn('date', function($query){
                 return date('d-M-Y', strtotime($query->created_at));
             })
-            ->addColumn('payment_status', function($query){
-                if($query->payment_status === 1){
-                    return "<span class='badge bg-success'>complete</span>";
-                }else {
-                    return "<span class='badge bg-warning'>pending</span>";
+            ->addColumn('Status Pembayaran', function($query) {
+                switch ($query->status ? $query->status : '-') {
+                    case 'pending':
+                        return "<span class='badge bg-warning'>pending</span>";
+                    case 'success':
+                    case 'settlement':
+                    case 'capture':
+                        return "<span class='badge bg-success'>success</span>";
+                    default:
+                        return $query->status;
                 }
             })
             ->addColumn('order_status', function($query){
                 switch ($query->order_status) {
                     case 'pending':
                         return "<span class='badge bg-warning'>pending</span>";
-                        break;
                     case 'processed_and_ready_to_ship':
                         return "<span class='badge bg-info'>processed</span>";
-                        break;
                     case 'dropped_off':
                         return "<span class='badge bg-info'>dropped off</span>";
-                        break;
                     case 'shipped':
                         return "<span class='badge bg-info'>shipped</span>";
-                        break;
                     case 'out_for_delivery':
                         return "<span class='badge bg-primary'>out for delivery</span>";
-                        break;
                     case 'delivered':
                         return "<span class='badge bg-success'>delivered</span>";
-                        break;
                     case 'canceled':
                         return "<span class='badge bg-danger'>canceled</span>";
-                        break;
                     default:
-                        # code...
-                        break;
+                        return $query->order_status;
                 }
-
             })
-            ->rawColumns(['order_status', 'action', 'payment_status'])
+            ->rawColumns(['Status Pembayaran', 'order_status', 'action', 'payment_status'])
             ->setRowId('id');
     }
 
@@ -95,7 +91,8 @@ class UserOrderDataTable extends DataTable
                     ->setTableId('vendororder-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
-                    //->dom('Bfrtip')
+                    ->dom('Bfrtip')
+                    ->responsive(true)
                     ->orderBy(0)
                     ->selectStyleSingle()
                     ->buttons([
@@ -114,23 +111,20 @@ class UserOrderDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::make('id'),
-            Column::make('invocie_id'),
-            Column::make('customer'),
-            Column::make('date'),
+            // Column::make('id'),
+            // Column::make('customer'),
+            Column::make('date')->width(250),
             Column::make('product_qty'),
-            Column::make('amount'),
+            Column::make('product_name'),
+            Column::make('Harga'),
             Column::make('order_status'),
-            Column::make('payment_status'),
-
-            Column::make('payment_method'),
-
-
+            Column::make('Status Pembayaran'),
+            // Column::make('payment_method'),
             Column::computed('action')
-            ->exportable(false)
-            ->printable(false)
-            ->width(200)
-            ->addClass('text-center'),
+                ->exportable(false)
+                ->printable(false)
+                ->width(200)
+                ->addClass('text-center'),
         ];
     }
 

@@ -56,13 +56,11 @@
                                     @foreach ($products as $product)
                                         <div class="col-xl-3 col-sm-6">
                                             <div class="wsus__product_item">
-                                                <span class="wsus__new">{{ productType($product->product_type) }}</span>
-                                                @if (checkDiscount($product))
-                                                    <span class="wsus__minus">-{{ calculateDiscountPercent($product->price, $product->offer_price) }}%</span>
-                                                @endif
+                                                <span class="">{{ productType($product->product_type) }}</span>
+                                              
                                                 <a class="wsus__pro_link" href="{{ route('product-detail', $product->slug) }}">
                                                     <img src="{{ asset($product->thumb_image) }}" alt="product" class="img-fluid w-100 img_1" />
-                                                    <img src="@if (isset($product->productImageGalleries[0]->image)) {{ asset($product->productImageGalleries[0]->image) }} @else {{ asset($product->thumb_image) }} @endif"
+                                                    <img src=" {{ asset($product->thumb_image) }} "
                                                         alt="product" class="img-fluid w-100 img_2" />
                                                 </a>
                                                 <ul class="wsus__single_pro_icon">
@@ -98,13 +96,10 @@
                                     @foreach ($products as $product)
                                         <div class="col-xl-12">
                                             <div class="wsus__product_item wsus__list_view">
-                                                <span class="wsus__new">{{ productType($product->product_type) }}</span>
-                                                @if (checkDiscount($product))
-                                                    <span class="wsus__minus">-{{ calculateDiscountPercent($product->price, $product->offer_price) }}%</span>
-                                                @endif
+                                                <span class="">{{ productType($product->product_type) }}</span>
                                                 <a class="wsus__pro_link" href="{{ route('product-detail', $product->slug) }}">
                                                     <img src="{{ asset($product->thumb_image) }}" alt="product" class="img-fluid w-100 img_1" />
-                                                    <img src="@if (isset($product->productImageGalleries[0]->image)) {{ asset($product->productImageGalleries[0]->image) }} @else {{ asset($product->thumb_image) }} @endif"
+                                                    <img src="{{ asset($product->thumb_image) }} "
                                                         alt="product" class="img-fluid w-100 img_2" />
                                                 </a>
                                                 <div class="wsus__product_details">
@@ -138,7 +133,7 @@
                             </div>
                         </div>
                     </div>
-                
+
                 </div>
 
             </div>

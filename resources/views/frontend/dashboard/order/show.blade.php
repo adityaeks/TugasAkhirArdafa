@@ -31,7 +31,7 @@
                                                     <div class="col-xl-4 col-md-4 mb-5 mb-md-0">
                                                         <div class="wsus__invoice_single">
                                                             <h5>Billing Information</h5>
-                                                            <h6>{{ $address->name }}</h6>
+                                                            <h6>{{ $address->name }}</h6> --}}
                                                             <p>{{ $address->email }}</p>
                                                             <p>{{ $address->phone }}</p>
                                                             <p>{{ $address->address }}, {{ $address->city }},
