@@ -67,9 +67,9 @@
                             {{ $sidebarProduct->price }}
                         </p>
                         <small>Total Produk : {{ $sidebarProduct->qty }}</small>
-                        <div class="total-weight">
+                        {{-- <div class="total-weight">
                             Total Berat: <span id="cart-total-weight">0 grams</span>
-                        </div>
+                        </div> --}}
                     </div>
                 </li>
             @endforeach

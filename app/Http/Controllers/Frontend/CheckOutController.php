@@ -71,6 +71,14 @@ class CheckOutController extends Controller
 
     public function checkOutFormSubmit(Request $request)
     {
+        $request->validate([
+            // 'delivery_package' => ['required', 'integer'],
+            'shipping_address_id' => ['required', 'integer'],
+           ]);
+        $address = UserAddress::findOrFail($request->shipping_address_id)->toArray();
+       if($address){
+           Session::put('address', $address);
+       }
         $cartItems = Cart::content();
         $itemDetails = [];
         $totalAmount = 0;

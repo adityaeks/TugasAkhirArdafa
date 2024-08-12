@@ -18,17 +18,6 @@ class UserAddressController extends Controller
     public function index()
     {
         $addresses = UserAddress::where('user_id', Auth::user()->id)->get();
-        $provinces = $this->getProvinces();
-
-        $cities = [];
-        foreach ($addresses as $address) {
-            // Pastikan getCities dipanggil hanya sekali untuk setiap provinsi
-            if (!isset($cities[$address->province])) {
-                $cities[$address->province] = $this->getCities($address->province);
-            }
-            $address->province_name = $provinces[$address->province] ?? 'Unknown';
-            $address->city_name = $cities[$address->province][$address->city] ?? 'Unknown';
-        }
 
         return view('frontend.dashboard.address.index', compact('addresses'));
     }
