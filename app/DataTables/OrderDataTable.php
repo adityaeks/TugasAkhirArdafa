@@ -28,23 +28,31 @@ class OrderDataTable extends DataTable
 
                 return $showBtn.$deleteBtn;
             })
-            ->addColumn('customer', function($query){
+            ->addColumn('pembeli', function($query){
                 return $query->user->name;
             })
-            ->addColumn('amount', function($query){
-                return $query->currency_icon.$query->amount;
+            ->addColumn('jumlah_produk', function($query){
+                return $query->product_qty;
+            })
+            ->addColumn('total', function($query){
+                return 'Rp ' . number_format($query->amount, 0, ',', '.');
             })
             ->addColumn('date', function($query){
                 return date('d-M-Y', strtotime($query->created_at));
             })
-            ->addColumn('payment_status', function($query){
-                if($query->payment_status === 1){
-                    return "<span class='badge bg-success'>complete</span>";
-                }else {
-                    return "<span class='badge bg-warning'>pending</span>";
+            ->addColumn('pembayaran', function($query){
+                switch ($query->status ? $query->status : '-') {
+                    case 'pending':
+                        return "<span class='badge bg-warning'>pending</span>";
+                    case 'success':
+                    case 'settlement':
+                    case 'capture':
+                        return "<span class='badge bg-success'>success</span>";
+                    default:
+                        return $query->status;
                 }
             })
-            ->addColumn('order_status', function($query){
+            ->addColumn('pengiriman', function($query){
                 switch ($query->order_status) {
                     case 'pending':
                         return "<span class='badge bg-warning'>pending</span>";
@@ -73,7 +81,7 @@ class OrderDataTable extends DataTable
                 }
 
             })
-            ->rawColumns(['action', 'order_status', 'payment_status'])
+            ->rawColumns(['action', 'pengiriman', 'pembayaran'])
             ->setRowId('id');
     }
 
@@ -115,21 +123,21 @@ class OrderDataTable extends DataTable
         return [
 
             Column::make('id'),
-            Column::make('invoice_id'),
-            Column::make('customer'),
             Column::make('date'),
-            Column::make('product_qty'),
-            Column::make('amount'),
-            // Column::make('order_status'),
-            Column::make('payment_status'),
-
-            Column::make('payment_method'),
+            Column::make('invoice_id'),
+            Column::make('pembeli'),
+            Column::make('jumlah_produk'),
+            Column::make('total')
+            ->width(60),
+            Column::make('pembayaran'),
+            Column::make('pengiriman'),
+            // Column::make('payment_method'),
 
 
             Column::computed('action')
             ->exportable(false)
             ->printable(false)
-            ->width(200)
+            ->width(100)
             ->addClass('text-center'),
         ];
     }
