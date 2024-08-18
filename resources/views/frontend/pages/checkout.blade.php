@@ -76,17 +76,6 @@
                                         data-id="{{ getMainCartTotal() }}">Rp{{ number_format(getMainCartTotal(), 0, ',', '.') }}</b></span>
                             </p>
                         </div>
-
-                        <div class="terms_area">
-                            <div class="form-check">
-                                <input class="form-check-input agree_term" type="checkbox" value=""
-                                    id="flexCheckChecked3" checked>
-                                <label class="form-check-label" for="flexCheckChecked3">
-                                    I have read and agree to the website <a
-                                        href="{{ route('terms-and-conditions') }}">terms and conditions *</a>
-                                </label>
-                            </div>
-                        </div>
                         <form action="{{ route('user.checkout.submit') }}" id="checkOutForm">
                             <input type="hidden" name="shipping_method_id" value="" id="shipping_method_id">
                             <input type="hidden" name="shipping_address_id" value="" id="shipping_address_id">
@@ -268,8 +257,6 @@
                     toastr.error('Shipping address is required');
                 } else if ($('#delivery_package').val() == "") {
                     toastr.error('Delivery service is required');
-                } else if (!$('.agree_term').prop('checked')) {
-                    toastr.error('You have to agree to the website terms and conditions');
                 } else {
                     var token = $('meta[name="csrf-token"]').attr('content');
                     var totalQty = $('#total_qty').val();

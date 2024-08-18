@@ -11,8 +11,8 @@
 
 @section('content')
     <!--=============================
-            DASHBOARD START
-          ==============================-->
+                DASHBOARD START
+              ==============================-->
     <section id="wsus__dashboard">
         <div class="container-fluid">
             @include('vendor.layouts.sidebar')
@@ -24,8 +24,8 @@
                         <div class="wsus__dashboard_profile">
 
                             <!--============================
-                                INVOICE PAGE START
-                            ==============================-->
+                                    INVOICE PAGE START
+                                ==============================-->
                             <section id="" class="invoice-print">
                                 <div class="">
                                     <div class="wsus__invoice_area">
@@ -98,6 +98,9 @@
                                                                     $total += $product->unit_price * $product->qty;
                                                                 @endphp
                                                                 <tr>
+                                                                    <td class="name">
+                                                                        {{ $product->product_name }}
+                                                                    </td>
 
                                                                     <td class="amount">
                                                                         {{ $product->vendor->shop_name }}
@@ -112,7 +115,8 @@
                                                                         {{ $product->qty }}
                                                                     </td>
                                                                     <td class="total">
-                                                                        Rp {{ number_format($product->unit_price * $product->qty, 0, ',', '.') }}
+                                                                        Rp
+                                                                        {{ number_format($product->unit_price * $product->qty, 0, ',', '.') }}
                                                                     </td>
 
                                                                 </tr>
@@ -131,8 +135,8 @@
                                 </div>
 
 
-                            <div class="row">
-                                {{-- <div class="col-md-4">
+                                <div class="row">
+                                    {{-- <div class="col-md-4">
                                     <form action="{{ route('vendor.orders.status', $order->id) }}">
                                         <div class="form-group mt-5">
                                             <label for="" class="mb-2">Order Status</label>
@@ -146,12 +150,12 @@
                                         </div>
                                     </form>
                                 </div> --}}
-                                <div class="col-md-12">
-                                    <div class="mt-5 float-end">
-                                        <button class="btn btn-warning print_invoice">print</button>
+                                    <div class="col-md-12">
+                                        <div class="mt-5 float-end">
+                                            <button class="btn btn-warning print_invoice">print</button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                         </div>
 
                     </div>
@@ -160,8 +164,8 @@
         </div>
     </section>
     <!--=============================
-            DASHBOARD START
-          ==============================-->
+                DASHBOARD START
+              ==============================-->
 @endsection
 
 @push('scripts')

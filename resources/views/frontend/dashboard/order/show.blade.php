@@ -31,12 +31,10 @@
                                                     <div class="col-xl-4 col-md-4 mb-5 mb-md-0">
                                                         <div class="wsus__invoice_single">
                                                             <h5>Billing Information</h5>
-                                                            <h6>{{ $address->name }}</h6> --}}
+                                                            <h6>{{ $address->name }}</h6>
                                                             <p>{{ $address->email }}</p>
                                                             <p>{{ $address->phone }}</p>
-                                                            <p>{{ $address->address }}, {{ $address->city }},
-                                                                {{ $address->state }}, {{ $address->zip }}</p>
-                                                            <p>{{ $address->country }}</p>
+                                                            <p>{{ $address->address }},  {{ $address->zip }}</p>
                                                         </div>
                                                     </div>
                                                     <div class="col-xl-4 col-md-4 mb-5 mb-md-0">
@@ -45,20 +43,18 @@
                                                             <h6>{{ $address->name }}</h6>
                                                             <p>{{ $address->email }}</p>
                                                             <p>{{ $address->phone }}</p>
-                                                            <p>{{ $address->address }}, {{ $address->city }},
-                                                                {{ $address->state }}, {{ $address->zip }}</p>
-                                                            <p>{{ $address->country }}</p>
+                                                            <p>{{ $address->address }}, {{ $address->zip }}</p>
                                                         </div>
                                                     </div>
                                                     <div class="col-xl-4 col-md-4">
                                                         <div class="wsus__invoice_single text-md-end">
-                                                            <h5>Order id: #{{ $order->invocie_id }}</h5>
+                                                            <h5>Order id: #{{ $order->order_id }}</h5>
                                                             <h6>Order status:
                                                                 {{ config('order_status.order_status_admin')[$order->order_status]['status'] }}
                                                             </h6>
-                                                            <p>Payment Method: {{ $order->payment_method }}</p>
+                                                            {{-- <p>Payment Method: {{ $order->payment_method }}</p> --}}
                                                             <p>Payment Status: {{ $order->payment_status }}</p>
-                                                            <p>Transaction id: {{ $order->transaction->transaction_id }}
+                                                            {{-- <p>Transaction id: {{ $order->transaction->transaction_id }} --}}
                                                             </p>
                                                         </div>
                                                     </div>
@@ -69,10 +65,10 @@
                                                     <table class="table">
                                                         <tr>
                                                             <th class="name">
-                                                                product
+                                                                produk
                                                             </th>
                                                             <th class="amount">
-                                                                Vendor
+                                                                Seller
                                                             </th>
 
                                                             <th class="amount">
@@ -80,31 +76,21 @@
                                                             </th>
 
                                                             <th class="quentity">
-                                                                quentity
+                                                                jumlah
                                                             </th>
                                                             <th class="total">
                                                                 total
                                                             </th>
                                                         </tr>
                                                         @foreach ($order->orderProducts as $product)
-                                                            @php
-                                                                $variants = json_decode($product->variants);
-                                                            @endphp
                                                             <tr>
-                                                                {{-- <td class="name">
-                                                                    <p>{{ $product->product_name }}</p>
-                                                                    @foreach ($variants as $key => $item)
-                                                                        <span>{{ $key }} :
-                                                                            {{ $item->name }}(
-                                                                            Rp{{ number_format($item->price, 0, ',', '.') }}
-                                                                            )</span>
-                                                                    @endforeach
-                                                                </td> --}}
+                                                                <td class="name">
+                                                                    {{ $product->product_name }}
+                                                                </td>
                                                                 <td class="amount">
                                                                     {{ $product->vendor->shop_name }}
                                                                 </td>
                                                                 <td class="amount">
-                                                                    Rp
                                                                     Rp{{ number_format($product->unit_price, 0, ',', '.') }}
                                                                 </td>
 
@@ -127,7 +113,7 @@
                                             <p><span>Sub Total:</span>
                                                 Rp{{ number_format($order->sub_total, 0, ',', '.') }}</p>
                                             <p><span>Shipping Fee(+):</span>
-                                                Rp{{ number_format($shipping->cost, 0, ',', '.') }}</p>
+                                                Rp{{ number_format($order->shiping_fee, 0, ',', '.') }}</p>
                                             <p><span>Coupon(-):</span>{{ @$settings->currency_icon }}
                                                 {{ @$coupon->discount ? $coupon->discount : 0 }}</p>
                                             <p><span>Total Amount:</span>

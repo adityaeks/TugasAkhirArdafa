@@ -104,9 +104,6 @@
                             <a class="wsus__cart_title" href="{{ url('product-detail') }}/${product.options.slug}">${product.name}</a>
                             <p>${product.price}</p>
                             <small>Qty: ${product.qty}</small>
-                            <div class="total-weight">
-                                Total Berat: <span id="cart-total-weight">0 grams</span>
-                            </div>
                         </div>
                     </li>`;
                 }

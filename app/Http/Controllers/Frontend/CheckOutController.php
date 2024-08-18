@@ -151,8 +151,10 @@ class CheckOutController extends Controller
             // Save to orders table
             $order = new Order();
             $order->invoice_id = rand(1, 999999);
+            $order->order_id = $params['transaction_details']['order_id'];
             $order->user_id = Auth::user()->id;
             $order->sub_total = getCartTotal();
+            $order->shiping_fee = $shippingFee;
             $order->amount = $totalAmount;
             $order->product_qty = $cartItems->sum('qty');
             $order->product_name = $product->name;
@@ -171,7 +173,7 @@ class CheckOutController extends Controller
             foreach ($cartItems as $item) {
                 $product = Product::find($item->id);
                 $orderProduct = new OrderProduct();
-                $orderProduct->order_id = $order->id;
+                $orderProduct->order_id = $params['transaction_details']['order_id'];
                 $orderProduct->product_id = $product->id;
                 $orderProduct->vendor_id = $product->vendor_id;
                 $orderProduct->product_name = $product->name;
