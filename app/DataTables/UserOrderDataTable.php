@@ -29,6 +29,12 @@ class UserOrderDataTable extends DataTable
             ->addColumn('customer', function($query){
                 return $query->user->name;
             })
+            ->addColumn('nama_produk', function($order){
+                return $order->product_name;
+            })
+            ->addColumn('jumlah', function($order){
+                return $order->product_qty;
+            })
             ->addColumn('Produk Name', function($query){
                 return $query->product_name;
             })
@@ -38,8 +44,10 @@ class UserOrderDataTable extends DataTable
             ->addColumn('date', function($query){
                 return date('d-M-Y', strtotime($query->created_at));
             })
-            ->addColumn('Status Pembayaran', function($query) {
-                switch ($query->status ? $query->status : '-') {
+            ->addColumn('pembayaran', function($query){
+                $status = $query->payment_status ? $query->payment_status : '-';
+
+                switch ($status) {
                     case 'pending':
                         return "<span class='badge bg-warning'>pending</span>";
                     case 'success':
@@ -47,10 +55,10 @@ class UserOrderDataTable extends DataTable
                     case 'capture':
                         return "<span class='badge bg-success'>success</span>";
                     default:
-                        return $query->status;
+                        return $status;
                 }
             })
-            ->addColumn('order_status', function($query){
+            ->addColumn('pengiriman', function($query){
                 switch ($query->order_status) {
                     case 'pending':
                         return "<span class='badge bg-warning'>pending</span>";
@@ -70,7 +78,7 @@ class UserOrderDataTable extends DataTable
                         return $query->order_status;
                 }
             })
-            ->rawColumns(['Status Pembayaran', 'order_status', 'action', 'payment_status'])
+            ->rawColumns(['pembayaran', 'pengiriman', 'action', 'payment_status'])
             ->setRowId('id');
     }
 
@@ -79,8 +87,12 @@ class UserOrderDataTable extends DataTable
      */
     public function query(Order $model): QueryBuilder
     {
-        return $model::where('user_id', Auth::user()->id)->newQuery();
+        return $model->newQuery()
+            ->where('user_id', Auth::user()->id) // Filter berdasarkan user yang sedang login
+            ->leftJoin('transactions', 'orders.id', '=', 'transactions.orders_id')
+            ->select('orders.*', 'transactions.status as payment_status'); // Memilih status pembayaran dari tabel transactions
     }
+
 
     /**
      * Optional method if you want to use the html builder.
@@ -113,17 +125,16 @@ class UserOrderDataTable extends DataTable
         return [
             // Column::make('id'),
             // Column::make('customer'),
-            Column::make('date')->width(250),
-            Column::make('product_qty'),
-            Column::make('product_name'),
+            Column::make('date')->width(100),
+            Column::make('nama_produk')->width(150),
+            Column::make('jumlah'),
             Column::make('Harga'),
-            Column::make('order_status'),
-            Column::make('Status Pembayaran'),
+            Column::make('pengiriman'),
+            Column::make('pembayaran'),
             // Column::make('payment_method'),
             Column::computed('action')
                 ->exportable(false)
                 ->printable(false)
-                ->width(200)
                 ->addClass('text-center'),
         ];
     }

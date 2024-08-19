@@ -23,23 +23,6 @@
                     </div>
                 </a>
             </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-                <a href="{{ route('admin.pending-orders') }}">
-                    <div class="card card-statistic-1">
-                        <div class="card-icon bg-primary">
-                            <i class="fas fa-cart-plus"></i>
-                        </div>
-                        <div class="card-wrap">
-                            <div class="card-header">
-                                <h4>Todays Peding Orders</h4>
-                            </div>
-                            <div class="card-body">
-                                {{ $todaysPendingOrder }}
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
 
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
                 <a href="{{ route('admin.order.index') }}">
@@ -58,54 +41,35 @@
                     </div>
                 </a>
             </div>
-
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-                <a href="{{ route('admin.pending-orders') }}">
+                <a href="{{ route('admin.seller-produk.index') }}">
                     <div class="card card-statistic-1">
                         <div class="card-icon bg-primary">
                             <i class="fas fa-cart-plus"></i>
                         </div>
                         <div class="card-wrap">
                             <div class="card-header">
-                                <h4>Total Pending Orders</h4>
+                                <h4>Total Product</h4>
                             </div>
                             <div class="card-body">
-                                {{ $totalPendingOrders }}
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-                <a href="{{ route('admin.canceled-orders') }}">
-                    <div class="card card-statistic-1">
-                        <div class="card-icon bg-info">
-                            <i class="fas fa-cart-plus"></i>
-                        </div>
-                        <div class="card-wrap">
-                            <div class="card-header">
-                                <h4>Total Canceled Orders</h4>
-                            </div>
-                            <div class="card-body">
-                                {{ $totalCanceledOrders }}
+                                {{ $totalProducts }}
                             </div>
                         </div>
                     </div>
                 </a>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-                <a href="{{ route('admin.delivered-orders') }}">
+                <a href="{{ route('admin.seller-pending-produk.index') }}">
                     <div class="card card-statistic-1">
-                        <div class="card-icon bg-info">
+                        <div class="card-icon bg-primary">
                             <i class="fas fa-cart-plus"></i>
                         </div>
                         <div class="card-wrap">
                             <div class="card-header">
-                                <h4>Total Complelte Orders</h4>
+                                <h4>Total Pending Product</h4>
                             </div>
                             <div class="card-body">
-                                {{ $totalCompleteOrders }}
+                                {{ $totalPendingProducts }}
                             </div>
                         </div>
                     </div>
@@ -149,7 +113,7 @@
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
                 <a href="{{ route('admin.customer.index') }}">
                     <div class="card card-statistic-1">
-                        <div class="card-icon bg-warning">
+                        <div class="card-icon bg-info">
                             <i class="far fa-file"></i>
                         </div>
                         <div class="card-wrap">

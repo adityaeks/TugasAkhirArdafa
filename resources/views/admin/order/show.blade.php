@@ -20,13 +20,13 @@
                         <div class="col-lg-12">
                             <div class="invoice-title">
                                 <h2></h2>
-                                <div class="invoice-number">Order #{{ $order->invocie_id }}</div>
+                                <div class="invoice-number">Invoice #{{ $order->invoice_id }}</div>
                             </div>
                             <hr>
                             <div class="row">
                                 <div class="col-md-6">
                                     <address>
-                                        <strong>Billed To:</strong><br>
+                                        <strong>Informasi Pengiriman:</strong><br>
                                         <b>Name:</b> {{ $address->name }}<br>
                                         <b>Email: </b> {{ $address->email }}<br>
                                         <b>Phone:</b> {{ $address->phone }}<br>
@@ -36,38 +36,23 @@
                                 </div>
                                 <div class="col-md-6 text-md-right">
                                     <address>
-                                        <strong>Billed To:</strong><br>
+                                        <strong>Informasi Pembayaran:</strong><br>
                                         <b>Name:</b> {{ $address->name }}<br>
                                         <b>Email: </b> {{ $address->email }}<br>
                                         <b>Phone:</b> {{ $address->phone }}<br>
-                                        <b>Address:</b> {{ $address->address }},<br>
-                                        {{ $address->zip }}<br>
-                                    </address>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <address>
-                                        <strong>Payment Information:</strong><br>
-                                        <b>Method:</b> {{ $order->payment_method }}<br>
-                                        <b>Transaction Id: </b>{{ @$order->transaction->transaction_id }} <br>
-                                        <b>Status: </b> {{ $order->status}}
-                                    </address>
-                                </div>
-                                <div class="col-md-6 text-md-right">
-                                    <address>
+                                        <b>Status:</b> {{ $order->status }},<br>
                                         <strong>Order Date:</strong><br>
                                         {{ date('d F, Y', strtotime($order->created_at)) }}<br><br>
                                     </address>
                                 </div>
                             </div>
+
                         </div>
                     </div>
 
                     <div class="row mt-4">
                         <div class="col-md-12">
-                            <div class="section-title">Order Summary</div>
-                            <p class="section-lead">All items here cannot be deleted.</p>
+                            <div class="section-title">Detail Pesanan</div>
                             <div class="table-responsive">
                                 <table class="table table-striped table-hover table-md">
                                     <tr>

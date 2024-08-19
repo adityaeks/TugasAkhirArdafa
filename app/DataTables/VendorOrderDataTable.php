@@ -32,49 +32,59 @@ class VendorOrderDataTable extends DataTable
             ->addColumn('customer', function($query){
                 return $query->user->name;
             })
+            ->addColumn('jumlah', function($order){
+                return $order->product_qty;
+            })
             ->addColumn('amount', function($query){
                 return 'Rp ' . number_format($query->amount, 0, ',', '.');
             })
             ->addColumn('date', function($query){
                 return date('d-M-Y', strtotime($query->created_at));
             })
-            ->addColumn('payment_status', function($query){
-                if($query->payment_status === 1){
-                    return "<span class='badge bg-success'>complete</span>";
-                }else {
-                    return "<span class='badge bg-warning'>pending</span>";
+            ->addColumn('pembayaran', function($query){
+                $status = $query->payment_status ? $query->payment_status : '-';
+
+                switch ($status) {
+                    case 'pending':
+                        return "<span class='badge bg-warning'>pending</span>";
+                    case 'success':
+                    case 'settlement':
+                    case 'capture':
+                        return "<span class='badge bg-success'>success</span>";
+                    default:
+                        return $status;
                 }
             })
-            // ->addColumn('order_status', function($query){
-            //     switch ($query->order_status) {
-            //         case 'pending':
-            //             return "<span class='badge bg-warning'>pending</span>";
-            //             break;
-            //         case 'processed_and_ready_to_ship':
-            //             return "<span class='badge bg-info'>processed</span>";
-            //             break;
-            //         case 'dropped_off':
-            //             return "<span class='badge bg-info'>dropped off</span>";
-            //             break;
-            //         case 'shipped':
-            //             return "<span class='badge bg-info'>shipped</span>";
-            //             break;
-            //         case 'out_for_delivery':
-            //             return "<span class='badge bg-primary'>out for delivery</span>";
-            //             break;
-            //         case 'delivered':
-            //             return "<span class='badge bg-success'>delivered</span>";
-            //             break;
-            //         case 'canceled':
-            //             return "<span class='badge bg-danger'>canceled</span>";
-            //             break;
-            //         default:
-            //             # code...
-            //             break;
-            //     }
+            ->addColumn('pengiriman', function($query){
+                switch ($query->order_status) {
+                    case 'pending':
+                        return "<span class='badge bg-warning'>pending</span>";
+                        break;
+                    case 'processed_and_ready_to_ship':
+                        return "<span class='badge bg-info'>processed</span>";
+                        break;
+                    case 'dropped_off':
+                        return "<span class='badge bg-info'>dropped off</span>";
+                        break;
+                    case 'shipped':
+                        return "<span class='badge bg-info'>shipped</span>";
+                        break;
+                    case 'out_for_delivery':
+                        return "<span class='badge bg-primary'>out for delivery</span>";
+                        break;
+                    case 'delivered':
+                        return "<span class='badge bg-success'>delivered</span>";
+                        break;
+                    case 'canceled':
+                        return "<span class='badge bg-danger'>canceled</span>";
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
 
-            // })
-            ->rawColumns(['action', 'payment_status'])
+            })
+            ->rawColumns(['action', 'pembayaran', 'pengiriman'])
             ->setRowId('id');
     }
 
@@ -83,9 +93,13 @@ class VendorOrderDataTable extends DataTable
      */
     public function query(Order $model): QueryBuilder
     {
-        return $model::whereHas('orderProducts', function($query){
-            $query->where('vendor_id', Auth::user()->vendor->id);
-        })->newQuery();
+        // Lakukan join dengan tabel transactions dan pilih status dari tabel tersebut
+        return $model->newQuery()
+            ->leftJoin('transactions', 'orders.id', '=', 'transactions.orders_id')
+            ->whereHas('orderProducts', function($query) {
+                $query->where('vendor_id', Auth::user()->vendor->id);
+            })
+            ->select('orders.*', 'transactions.status as payment_status'); // Memilih status pembayaran dari tabel transactions
     }
 
     /**
@@ -119,11 +133,12 @@ class VendorOrderDataTable extends DataTable
             Column::make('id'),
             // Column::make('invocie_id'),
             Column::make('customer'),
-            Column::make('date'),
-            Column::make('product_qty'),
+            Column::make('date')
+            ->width(150),
+            Column::make('jumlah'),
             Column::make('amount'),
-            // Column::make('order_status'),
-            Column::make('payment_status'),
+            Column::make('pengiriman'),
+            Column::make('pembayaran'),
 
             // Column::make('payment_method'),
 
@@ -131,7 +146,7 @@ class VendorOrderDataTable extends DataTable
             Column::computed('action')
             ->exportable(false)
             ->printable(false)
-            ->width(200)
+            ->width(100)
             ->addClass('text-center'),
         ];
     }

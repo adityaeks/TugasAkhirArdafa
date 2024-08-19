@@ -93,8 +93,6 @@ class OrderController extends Controller
 
         // delete order products
         $order->orderProducts()->delete();
-        // delete transaction
-        $order->transaction()->delete();
 
         $order->delete();
 

@@ -34,35 +34,31 @@
                                                 <div class="row">
                                                     <div class="col-xl-4 col-md-4 mb-5 mb-md-0">
                                                         <div class="wsus__invoice_single">
-                                                            <h5>Billing Information</h5>
+                                                            <h5>Informasi Pengiriman</h5>
                                                             <h6>{{ $address->name }}</h6>
                                                             <p>{{ $address->email }}</p>
                                                             <p>{{ $address->phone }}</p>
-                                                            <p>{{ $address->address }}, {{ $address->city }},
-                                                                {{ $address->state }}, {{ $address->zip }}</p>
-                                                            <p>{{ $address->country }}</p>
+                                                            <p>{{ $address->address }},{{ $address->zip }}</p>
                                                         </div>
                                                     </div>
                                                     <div class="col-xl-4 col-md-4 mb-5 mb-md-0">
                                                         <div class="wsus__invoice_single text-md-center">
-                                                            <h5>shipping information</h5>
+                                                            <h5>informasi pembayaran</h5>
                                                             <h6>{{ $address->name }}</h6>
                                                             <p>{{ $address->email }}</p>
                                                             <p>{{ $address->phone }}</p>
-                                                            <p>{{ $address->address }}, {{ $address->city }},
-                                                                {{ $address->state }}, {{ $address->zip }}</p>
-                                                            <p>{{ $address->country }}</p>
+                                                            <p>{{ $order->courier }},{{ $order->service }}</p>
                                                         </div>
                                                     </div>
                                                     <div class="col-xl-4 col-md-4">
                                                         <div class="wsus__invoice_single text-md-end">
-                                                            <h5>Order id: #{{ $order->invocie_id }}</h5>
+                                                            <h5>Invoice: #{{ $order->invoice_id }}</h5>
                                                             <h6>Order status:
                                                                 {{ config('order_status.order_status_admin')[$order->order_status]['status'] }}
                                                             </h6>
-                                                            <p>Payment Method: {{ $order->payment_method }}</p>
-                                                            <p>Payment Status: {{ $order->payment_status }}</p>
-                                                            <p>Transaction id: {{ $order->transaction->transaction_id }}
+                                                            {{-- <p>Payment Method: {{ $order->payment_method }}</p> --}}
+                                                            <p>Payment Status: {{ $transactions->status }}</p>
+                                                            {{-- <p>Transaction id: {{ $order->transaction->transaction_id }} --}}
                                                             </p>
                                                         </div>
                                                     </div>
@@ -73,18 +69,18 @@
                                                     <table class="table">
                                                         <tr>
                                                             <th class="name">
-                                                                product
+                                                                produk
                                                             </th>
                                                             <th class="amount">
-                                                                Vendor
+                                                                seller
                                                             </th>
 
                                                             <th class="amount">
-                                                                amount
+                                                                harga
                                                             </th>
 
                                                             <th class="quentity">
-                                                                quentity
+                                                                jumlah
                                                             </th>
                                                             <th class="total">
                                                                 total
@@ -128,7 +124,17 @@
                                             </div>
                                         </div>
                                         <div class="wsus__invoice_footer">
-                                            <p><span>Total Amount:</span> Rp {{ number_format($total, 0, ',', '.') }} </p>
+
+                                            <p><span>Sub Total:</span>
+                                                Rp{{ number_format($order->sub_total, 0, ',', '.') }}</p>
+                                            <p><span>Pengiriman(+):</span>
+                                                Rp{{ number_format($order->shiping_fee, 0, ',', '.') }}</p>
+                                            <p><span>Kupon(-):</span>{{ @$settings->currency_icon }}
+                                                {{ @$coupon->discount ? $coupon->discount : 0 }}</p>
+                                            <p><span>Total Semua:</span>
+                                                Rp{{ number_format($order->amount, 0, ',', '.') }}</p>
+
+
                                         </div>
 
                                     </div>
@@ -136,7 +142,7 @@
 
 
                                 <div class="row">
-                                    {{-- <div class="col-md-4">
+                                    <div class="col-md-4">
                                     <form action="{{ route('vendor.orders.status', $order->id) }}">
                                         <div class="form-group mt-5">
                                             <label for="" class="mb-2">Order Status</label>
@@ -149,7 +155,7 @@
                                             <button class="btn btn-primary mt-3" type="submit">Save</button>
                                         </div>
                                     </form>
-                                </div> --}}
+                                </div>
                                     <div class="col-md-12">
                                         <div class="mt-5 float-end">
                                             <button class="btn btn-warning print_invoice">print</button>

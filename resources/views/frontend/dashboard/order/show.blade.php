@@ -30,30 +30,26 @@
                                                 <div class="row">
                                                     <div class="col-xl-4 col-md-4 mb-5 mb-md-0">
                                                         <div class="wsus__invoice_single">
-                                                            <h5>Billing Information</h5>
-                                                            <h6>{{ $address->name }}</h6>
-                                                            <p>{{ $address->email }}</p>
-                                                            <p>{{ $address->phone }}</p>
-                                                            <p>{{ $address->address }},  {{ $address->zip }}</p>
+                                                            <h5>Informasi Pengiriman</h5>
+                                                            <p>{{ $address->address }}, {{ $address->zip }}</p>
                                                         </div>
                                                     </div>
                                                     <div class="col-xl-4 col-md-4 mb-5 mb-md-0">
                                                         <div class="wsus__invoice_single text-md-center">
-                                                            <h5>shipping information</h5>
+                                                            <h5>informasi pembayaran</h5>
                                                             <h6>{{ $address->name }}</h6>
                                                             <p>{{ $address->email }}</p>
                                                             <p>{{ $address->phone }}</p>
-                                                            <p>{{ $address->address }}, {{ $address->zip }}</p>
                                                         </div>
                                                     </div>
                                                     <div class="col-xl-4 col-md-4">
                                                         <div class="wsus__invoice_single text-md-end">
-                                                            <h5>Order id: #{{ $order->order_id }}</h5>
+                                                            <h5>Invoice: #{{ $order->invoice_id }}</h5>
                                                             <h6>Order status:
                                                                 {{ config('order_status.order_status_admin')[$order->order_status]['status'] }}
                                                             </h6>
                                                             {{-- <p>Payment Method: {{ $order->payment_method }}</p> --}}
-                                                            <p>Payment Status: {{ $order->payment_status }}</p>
+                                                            <p>Payment Status: {{ $transactions->status }}</p>
                                                             {{-- <p>Transaction id: {{ $order->transaction->transaction_id }} --}}
                                                             </p>
                                                         </div>
@@ -112,11 +108,11 @@
 
                                             <p><span>Sub Total:</span>
                                                 Rp{{ number_format($order->sub_total, 0, ',', '.') }}</p>
-                                            <p><span>Shipping Fee(+):</span>
+                                            <p><span>Pengiriman(+):</span>
                                                 Rp{{ number_format($order->shiping_fee, 0, ',', '.') }}</p>
                                             <p><span>Coupon(-):</span>{{ @$settings->currency_icon }}
                                                 {{ @$coupon->discount ? $coupon->discount : 0 }}</p>
-                                            <p><span>Total Amount:</span>
+                                            <p><span>Total Semua:</span>
                                                 Rp{{ number_format($order->amount, 0, ',', '.') }}</p>
 
 

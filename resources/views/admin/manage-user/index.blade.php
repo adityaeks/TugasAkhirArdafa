@@ -50,7 +50,7 @@
                                 <option value="">Select</option>
                               <option value="user">User</option>
                               <option value="vendor">Vendor</option>
-                              <option value="admin">Admin</option>
+                              {{-- <option value="admin">Admin</option> --}}
 
                             </select>
                         </div>

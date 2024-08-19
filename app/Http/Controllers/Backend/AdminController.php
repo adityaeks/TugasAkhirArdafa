@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Models\Category;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\ProductReview;
 use App\Models\User;
 use App\Models\Vendor;
@@ -42,6 +43,8 @@ class AdminController extends Controller
         // ->sum('sub_total');
 
         $totalCategories = Category::count();
+        $totalProducts = Product::count();
+        $totalPendingProducts = Product::where('status', '0')->count();
         $totalVendors = User::where('role', 'vendor')->count();
         $totalUsers = User::where('role', 'user')->count();
 
@@ -58,6 +61,8 @@ class AdminController extends Controller
             // 'monthEarnings',
             // 'yearEarnings',
             'totalCategories',
+            'totalProducts',
+            'totalPendingProducts',
             'totalVendors',
             'totalUsers'
         ));
