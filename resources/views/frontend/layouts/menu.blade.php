@@ -61,14 +61,6 @@
     <span class="wsus__mobile_menu_close"><i class="fal fa-times"></i></span>
     <ul class="wsus__mobile_menu_header_icon d-inline-flex">
 
-        <li><a href="{{ route('user.wishlist.index') }}"><i class="fal fa-heart"></i><span id="wishlist_count">
-                    @if (auth()->check())
-                        {{ \App\Models\Wishlist::where('user_id', auth()->user()->id)->count() }}
-                    @else
-                        0
-                    @endif
-                </span></a></li>
-
         @if (auth()->check())
             @if (auth()->user()->role === 'user')
                 <li><a href="{{ route('user.dashboard') }}"><i class="fal fa-user"></i></a></li>
@@ -127,6 +119,13 @@
 
                         <li><a href="{{ route('about') }}">about us</a></li>
                         <li><a href="{{ route('contact') }}">contact</a></li>
+
+                        <li><a href="{{ route('cart-details') }}"><i class="fal fa-shopping-basket"></i>Keranjang</a></li>
+
+                        <li><a href="{{ route('user.checkout') }}"><i class="fal fa-check-circle"></i> Checkout</a></li>
+                        <li><a href="{{ route('user.profile') }}"><i class="fal fa-user-circle"></i> Profil</a></li>
+                        <li><a href="{{ route('user.orders.index') }}"><i class="fal fa-gift-card"></i> Pesanan</a></li>
+                        <li><a href="{{ route('profile.edit') }}"><i class="fal fa-edit"></i> Ubah Profil</a></li>
 
                     </ul>
                 </div>

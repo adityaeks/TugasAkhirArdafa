@@ -28,7 +28,22 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+Route::middleware(['web'])->group(function () {
+    /** Cart routes */
+    Route::post('add-to-cart', [CartController::class, 'addToCart'])->name('add-to-cart');
+    Route::get('cart-details', [CartController::class, 'cartDetails'])->name('cart-details');
+    Route::post('cart/update-quantity', [CartController::class, 'updateProductQty'])->name('cart.update-quantity');
+    Route::get('clear-cart', [CartController::class, 'clearCart'])->name('clear.cart');
+    Route::get('cart/remove-product/{rowId}', [CartController::class, 'removeProduct'])->name('cart.remove-product');
+    Route::get('cart-count', [CartController::class, 'getCartCount'])->name('cart-count');
+    Route::get('cart-products', [CartController::class, 'getCartProducts'])->name('cart-products');
+    Route::post('cart/remove-sidebar-product', [CartController::class, 'removeSidebarProduct'])->name('cart.remove-sidebar-product');
+    Route::get('cart/sidebar-product-total', [CartController::class, 'cartTotal'])->name('cart.sidebar-product-total');
+    Route::get('cart/total-weight', [CartController::class, 'getTotalWeightAjax'])->name('cart.total-weight');
 
+    Route::get('apply-coupon', [CartController::class, 'applyCoupon'])->name('apply-coupon');
+    Route::get('coupon-calculation', [CartController::class, 'couponCalculation'])->name('coupon-calculation');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -45,27 +60,6 @@ Route::get('products', [FrontendProductController::class, 'productsIndex'])->nam
 Route::get('product-detail/{slug}', [FrontendProductController::class, 'showProduct'])->name('product-detail');
 Route::get('change-product-list-view', [FrontendProductController::class, 'chageListView'])->name('change-product-list-view');
 
-/** Cart routes */
-Route::post('add-to-cart', [CartController::class, 'addToCart'])->name('add-to-cart');
-Route::get('cart-details', [CartController::class, 'cartDetails'])->name('cart-details');
-Route::post('cart/update-quantity', [CartController::class, 'updateProductQty'])->name('cart.update-quantity');
-Route::get('clear-cart', [CartController::class, 'clearCart'])->name('clear.cart');
-Route::get('cart/remove-product/{rowId}', [CartController::class, 'removeProduct'])->name('cart.remove-product');
-Route::get('cart-count', [CartController::class, 'getCartCount'])->name('cart-count');
-Route::get('cart-products', [CartController::class, 'getCartProducts'])->name('cart-products');
-Route::post('cart/remove-sidebar-product', [CartController::class, 'removeSidebarProduct'])->name('cart.remove-sidebar-product');
-Route::get('cart/sidebar-product-total', [CartController::class, 'cartTotal'])->name('cart.sidebar-product-total');
-Route::get('cart/total-weight', [CartController::class, 'getTotalWeightAjax'])->name('cart.total-weight');
-Route::get('cart/total-weight', [CartController::class, 'getTotalWeightAjax'])->name('cart.total-weight');
-
-Route::get('apply-coupon', [CartController::class, 'applyCoupon'])->name('apply-coupon');
-Route::get('coupon-calculation', [CartController::class, 'couponCalculation'])->name('coupon-calculation');
-
-
-/** vendor page routes */
-Route::get('vendor', [HomeController::class, 'vendorPage'])->name('vendor.index');
-Route::get('vendor-produk/{id}', [HomeController::class, 'vendorProductsPage'])->name('vendor.produk');
-
 /** about page route */
 Route::get('about', [PageController::class, 'about'])->name('about');
 /** terms and conditions page route */
@@ -76,18 +70,12 @@ Route::post('contact', [PageController::class, 'handleContactForm'])->name('hand
 
 /** Product routes */
 Route::get('show-product-modal/{id}', [HomeController::class, 'ShowProductModal'])->name('show-product-modal');
-/** add product in wishlist */
-Route::get('wishlist/add-product', [WishlistController::class, 'addToWishlist'])->name('wishlist.store');
-
-
-
 
 Route::group(['middleware' =>['auth', 'verified'], 'prefix' => 'user', 'as' => 'user.'], function(){
     Route::get('dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
     Route::get('profile', [UserProfileController::class, 'index'])->name('profile'); // user.profile
     Route::put('profile', [UserProfileController::class, 'updateProfile'])->name('profile.update'); // user.profile.update
     Route::post('profile', [UserProfileController::class, 'updatePassword'])->name('profile.update.password');
-
 
     /** User Address Route */
     Route::resource('address', UserAddressController::class);
@@ -98,9 +86,6 @@ Route::group(['middleware' =>['auth', 'verified'], 'prefix' => 'user', 'as' => '
     Route::get('orders/show/{id}', [UserOrderController::class, 'show'])->name('orders.show');
 
     /** Wishlist routes */
-    Route::get('wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
-    Route::get('wishlist/remove-product/{id}', [WishlistController::class, 'destory'])->name('wishlist.destory');
-
     Route::post('/set-total-weight', [CheckOutController::class, 'setTotalProductWeight'])->name('set-total-weight');
 
     /** Checkout routes */
@@ -116,5 +101,10 @@ Route::group(['middleware' =>['auth', 'verified'], 'prefix' => 'user', 'as' => '
     /** Payment Routes */
     Route::get('payment', [PaymentController::class, 'index'])->name('payment');
     Route::get('payment-success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
-
 });
+
+/** Layanan Catering Routes */
+Route::get('/prasmanan-buffet', [PageController::class, 'prasmananBuffet'])->name('prasmanan-buffet');
+Route::get('/meal-box', [PageController::class, 'mealBox'])->name('meal-box');
+Route::get('/tumpeng-nasi-liwet', [PageController::class, 'tumpengNasiLiwet'])->name('tumpeng-nasi-liwet');
+Route::get('/daily-home-catering', [PageController::class, 'dailyHomeCatering'])->name('daily-home-catering');

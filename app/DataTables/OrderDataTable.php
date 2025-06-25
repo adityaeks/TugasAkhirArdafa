@@ -82,7 +82,7 @@ class OrderDataTable extends DataTable
     public function query(Order $model): QueryBuilder
     {
         return $model->newQuery()
-            ->leftJoin('transactions', 'orders.id', '=', 'transactions.orders_id')
+            ->leftJoin('transactions', 'orders.id', '=', 'transactions.order_id')
             ->select('orders.*', 'transactions.status as payment_status');
     }
 

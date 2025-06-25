@@ -21,9 +21,7 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                if($request->user()->role == 'vendor'){
-                    return redirect()->route('vendor.dashbaord');
-                }elseif ($request->user()->role == 'admin'){
+                if($request->user()->role == 'admin'){
                     return redirect()->route('admin.dashbaord');
                 }else {
                     return redirect(RouteServiceProvider::HOME);

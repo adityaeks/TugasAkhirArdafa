@@ -31,6 +31,10 @@ class PaymentController extends Controller
     {
         return view('frontend.pages.payment-success');
     }
+    public function paymentFail()
+    {
+        return view('frontend.pages.payment-fail');
+    }
 
     public function storeOrder(Request $request)
     {
@@ -68,7 +72,6 @@ class PaymentController extends Controller
             $orderProduct = new OrderProduct();
             $orderProduct->order_id = $order->id;
             $orderProduct->product_id = $product->id;
-            $orderProduct->vendor_id = $product->vendor_id;
             $orderProduct->product_name = $product->name;
             $orderProduct->unit_price = $item->price;
             $orderProduct->qty = $item->qty;
@@ -219,69 +222,68 @@ class PaymentController extends Controller
     //     }
     // }
     public function webhook(Request $request)
-{
-    $auth = base64_encode(config('midtrans.serverKey'));
+    {
+        $auth = base64_encode(config('midtrans.serverKey'));
 
-    try {
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json',
-            'Authorization' => "Basic $auth",
-        ])->withOptions([
-            'verify' => false, // Menonaktifkan verifikasi SSL
-        ])->get("https://api.sandbox.midtrans.com/v2/{$request->order_id}/status");
+        try {
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'Authorization' => "Basic $auth",
+            ])->withOptions([
+                'verify' => false, // Menonaktifkan verifikasi SSL
+            ])->get("https://api.sandbox.midtrans.com/v2/{$request->order_id}/status");
 
-        $responseData = json_decode($response->body());
+            $responseData = json_decode($response->body());
 
-        // Pastikan respons berhasil didapatkan dan dapat di-decode
-        if (!$response->successful()) {
-            return response()->json(['error' => 'Failed to fetch transaction status from Midtrans API'], 500);
+            // Pastikan respons berhasil didapatkan dan dapat di-decode
+            if (!$response->successful()) {
+                return response()->json(['error' => 'Failed to fetch transaction status from Midtrans API'], 500);
+            }
+
+            // Verifikasi bahwa ada transaction_status dalam respons
+            if (!isset($responseData->transaction_status)) {
+                return response()->json(['error' => 'Invalid response format from Midtrans API'], 500);
+            }
+
+            $payment = Transaction::where('order_id', $request->order_id)->firstOrFail();
+
+            // Pastikan status pembayaran hanya diubah jika belum di-settlement atau capture
+            if ($payment->status === 'settlement' || $payment->status === 'capture') {
+                return response()->json('Payment has been already processed');
+            }
+
+            // Update status pembayaran sesuai dengan response dari Midtrans
+            switch ($responseData->transaction_status) {
+                case 'capture':
+                    $payment->status  = 'capture';
+                    break;
+                case 'settlement':
+                    $payment->status = 'settlement';
+                    break;
+                case 'pending':
+                    $payment->status = 'pending';
+                    break;
+                case 'deny':
+                    $payment->status = 'deny';
+                    break;
+                case 'expire':
+                    $payment->status = 'expire';
+                    break;
+                case 'cancel':
+                    $payment->status = 'cancel';
+                    break;
+                default:
+                    return response()->json(['error' => 'Unsupported transaction status from Midtrans API'], 500);
+            }
+
+            // Simpan perubahan status pembayaran
+            $payment->save();
+
+            return response()->json('success');
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to communicate with Midtrans API', 'message' => $e->getMessage()], 500);
         }
-
-        // Verifikasi bahwa ada transaction_status dalam respons
-        if (!isset($responseData->transaction_status)) {
-            return response()->json(['error' => 'Invalid response format from Midtrans API'], 500);
-        }
-
-        $payment = Transaction::where('order_id', $request->order_id)->firstOrFail();
-
-        // Pastikan status pembayaran hanya diubah jika belum di-settlement atau capture
-        if ($payment->status === 'settlement' || $payment->status === 'capture') {
-            return response()->json('Payment has been already processed');
-        }
-
-        // Update status pembayaran sesuai dengan response dari Midtrans
-        switch ($responseData->transaction_status) {
-            case 'capture':
-                $payment->status  = 'capture';
-                break;
-            case 'settlement':
-                $payment->status = 'settlement';
-                break;
-            case 'pending':
-                $payment->status = 'pending';
-                break;
-            case 'deny':
-                $payment->status = 'deny';
-                break;
-            case 'expire':
-                $payment->status = 'expire';
-                break;
-            case 'cancel':
-                $payment->status = 'cancel';
-                break;
-            default:
-                return response()->json(['error' => 'Unsupported transaction status from Midtrans API'], 500);
-        }
-
-        // Simpan perubahan status pembayaran
-        $payment->save();
-
-        return response()->json('success');
-    } catch (\Exception $e) {
-        return response()->json(['error' => 'Failed to communicate with Midtrans API', 'message' => $e->getMessage()], 500);
     }
-}
-
 
 
     public function clearSession()

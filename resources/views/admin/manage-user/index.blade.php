@@ -48,10 +48,8 @@
                             <label for="inputState">Role</label>
                             <select id="inputState" class="form-control" name="role">
                                 <option value="">Select</option>
-                              <option value="user">User</option>
-                              <option value="vendor">Vendor</option>
-                              {{-- <option value="admin">Admin</option> --}}
-
+                                <option value="user">User</option>
+                                {{-- <option value="admin">Admin</option> --}}
                             </select>
                         </div>
                         <button type="submmit" class="btn btn-primary">Create</button>

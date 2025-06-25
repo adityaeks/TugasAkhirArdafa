@@ -55,29 +55,10 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Offer Price</label>
-                            <input type="text" class="form-control" name="offer_price" value="{{$product->offer_price}}">
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Offer Start Date</label>
-                                    <input type="text" class="form-control datepicker" name="offer_start_date" value="{{$product->offer_start_date}}">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Offer End Date</label>
-                                    <input type="text" class="form-control datepicker" name="offer_end_date" value="{{$product->offer_end_date}}">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
                             <label>Stock Quantity</label>
                             <input type="number" min="0" class="form-control" name="qty" value="{{$product->qty}}">
                         </div>
+
                         <div class="form-group">
                             <label>Weight</label>
                             <input type="number" min="0" class="form-control" name="weight" value="{{$product->weight}}">

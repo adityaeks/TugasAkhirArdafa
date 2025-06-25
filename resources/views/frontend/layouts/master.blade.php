@@ -52,7 +52,7 @@
     <!--============================
         MAIN MENU START
     ==============================-->
-    @include('frontend.layouts.menu')
+    {{-- @include('frontend.layouts.menu') --}}
     <!--============================
         MAIN MENU END
     ==============================-->
@@ -80,7 +80,7 @@
     <!--============================
         FOOTER PART START
     ==============================-->
-    @include('frontend.layouts.footer')
+    @include('frontend.layouts.footer12')
     <!--============================
         FOOTER PART END
     ==============================-->

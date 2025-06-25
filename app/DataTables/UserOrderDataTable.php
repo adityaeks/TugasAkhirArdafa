@@ -89,7 +89,7 @@ class UserOrderDataTable extends DataTable
     {
         return $model->newQuery()
             ->where('user_id', Auth::user()->id) // Filter berdasarkan user yang sedang login
-            ->leftJoin('transactions', 'orders.id', '=', 'transactions.orders_id')
+            ->leftJoin('transactions', 'orders.id', '=', 'transactions.order_id')
             ->select('orders.*', 'transactions.status as payment_status'); // Memilih status pembayaran dari tabel transactions
     }
 

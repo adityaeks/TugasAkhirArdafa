@@ -48,29 +48,10 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Offer Price</label>
-                            <input type="text" class="form-control" name="offer_price" value="{{old('offer_price')}}">
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Offer Start Date</label>
-                                    <input type="text" class="form-control datepicker" name="offer_start_date" value="{{old('offer_start_date')}}">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Offer End Date</label>
-                                    <input type="text" class="form-control datepicker" name="offer_end_date" value="{{old('offer_end_date')}}">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
                             <label>Stock Quantity</label>
                             <input type="number" min="0" class="form-control" name="qty" value="{{old('qty')}}">
                         </div>
+
                         <div class="form-group">
                             <label>Weight</label>
                             <input type="number" min="0" class="form-control" name="weight" value="{{old('weight')}}">
@@ -85,17 +66,6 @@
                         <div class="form-group">
                             <label>Long Description</label>
                             <textarea name="long_description" class="form-control summernote"></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="inputState">Product Type</label>
-                            <select id="inputState" class="form-control" name="product_type">
-                                <option value="">Select</option>
-                                <option value="new_arrival">New Arrival</option>
-                                <option value="featured_product">Unggulan</option>
-                                <option value="top_product">Top Product</option>
-                                <option value="best_product">Best Product</option>
-                            </select>
                         </div>
 
                         <div class="form-group">

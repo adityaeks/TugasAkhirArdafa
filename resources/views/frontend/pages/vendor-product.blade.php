@@ -57,7 +57,7 @@
                                         <div class="col-xl-3 col-sm-6">
                                             <div class="wsus__product_item">
                                                 <span class="">{{ productType($product->product_type) }}</span>
-                                              
+
                                                 <a class="wsus__pro_link" href="{{ route('product-detail', $product->slug) }}">
                                                     <img src="{{ asset($product->thumb_image) }}" alt="product" class="img-fluid w-100 img_1" />
                                                     <img src=" {{ asset($product->thumb_image) }} "

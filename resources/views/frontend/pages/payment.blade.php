@@ -33,10 +33,10 @@ UMKM Lowayu || Payment
                     <div class="col-xl-4 col-lg-4">
                         <div class="wsus__pay_booking_summary" id="sticky_sidebar2">
                             <h5>Order Summary</h5>
-                            <p>subtotal : <span>Rp{{ number_format(getCartTotal(), 0, ',', '.') }}</span></p>
+                            <p>subtotal : <span>Rp0</span></p>
                             {{-- <p>shipping fee(+) : <span>Rp{{ number_format(getShippingFee(), 0, ',', '.') }}</span></p> --}}
-                            <p>coupon(-) : <span>Rp{{ number_format(getCartDiscount(), 0, ',', '.') }}</span></p>
-                            <h6>total <span>Rp{{ number_format(getFinalPayableAmount(), 0, ',', '.') }}</span></h6>
+                            <p>coupon(-) : <span>Rp0</span></p>
+                            <h6>total <span>Rp0</span></h6>
                         </div>
 
                     </div>

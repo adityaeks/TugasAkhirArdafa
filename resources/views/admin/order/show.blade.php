@@ -58,7 +58,6 @@
                                     <tr>
                                         <th data-width="40">#</th>
                                         <th>Item</th>
-                                        <th>Vendor Name</th>
                                         <th class="text-center">Price</th>
                                         <th class="text-center">Quantity</th>
                                         <th class="text-right">Totals</th>
@@ -73,9 +72,6 @@
                                             @else
                                                 <td>{{ $product->product_name }}</td>
                                             @endif
-
-                                            <td>{{ $product->vendor->shop_name }}</td>
-
                                             <td class="text-center">Rp{{ $product->unit_price }} </td>
                                             <td class="text-center">{{ $product->qty }}</td>
                                             <td class="text-right">

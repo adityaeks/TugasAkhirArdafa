@@ -24,7 +24,6 @@ class HomeController extends Controller
 
         $popularCategory = HomeSetting::where('key', 'popular_category_section')->first();
 
-        $typeBaseProducts = $this->getTypeBaseProduct();
         $categoryProductSliderSectionOne = HomeSetting::where('key', 'product_slider_section_one')->first();
         $categoryProductSliderSectionTwo = HomeSetting::where('key', 'product_slider_section_two')->first();
         $categoryProductSliderSectionThree = HomeSetting::where('key', 'product_slider_section_three')->first();
@@ -44,59 +43,7 @@ class HomeController extends Controller
         $homepage_secion_banner_four = json_decode($homepage_secion_banner_four?->value);
 
 
-        return view('frontend.home.home',
-            compact(
-                'sliders',
-                'popularCategory',
-                'typeBaseProducts',
-                'categoryProductSliderSectionOne',
-                'categoryProductSliderSectionTwo',
-                'categoryProductSliderSectionThree',
-
-                'homepage_secion_banner_one',
-                'homepage_secion_banner_two',
-                'homepage_secion_banner_three',
-                'homepage_secion_banner_four',
-
-            ));
-    }
-
-    public function getTypeBaseProduct()
-{
-    $typeBaseProducts = [];
-
-    $typeBaseProducts['new_arrival'] = Product::with(['category', 'productImageGalleries'])
-        ->where(['product_type' => 'new_arrival', 'is_approved' => 1, 'status' => 1])->orderBy('id', 'DESC')->take(8)->get();
-
-    $typeBaseProducts['featured_product'] = Product::with(['category', 'productImageGalleries'])
-        ->where(['product_type' => 'featured_product', 'is_approved' => 1, 'status' => 1])->orderBy('id', 'DESC')->take(8)->get();
-
-    $typeBaseProducts['top_product'] = Product::with(['category', 'productImageGalleries'])
-        ->where(['product_type' => 'top_product', 'is_approved' => 1, 'status' => 1])->orderBy('id', 'DESC')->take(8)->get();
-
-    $typeBaseProducts['best_product'] = Product::with(['category', 'productImageGalleries'])
-        ->where(['product_type' => 'best_product', 'is_approved' => 1, 'status' => 1])->orderBy('id', 'DESC')->take(8)->get();
-
-    return $typeBaseProducts;
-}
-
-
-    public function vendorPage()
-    {
-       $vendors = Vendor::where('status',1)->paginate(20);
-       return view('frontend.pages.vendor', compact('vendors'));
-    }
-
-    public function vendorProductsPage(string $id)
-    {
-
-        $products = Product::where(['status' => 1, 'is_approved' => 1, 'vendor_id' => $id])->orderBy('id', 'DESC')->paginate(12);
-
-        $categories = Category::all();
-        $vendor = Vendor::findOrFail($id);
-
-        return view('frontend.pages.vendor-product', compact('products', 'categories', 'vendor'));
-
+        return view('frontend.home.home');
     }
 
     function ShowProductModal(string $id) {

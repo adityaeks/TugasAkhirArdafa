@@ -11,11 +11,11 @@ class Transaction extends Model
 
     public function order()
     {
-        return $this->belongsTo(Order::class, 'orders_id', 'id');
+        return $this->belongsTo(Order::class, 'order_id', 'id');
     }
     public function orderProduct()
     {
-        return $this->hasOneThrough(OrderProduct::class, Order::class, 'id', 'orders_id', 'orders_id', 'id');
+        return $this->hasOneThrough(OrderProduct::class, Order::class, 'id', 'order_id', 'order_id', 'id');
     }
 
 }

@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Gloudemans\Shoppingcart\Facades\Cart;
+use Illuminate\Support\Str;
 use LDAP\Result;
 
 class CheckOutController extends Controller
@@ -24,6 +25,7 @@ class CheckOutController extends Controller
     public function index()
     {
         $addresses = UserAddress::where('user_id', Auth::user()->id)->get();
+        $cartItems = Cart::content();
         try {
             $client = new Client([
                 'verify' => false, // Nonaktifkan verifikasi SSL
@@ -33,7 +35,7 @@ class CheckOutController extends Controller
             ])->get('https://api.rajaongkir.com/starter/province');
 
             $provinces = json_decode($response->getBody(), true);
-            return view('frontend.pages.checkout', compact('addresses', 'provinces'));
+            return view('frontend.pages.checkout', compact('addresses', 'provinces', 'cartItems'));
         } catch (\Exception $e) {
             Log::error('Error calculating shipping fee: ' . $e->getMessage());
             return [];
@@ -71,67 +73,79 @@ class CheckOutController extends Controller
 
     public function checkOutFormSubmit(Request $request)
     {
-        $request->validate([
-            // 'delivery_package' => ['required', 'integer'],
-            'shipping_address_id' => ['required', 'integer'],
-           ]);
-        $address = UserAddress::findOrFail($request->shipping_address_id)->toArray();
-       if($address){
-           Session::put('address', $address);
-       }
-        $cartItems = Cart::content();
-        $itemDetails = [];
-        $totalAmount = 0;
-        $totalWeight = 0;
-
-        // Hitung detail barang
-        foreach ($cartItems as $item) {
-            $product = Product::find($item->id);
-            $itemDetails[] = [
-                'id' => $item->id,
-                'price' => $item->price,
-                'quantity' => $item->qty,
-                'name' => $item->name,
-            ];
-            $totalAmount += $item->price * $item->qty;
-            $totalWeight += $product->weight * $item->qty;
-        }
-
-        // Tambahkan biaya pengiriman ke itemDetails
-        $shippingFee = Session::get('shipping_fee', 0); // Ambil biaya pengiriman dari sesi
-        $itemDetails[] = [
-            'id' => 'shipping_fee',
-            'price' => $shippingFee,
-            'quantity' => 1,
-            'name' => 'Shipping Fee',
-        ];
-
-        // Ambil biaya pengiriman dari sesi
-        $shippingFee = Session::get('shipping_fee', 0);
-        // Tambahkan biaya pengiriman ke total amount
-        $totalAmount += $shippingFee;
-
-        // Ambil nilai kupon dari sesi
-        $couponDiscount = Session::get('coupon_discount', 0);
-        // Kurangi nilai kupon dari total amount
-        $totalAmount -= $couponDiscount;
-
-        $params = [
-            'transaction_details' => [
-                'order_id' => \Str::uuid(),
-                'gross_amount' => $totalAmount,
-            ],
-            'item_details' => $itemDetails,
-            'customer_details' => [
-                'first_name' => $request->user_name,
-            ],
-            'enabled_payments' => ['credit_card', 'bca_va', 'bni_va', 'bri_va', 'gopay', 'shopeepay', 'dana']
-        ];
-
-        $auth = base64_encode(config('midtrans.serverKey'));
-
+        \Log::info('--- MASUK CHECKOUT FORM SUBMIT ---');
         try {
-            $response = Http::withHeaders([
+            $request->validate([
+                'shipping_address_id' => ['required', 'integer'],
+                'delivery_package' => ['required'],
+            ], [
+                'shipping_address_id.required' => 'Alamat pengiriman wajib diisi',
+                'delivery_package.required' => 'Paket pengiriman wajib dipilih',
+            ]);
+
+            $address = \App\Models\UserAddress::findOrFail($request->shipping_address_id)->toArray();
+            if($address){
+                \Session::put('address', $address);
+            }
+
+            // Pastikan shipping_fee, courier, dan service sudah ada di session
+            $shippingFee = \Session::get('shipping_fee');
+            $courier = \Session::get('courier');
+            $service = \Session::get('service');
+            if ($shippingFee === null || $courier === null || $service === null) {
+                \Log::error('Shipping data missing: shipping_fee=' . var_export($shippingFee, true) . ', courier=' . var_export($courier, true) . ', service=' . var_export($service, true));
+                return response()->json(['error' => 'Silakan pilih layanan pengiriman terlebih dahulu.'], 422);
+            }
+
+            $cartItems = \Cart::content();
+            $itemDetails = [];
+            $totalAmount = 0;
+            $totalWeight = 0;
+
+            // Hitung detail barang
+            foreach ($cartItems as $item) {
+                $product = \App\Models\Product::find($item->id);
+                $itemDetails[] = [
+                    'id' => $item->id,
+                    'price' => $item->price,
+                    'quantity' => $item->qty,
+                    'name' => $item->name,
+                ];
+                $totalAmount += $item->price * $item->qty;
+                $totalWeight += $product->weight * $item->qty;
+            }
+
+            // Tambahkan biaya pengiriman ke itemDetails
+            $itemDetails[] = [
+                'id' => 'shipping_fee',
+                'price' => $shippingFee,
+                'quantity' => 1,
+                'name' => 'Shipping Fee',
+            ];
+
+            // Tambahkan biaya pengiriman ke total amount
+            $totalAmount += $shippingFee;
+
+            // Ambil nilai kupon dari sesi
+            $couponDiscount = \Session::get('coupon_discount', 0);
+            // Kurangi nilai kupon dari total amount
+            $totalAmount -= $couponDiscount;
+
+            $params = [
+                'transaction_details' => [
+                    'order_id' => \Str::uuid(),
+                    'gross_amount' => $totalAmount,
+                ],
+                'item_details' => $itemDetails,
+                'customer_details' => [
+                    'first_name' => $request->user_name ?? \Auth::user()->name,
+                ],
+                'enabled_payments' => ['credit_card', 'bca_va', 'bni_va', 'bri_va', 'gopay', 'shopeepay', 'dana']
+            ];
+
+            $auth = base64_encode(config('midtrans.serverKey'));
+
+            $response = \Http::withHeaders([
                 'Content-Type' => 'application/json',
                 'Authorization' => "Basic $auth",
             ])->withOptions([
@@ -141,78 +155,72 @@ class CheckOutController extends Controller
             $responseBody = $response->json();
 
             if (!$response->successful()) {
+                \Log::error('Midtrans API failed: ' . json_encode($responseBody));
                 return response()->json(['error' => 'Failed to communicate with Midtrans API'], 500);
             }
 
             if (!isset($responseBody['redirect_url'])) {
+                \Log::error('Midtrans response missing redirect_url: ' . json_encode($responseBody));
                 return response()->json(['error' => 'Failed to retrieve redirect URL from Midtrans'], 500);
             }
 
             // Save to orders table
-            $order = new Order();
+            $order = new \App\Models\Order();
             $order->invoice_id = rand(1, 999999);
-            $order->user_id = Auth::user()->id;
+            $order->user_id = \Auth::user()->id;
             $order->sub_total = getCartTotal();
-            $order->shiping_fee = $shippingFee;
+            $order->shipping_fee = $shippingFee;
             $order->amount = $totalAmount;
             $order->product_qty = $cartItems->sum('qty');
-            $order->product_name = $product->name;
+            $order->product_name = isset($product) ? $product->name : '';
             $order->product_weight = $totalWeight;
             $order->payment_method = 'midtrans';
             $order->status = 'pending';
-            $order->order_address = json_encode(Session::get('address'));
-            $order->shipping_method = json_encode(Session::get('shipping_method'));
-            $order->courier = $request->courier;
-            $order->service = $request->service;
-            $order->coupon = json_encode(Session::get('coupon'));
+            $order->order_address = json_encode(\Session::get('address'));
+            $order->shipping_method = json_encode(\Session::get('shipping_method'));
+            $order->courier = $courier;
+            $order->service = $service;
+            $order->coupon = json_encode(\Session::get('coupon'));
             $order->order_status = 'pending';
             $order->save();
 
             // Save to order_products table
             foreach ($cartItems as $item) {
-                $product = Product::find($item->id);
-                $orderProduct = new OrderProduct();
+                $product = \App\Models\Product::find($item->id);
+                $orderProduct = new \App\Models\OrderProduct();
                 $orderProduct->order_id = $order->id;
-                $orderProduct->orders_id = $order->id;
                 $orderProduct->product_id = $product->id;
-                $orderProduct->vendor_id = $product->vendor_id;
                 $orderProduct->product_name = $product->name;
                 $orderProduct->unit_price = $item->price;
                 $orderProduct->qty = $item->qty;
                 $orderProduct->weight = $product->weight * $item->qty;
-                $orderProduct->courier = $request->courier;
-                $orderProduct->service = $request->service;
+                $orderProduct->courier = $courier;
+                $orderProduct->service = $service;
                 $orderProduct->save();
 
                 $product->qty -= $item->qty;
                 $product->save();
             }
             // Save transaction with redirect URL
-            $transaction = new Transaction();
-            $transaction->order_id = $params['transaction_details']['order_id'];
-            $transaction->orders_id = $order->id;
-            // $transaction->transaction_id = $params['transaction_id'];
+            $transaction = new \App\Models\Transaction();
+            $transaction->order_id = $order->id;
             $transaction->status = 'pending';
-            $transaction->user_name = Auth::user()->name;
+            $transaction->user_name = \Auth::user()->name;
             $transaction->payment_method = 'midtrans';
             $transaction->product_name = implode(', ', $cartItems->pluck('name')->toArray());
             $transaction->amount = $totalAmount;
             $transaction->checkout_link = $responseBody['redirect_url'];
             $transaction->save();
 
-              // Save transaction_id from Midtrans
-            // if (isset($responseBody['transaction_id'])) {
-            //     $transaction->transaction_id = $responseBody['transaction_id'];
-            //     $transaction->save();
-            // }
+            // Clear session after checkout
+            $this->clearSession();
 
-             // Clear session after checkout
-             $this->clearSession();
-
-
+            \Log::info('--- SELESAI CHECKOUT FORM SUBMIT ---');
             return response()->json($responseBody);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to communicate with Midtrans API', 'message' => $e->getMessage()], 500);
+        } catch (\Throwable $e) {
+            \Log::error('Checkout error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+            \Log::error($e->getTraceAsString());
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
@@ -238,68 +246,66 @@ class CheckOutController extends Controller
 
 
     public function shippingFee(Request $request)
-{
-    // Ambil address_id dari request
-    $addressId = $request->get('address_id');
+    {
+        // Ambil address_id dari request
+        $addressId = $request->get('address_id');
+        $productWeight = $request->get('total_weight'); // Ambil berat produk langsung dari request
 
-    // Cari alamat berdasarkan address_id
-    $address = UserAddress::find($addressId);
+        // Cari alamat berdasarkan address_id
+        $address = UserAddress::find($addressId);
 
-    // Ambil berat produk dari sesi
-    $productWeight = Session::get('total_product_weight', 0); // Default value jika tidak ada berat produk
+        // Hitung biaya pengiriman
+        $availableServices = $this->calculateShippingFee($addressId, $address, $request->get('courier'), $productWeight);
 
-    // Hitung biaya pengiriman
-    $availableServices = $this->calculateShippingFee($addressId, $address, $request->get('courier'), $productWeight);
-
-    // Mengembalikan view dengan data yang sudah diproses
-    return $this->loadTheme('available_services', ['services' => $availableServices]);
+        // Mengembalikan view dengan data yang sudah diproses
+        return $this->loadTheme('available_services', ['services' => $availableServices, 'totalWeight' => $productWeight]);
     }
 
     public function choosePackage(Request $request)
-{
-    Log::info('Request data:', $request->all());
+    {
+        Log::info('Request data:', $request->all());
 
-    $addressId = $request->get('address_id');
-    $address = UserAddress::find($addressId);
-    $orders = auth()->user()->orders;
+        $addressId = $request->get('address_id');
+        $address = UserAddress::find($addressId);
+        $orders = auth()->user()->orders;
 
-    $productWeight = Session::get('total_product_weight', 0);
+        $productWeight = $request->get('total_weight'); // Ambil total_weight dari request
 
-    $availableServices = $this->calculateShippingFee($orders, $address, $request->get('courier'), $productWeight);
+        $availableServices = $this->calculateShippingFee($orders, $address, $request->get('courier'), $productWeight);
 
-    Log::info('Available services:', $availableServices);
+        Log::info('Available services:', $availableServices);
 
-    $selectedPackage = null;
-    if (!empty($availableServices)) {
-        foreach ($availableServices as $service) {
-            Log::info('Checking service:', $service);
-            if ($service['service'] === $request->get('delivery_package')) {
-                $selectedPackage = $service;
-                break;
+        $selectedPackage = null;
+        if (!empty($availableServices)) {
+            foreach ($availableServices as $service) {
+                Log::info('Checking service:', $service);
+                if ($service['service'] === $request->get('delivery_package')) {
+                    $selectedPackage = $service;
+                    break;
+                }
             }
         }
+        // dd($productWeight);
+
+        if ($selectedPackage == null) {
+            return response()->json(['error' => 'No selected package found'], 400);
+        }
+
+        Session::put('shipping_fee', $selectedPackage['cost']);
+        Session::put('courier', $selectedPackage['courier']);
+        Session::put('service', $selectedPackage['service']);
+
+        Log::info('Selected package:', $selectedPackage);
+
+        $subtotal = getCartTotal();
+        $shippingFee = $selectedPackage['cost'];
+        $total = $subtotal + $shippingFee - getCartDiscount();
+
+        return response()->json([
+            'shipping_fee' => $shippingFee,
+            'total_amount' => $total,
+        ]);
     }
-    // dd($productWeight);
-
-    if ($selectedPackage == null) {
-        return response()->json(['error' => 'No selected package found'], 400);
-    }
-
-    Session::put('shipping_fee', $selectedPackage['cost']);
-    Session::put('courier', $selectedPackage['courier']);
-    Session::put('service', $selectedPackage['service']);
-
-    Log::info('Selected package:', $selectedPackage);
-
-    $subtotal = getCartTotal();
-    $shippingFee = $selectedPackage['cost'];
-    $total = $subtotal + $shippingFee - getCartDiscount();
-
-    return response()->json([
-        'shipping_fee' => number_format($shippingFee, 0, ',', '.'),
-        'total_amount' => number_format($total, 0, ',', '.'),
-    ]);
-}
 
 
 
@@ -308,6 +314,13 @@ class CheckOutController extends Controller
         try {
             $client = new Client([
                 'verify' => false, // Nonaktifkan verifikasi SSL
+            ]);
+
+            Log::info('RajaOngkir API Request:', [
+                'origin' => env('API_ONGKIR_ORIGIN'),
+                'destination' => $address->city,
+                'weight' => $productWeight,
+                'courier' => $courier,
             ]);
 
             $response = $client->post(env('API_ONGKIR_BASE_URL') . 'cost', [
@@ -323,6 +336,7 @@ class CheckOutController extends Controller
             ]);
 
             $shippingFees = json_decode($response->getBody(), true);
+            Log::info('RajaOngkir API Response (Raw):', ['body' => $response->getBody()->getContents()]);
             Log::info('Shipping fees:', $shippingFees);
 
             $availableServices = [];
@@ -353,7 +367,7 @@ class CheckOutController extends Controller
 
 
 
-public function getShippingCost(Request $request)
+    public function getShippingCost(Request $request)
     {
         $addressId = $request->input('address_id');
         $courier = $request->input('courier');

@@ -13,7 +13,7 @@
 @section('content')
     <section id="wsus__dashboard">
         <div class="container-fluid">
-            @include('vendor.layouts.sidebar')
+            @include('frontend.dashboard.layouts.sidebar')
 
             <div class="row">
                 <div class="col-xl-9 col-xxl-10 col-lg-9 ms-auto">
@@ -84,9 +84,6 @@
                                                                     {{ $product->product_name }}
                                                                 </td>
                                                                 <td class="amount">
-                                                                    {{ $product->vendor->shop_name }}
-                                                                </td>
-                                                                <td class="amount">
                                                                     Rp{{ number_format($product->unit_price, 0, ',', '.') }}
                                                                 </td>
 
@@ -110,8 +107,6 @@
                                                 Rp{{ number_format($order->sub_total, 0, ',', '.') }}</p>
                                             <p><span>Pengiriman(+):</span>
                                                 Rp{{ number_format($order->shiping_fee, 0, ',', '.') }}</p>
-                                            <p><span>Coupon(-):</span>{{ @$settings->currency_icon }}
-                                                {{ @$coupon->discount ? $coupon->discount : 0 }}</p>
                                             <p><span>Total Semua:</span>
                                                 Rp{{ number_format($order->amount, 0, ',', '.') }}</p>
 

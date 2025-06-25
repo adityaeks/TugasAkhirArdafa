@@ -59,8 +59,23 @@ class FrontendProductController extends Controller
 
     public function showProduct(string $slug)
     {
-        $product = Product::with(['vendor', 'category'])->where('slug', $slug)->where('status', 1)->first();
-        return view('frontend.pages.product-detail', compact('product'));
+        $product = Product::with(['category'])->where('slug', $slug)->where('status', 1)->first();
+
+        if (!$product) {
+            abort(404);
+        }
+
+        $relatedProducts = collect();
+        if ($product) {
+            $relatedProducts = Product::with(['category'])
+                                    ->where('category_id', $product->category_id)
+                                    ->where('id', '!=', $product->id)
+                                    ->where('status', 1)
+                                    ->take(4)
+                                    ->get();
+        }
+
+        return view('frontend.pages.product-detail', compact('product', 'relatedProducts'));
     }
 
     public function chageListView(Request $request)

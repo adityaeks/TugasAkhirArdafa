@@ -4,45 +4,53 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Adverisement;
-use App\Models\Coupon;
 use App\Models\Product;
 use App\Models\ProductVariantItem;
 use Illuminate\Http\Request;
-use Cart;
+use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 class CartController extends Controller
 {
 
     public function cartDetails()
     {
+        // dd(Session::all());
         $cartItems = Cart::content();
 
-        if(count($cartItems) === 0){
-            Session::forget('coupon');
-            toastr('Silakan tambahkan produk ke keranjang untuk melihat halaman keranjang anda  ', 'warning', 'Keranjang kosong!');
-            return redirect()->route('home');
-        }
+        // dd($cartItems);
+
+        // if(count($cartItems) === 0){
+        //     Session::forget('coupon');
+        //     toastr('Silakan tambahkan produk ke keranjang untuk melihat halaman keranjang anda  ', 'warning', 'Keranjang kosong!');
+        //     return redirect()->route('home');
+        // }
 
         $cartpage_banner_section = Adverisement::where('key', 'cartpage_banner_section')->first();
         $cartpage_banner_section = json_decode($cartpage_banner_section?->value);
 
-        // dd($cartItems);
         return view('frontend.pages.cart-detail', compact('cartItems', 'cartpage_banner_section'));
     }
 
     public function addToCart(Request $request)
     {
-        \Log::info('Product ID: ' . $request->product_id);
-
         try {
+            // Debug incoming request data
+            // \Log::info('Request Data:', $request->all());
+
             $product = Product::findOrFail($request->product_id);
+
+            // Debug product weight when adding to cart
+            Log::info('Product Weight when adding to cart:', ['product_id' => $product->id, 'weight' => $product->weight]);
 
             // Cek stock produk
             if ($product->qty === 0) {
-                return response(['status' => 'error', 'message' => 'Stok produk habis']);
-            } elseif ($product->qty < $request->qty) {
-                return response(['status' => 'error', 'message' => 'Jumlah stok tidak tersedia']);
+                // \Log::warning('Stok produk habis untuk ID: ' . $request->product_id);
+                return response()->json(['status' => 'error', 'message' => 'Stok produk habis']);
+            } elseif ($product->qty < $request->quantity) {
+                // \Log::warning('Jumlah stok tidak tersedia untuk ID: ' . $request->product_id . ', diminta: ' . $request->quantity . ', tersedia: ' . $product->qty);
+                return response()->json(['status' => 'error', 'message' => 'Jumlah stok tidak tersedia']);
             }
 
             // Cek diskon
@@ -51,21 +59,41 @@ class CartController extends Controller
             $cartData = [
                 'id' => $product->id,
                 'name' => $product->name,
-                'qty' => $request->qty,
+                'qty' => $request->quantity,
                 'price' => $productPrice,
-                'weight' => $product->weight * $request->qty,
+                'weight' => $product->weight,
                 'options' => [
                     'image' => $product->thumb_image,
-                    'slug' => $product->slug,
+                    'slug' => $product->slug
                 ]
             ];
 
-            Cart::add($cartData);
-            // dd($cartData);
-            return response(['status' => 'success', 'message' => 'Berhasil ditambahkan ke keranjang!']);
+            // Debug cart data before adding
+            // Log::info('Cart Data to be added:', $cartData);
+
+            // Add to cart
+            $cart = Cart::add($cartData);
+
+            // Debug cart after adding
+            // \Log::info('Cart Content:', Cart::content()->toArray());
+            // \Log::info('Cart Total:', Cart::total());
+            // \Log::info('Cart Count:', Cart::count());
+
+            // Return response with cart data
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Produk berhasil ditambahkan ke keranjang!',
+                'cart' => [
+                    'content' => Cart::content()->toArray(),
+                    'total' => Cart::total(),
+                    'count' => Cart::count()
+                ]
+            ]);
+
         } catch (\Exception $e) {
-            \Log::error('Error adding product to cart: ' . $e->getMessage());
-            return response(['status' => 'error', 'message' => 'Produk tidak ditemukan.'], 404);
+            Log::error('Error in addToCart: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            return response()->json(['status' => 'error', 'message' => 'Terjadi kesalahan: ' . $e->getMessage()]);
         }
     }
 
@@ -103,129 +131,114 @@ class CartController extends Controller
 
     public function getTotalWeightAjax()
     {
-        $totalWeight = 0;
+        try {
+            $totalWeight = 0;
 
-        foreach (Cart::content() as $item) {
-            $totalWeight += $item->weight * $item->qty;
+            foreach (Cart::content() as $item) {
+                $totalWeight += $item->weight * $item->qty;
+            }
+
+            return response()->json($totalWeight);
+        } catch (\Exception $e) {
+            Log::error('Error in getTotalWeightAjax: ' . $e->getMessage());
+            return response()->json(['error' => 'Terjadi kesalahan saat menghitung total berat.'], 500);
         }
-
-        return response()->json($totalWeight);
     }
 
     /** get product total */
     public function getProductTotal($rowId)
     {
        $product = Cart::get($rowId);
-       $total = ($product->price + $product->options->variants_total) * $product->qty;
+       $variantsTotal = $product->options->variants_total ?? 0;
+       $total = ($product->price + $variantsTotal) * $product->qty;
        return $total;
     }
 
     /** get cart total amount */
     public function cartTotal()
     {
-        $total = 0;
-        foreach(Cart::content() as $product){
-            $total += $this->getProductTotal($product->rowId);
+        try {
+            $total = 0;
+            foreach(Cart::content() as $product){
+                $total += $this->getProductTotal($product->rowId);
+            }
+            Log::info('Calculated Cart Total: ' . $total);
+            return response()->json($total);
+        } catch (\Exception $e) {
+            Log::error('Error in cartTotal: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            return response()->json(['error' => 'Terjadi kesalahan saat menghitung total keranjang.'], 500);
         }
-
-        return $total;
     }
 
     /** clear all cart products */
     public function clearCart()
     {
-        Cart::destroy();
+        try {
+            Cart::destroy();
 
-        return response(['status' => 'success', 'message' => 'Keranjang di bersihkan']);
+            return response(['status' => 'success', 'message' => 'Keranjang di bersihkan']);
+        } catch (\Exception $e) {
+            Log::error('Error in clearCart: ' . $e->getMessage());
+            return response(['status' => 'error', 'message' => 'Terjadi kesalahan saat membersihkan keranjang.'], 500);
+        }
     }
 
     /** Remove product form cart */
     public function removeProduct($rowId)
     {
-        Cart::remove($rowId);
-        toastr('Produk berhasil dihapus!', 'success', 'Success');
-        return redirect()->back();
+        try {
+            Cart::remove($rowId);
+            toastr('Produk berhasil dihapus!', 'success', 'Success');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Log::error('Error in removeProduct: ' . $e->getMessage());
+            toastr('Terjadi kesalahan saat menghapus produk!', 'error', 'Error');
+            return redirect()->back();
+        }
     }
 
     /** Get cart count */
     public function getCartCount()
     {
-        return Cart::content()->count();
+        try {
+            return response()->json(Cart::content()->count());
+        } catch (\Exception $e) {
+            Log::error('Error in getCartCount: ' . $e->getMessage());
+            return response()->json(['error' => 'Terjadi kesalahan saat mendapatkan jumlah keranjang.'], 500);
+        }
     }
 
     /** Get all cart products */
     public function getCartProducts()
     {
-        return Cart::content();
+        try {
+            return response()->json(Cart::content());
+        } catch (\Exception $e) {
+            Log::error('Error in getCartProducts: ' . $e->getMessage());
+            return response()->json(['error' => 'Terjadi kesalahan saat mendapatkan produk keranjang.'], 500);
+        }
     }
     public function getCartWeight()
     {
-        return Cart::content();
+        try {
+            return response()->json(Cart::content());
+        } catch (\Exception $e) {
+            Log::error('Error in getCartWeight: ' . $e->getMessage());
+            return response()->json(['error' => 'Terjadi kesalahan saat mendapatkan berat keranjang.'], 500);
+        }
     }
 
     /** Romve product form sidebar cart */
     public function removeSidebarProduct(Request $request)
     {
-        Cart::remove($request->rowId);
+        try {
+            Cart::remove($request->rowId);
 
-        return response(['status' => 'success', 'message' => 'Produk berhasil dihapus!']);
-    }
-
-    /** Apply coupon */
-    public function applyCoupon(Request $request)
-    {
-        if($request->coupon_code === null){
-            return response(['status' => 'error', 'message' => 'Kupon diperlukan']);
-        }
-
-        $coupon = Coupon::where(['code' => $request->coupon_code, 'status' => 1])->first();
-
-        if($coupon === null){
-            return response(['status' => 'error', 'message' => 'Kupon tidak ada!']);
-        }elseif($coupon->start_date > date('Y-m-d')){
-            return response(['status' => 'error', 'message' => 'Kupon tidak ada!']);
-        }elseif($coupon->end_date < date('Y-m-d')){
-            return response(['status' => 'error', 'message' => 'Kupon kadaluarsa']);
-        }elseif($coupon->total_used >= $coupon->quantity){
-            return response(['status' => 'error', 'message' => 'Kupon tidak bisa dipakai']);
-        }
-
-        if($coupon->discount_type === 'amount'){
-            Session::put('coupon', [
-                'coupon_name' => $coupon->name,
-                'coupon_code' => $coupon->code,
-                'discount_type' => 'amount',
-                'discount' => $coupon->discount
-            ]);
-        }elseif($coupon->discount_type === 'percent'){
-            Session::put('coupon', [
-                'coupon_name' => $coupon->name,
-                'coupon_code' => $coupon->code,
-                'discount_type' => 'percent',
-                'discount' => $coupon->discount
-            ]);
-        }
-
-        return response(['status' => 'success', 'message' => 'Kupon berhasil digunakan!']);
-    }
-
-    /** Calculate coupon discount */
-    public function couponCalculation()
-    {
-        if(Session::has('coupon')){
-            $coupon = Session::get('coupon');
-            $subTotal = getCartTotal();
-            if($coupon['discount_type'] === 'amount'){
-                $total = $subTotal - $coupon['discount'];
-                return response(['status' => 'success', 'cart_total' => $total, 'discount' => $coupon['discount']]);
-            }elseif($coupon['discount_type'] === 'percent'){
-                $discount = $subTotal - ($subTotal * $coupon['discount'] / 100);
-                $total = $subTotal - $discount;
-                return response(['status' => 'success', 'cart_total' => $total, 'discount' => $discount]);
-            }
-        }else {
-            $total = getCartTotal();
-            return response(['status' => 'success', 'cart_total' => $total, 'discount' => 0]);
+            return response(['status' => 'success', 'message' => 'Produk berhasil dihapus!']);
+        } catch (\Exception $e) {
+            Log::error('Error in removeSidebarProduct: ' . $e->getMessage());
+            return response(['status' => 'error', 'message' => 'Terjadi kesalahan saat menghapus produk dari sidebar.'], 500);
         }
     }
 

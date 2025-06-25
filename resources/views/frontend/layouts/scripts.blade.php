@@ -48,25 +48,36 @@
     $(document).on('submit', '.shopping-cart-form', function(e) {
         e.preventDefault();
         let formData = $(this).serialize();
-        console.log('Form Data:', formData); // Log form data untuk debugging
+        console.log('Form Data:', formData);
 
         $.ajax({
             method: 'POST',
             data: formData,
             url: "{{ route('add-to-cart') }}",
-            success: function(data) {
-                console.log('Add to Cart Response:', data); // Log response untuk debugging
-                if (data.status === 'success') {
+            success: function(response) {
+                console.log('Raw Response:', response);
+
+                if (response.status === 'success') {
+                    console.log('Cart Content:', response.cart.content);
+                    console.log('Cart Total:', response.cart.total);
+                    console.log('Cart Count:', response.cart.count);
+
                     getCartCount();
                     fetchSidebarCartProducts();
                     $('.mini_cart_actions').removeClass('d-none');
-                    toastr.success(data.message);
-                } else if (data.status === 'error') {
-                    toastr.error(data.message);
+                    toastr.success(response.message);
+                } else if (response.status === 'error') {
+                    console.error('Error:', response.message);
+                    toastr.error(response.message);
                 }
             },
-            error: function(data) {
-                console.error('Error adding product to cart:', data);
+            error: function(xhr, status, error) {
+                console.error('AJAX Error:', {
+                    status: status,
+                    error: error,
+                    response: xhr.responseText
+                });
+                toastr.error('Terjadi kesalahan saat menambahkan produk ke keranjang');
             }
         });
     });
@@ -164,32 +175,6 @@
             }
         });
     }
-
-    // Add product to wishlist
-    $('.add_to_wishlist').on('click', function(e) {
-        e.preventDefault();
-        let id = $(this).data('id');
-        console.log('Adding to Wishlist Product ID:', id); // Log product ID untuk debugging
-
-        $.ajax({
-            method: 'GET',
-            url: "{{ route('wishlist.store') }}",
-            data: {
-                id: id
-            },
-            success: function(data) {
-                if (data.status === 'success') {
-                    $('#wishlist_count').text(data.count);
-                    toastr.success(data.message);
-                } else if (data.status === 'error') {
-                    toastr.error(data.message);
-                }
-            },
-            error: function(data) {
-                console.error('Error adding to wishlist:', data);
-            }
-        });
-    });
 
     $('.show_product_modal').on('click', function() {
         let id = $(this).data('id');

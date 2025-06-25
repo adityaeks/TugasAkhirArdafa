@@ -48,7 +48,20 @@ class AdminController extends Controller
         $totalVendors = User::where('role', 'vendor')->count();
         $totalUsers = User::where('role', 'user')->count();
 
+        // Order per hari di bulan ini
+        $ordersPerDay = Order::selectRaw('DATE(created_at) as date, COUNT(*) as total')
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
 
+        // Order per bulan di tahun ini
+        $ordersPerMonth = Order::selectRaw('MONTH(created_at) as month, COUNT(*) as total')
+            ->whereYear('created_at', Carbon::now()->year)
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
 
         return view('admin.dashboard', compact(
             'todaysOrder',
@@ -64,7 +77,9 @@ class AdminController extends Controller
             'totalProducts',
             'totalPendingProducts',
             'totalVendors',
-            'totalUsers'
+            'totalUsers',
+            'ordersPerDay',
+            'ordersPerMonth'
         ));
     }
 

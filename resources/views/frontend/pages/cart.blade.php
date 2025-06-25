@@ -1,0 +1,187 @@
+@extends('frontend.layouts.app')
+
+@section('title', 'Keranjang Belanja - Our Kitchen')
+
+@section('content')
+<main class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Keranjang Belanja Anda</h1>
+
+    @if(count($cartItems) > 0)
+    <div class="bg-white rounded-xl shadow-md p-6">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produk</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kuantitas</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subtotal</th>
+                    <th scope="col" class="relative px-6 py-3"><span class="sr-only">Hapus</span></th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                @foreach($cartItems as $item)
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-20 w-20">
+                                <img class="h-20 w-20 rounded-md object-cover" src="{{ asset($item->options->image) }}" alt="{{ $item->name }}">
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">{{ $item->name }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        Rp{{ number_format($item->price, 0, ',', '.') }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <button class="quantity-button p-2 border rounded-md text-gray-600 hover:bg-gray-100" data-id="{{ $item->rowId }}" data-action="decrement">-</button>
+                            <input type="text" class="quantity-input w-16 text-center mx-2 border rounded-md" value="{{ $item->qty }}" data-id="{{ $item->rowId }}">
+                            <button class="quantity-button p-2 border rounded-md text-gray-600 hover:bg-gray-100" data-id="{{ $item->rowId }}" data-action="increment">+</button>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 product-subtotal" data-id="{{ $item->rowId }}">
+                        Rp{{ number_format($item->price * $item->qty, 0, ',', '.') }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button class="text-red-600 hover:text-red-900 remove-from-cart" data-id="{{ $item->rowId }}">Hapus</button>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+        <div class="mt-8 flex justify-end">
+            <div class="w-full md:w-1/3 bg-gray-50 p-6 rounded-lg shadow-inner">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Ringkasan Keranjang</h2>
+                <div class="flex justify-between text-gray-700 mb-2">
+                    <span>Subtotal Produk:</span>
+                    <span id="cart-total-display">Rp{{ number_format(getCartTotal(), 0, ',', '.') }}</span>
+                </div>
+                <div class="flex justify-between text-gray-700 mb-4">
+                    <span>Biaya Pengiriman:</span>
+                    <span id="shipping-fee-display">Rp0</span>
+                </div>
+                <div class="flex justify-between text-xl font-bold text-gray-800 pt-4 border-t">
+                    <span>Total:</span>
+                    <span id="final-total-display">Rp{{ number_format(getCartTotal(), 0, ',', '.') }}</span>
+                </div>
+                <a href="{{ route('user.checkout') }}" class="mt-6 w-full flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:text-lg">Lanjutkan ke Checkout</a>
+            </div>
+        </div>
+    </div>
+    @else
+    <div class="text-center bg-white rounded-xl shadow-md p-10">
+        <i class="fas fa-shopping-cart text-6xl text-gray-400 mb-4"></i>
+        <p class="text-xl text-gray-600 font-semibold mb-2">Keranjang Anda kosong.</p>
+        <p class="text-gray-500 mb-6">Tambahkan beberapa item dari produk kami untuk memulai!</p>
+        <a href="{{ route('products.index') }}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">Lihat Produk</a>
+    </div>
+    @endif
+</main>
+
+@push('scripts')
+<script>
+    // Fungsi untuk memperbarui total keranjang di halaman keranjang
+    function updateCartPageTotals() {
+        fetch('{{ route('cart.sidebar-product-total') }}')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('cart-total-display').innerText = 'Rp' + data.toLocaleString('id-ID');
+                document.getElementById('final-total-display').innerText = 'Rp' + data.toLocaleString('id-ID');
+            })
+            .catch(error => console.error('Error fetching cart totals:', error));
+    }
+
+    // Fungsi untuk memperbarui subtotal item individu
+    function updateItemSubtotal(rowId, newQuantity) {
+        const productPrice = parseFloat(document.querySelector(`.quantity-input[data-id="${rowId}"]`).closest('tr').querySelector('td:nth-child(2)').innerText.replace(/[^\d,]/g, '').replace(',', '.'));
+        const newSubtotal = productPrice * newQuantity;
+        document.querySelector(`.product-subtotal[data-id="${rowId}"]`).innerText = 'Rp' + newSubtotal.toLocaleString('id-ID');
+    }
+
+    // Event listener untuk tombol kuantitas
+    document.querySelectorAll('.quantity-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const rowId = this.dataset.id;
+            const action = this.dataset.action;
+            const input = document.querySelector(`.quantity-input[data-id="${rowId}"]`);
+            let quantity = parseInt(input.value);
+
+            if (action === 'increment') {
+                quantity++;
+            } else if (action === 'decrement' && quantity > 1) {
+                quantity--;
+            }
+
+            // Kirim permintaan AJAX untuk memperbarui kuantitas
+            fetch('{{ route('cart.update-quantity') }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: rowId, quantity: quantity })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    input.value = quantity;
+                    updateItemSubtotal(rowId, quantity);
+                    updateCartPageTotals();
+                    updateCartCount();
+                    updateMiniCart();
+                    toastr.success(data.message);
+                } else {
+                    toastr.error(data.message);
+                }
+            })
+            .catch(error => console.error('Error updating quantity:', error));
+        });
+    });
+
+    // Event listener untuk tombol hapus
+    document.querySelectorAll('.remove-from-cart').forEach(button => {
+        button.addEventListener('click', function() {
+            const rowId = this.dataset.id;
+
+            fetch(`{{ route('cart.remove-product', '') }}/${rowId}`, {
+                method: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    this.closest('tr').remove();
+                    updateCartPageTotals();
+                    updateCartCount();
+                    updateMiniCart();
+                    toastr.success(data.message);
+                    if (document.querySelectorAll('.quantity-input').length === 0) {
+                        document.querySelector('main').innerHTML = `
+                            <div class="text-center bg-white rounded-xl shadow-md p-10">
+                                <i class="fas fa-shopping-cart text-6xl text-gray-400 mb-4"></i>
+                                <p class="text-xl text-gray-600 font-semibold mb-2">Keranjang Anda kosong.</p>
+                                <p class="text-gray-500 mb-6">Tambahkan beberapa item dari produk kami untuk memulai!</p>
+                                <a href="{{ route('products.index') }}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">Lihat Produk</a>
+                            </div>
+                        `;
+                    }
+                } else {
+                    toastr.error(data.message);
+                }
+            })
+            .catch(error => console.error('Error removing item:', error));
+        });
+    });
+
+    // Panggil saat halaman dimuat untuk memastikan total terbaru
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCartPageTotals();
+    });
+</script>
+@endpush

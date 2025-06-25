@@ -41,13 +41,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    /**
-     * Get the vendor associated with the user.
-     */
-    public function vendor()
-    {
-        return $this->hasOne(Vendor::class);
-    }
 
     /**
      * Find a user by the User instance.

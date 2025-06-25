@@ -13,8 +13,8 @@ use App\Http\Controllers\Backend\AdminController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
-    // Route::get('register', [RegisteredUserController::class, 'create'])
-    //             ->name('register');
+    Route::get('register', [RegisteredUserController::class, 'create'])
+                ->name('register');
 
     Route::get('admin/login', [AdminController::class, 'login'])->name('admin.login');
 

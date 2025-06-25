@@ -90,7 +90,38 @@ class UserAddressController extends Controller
     public function edit(string $id)
     {
         $address = UserAddress::findOrFail($id);
-        return view('frontend.dashboard.address.edit', compact('address'));
+        try {
+            $client = new Client([
+                'verify' => false, // Nonaktifkan verifikasi SSL
+            ]);
+            $response = Http::setCLient($client)->withHeaders([
+                'key' => env('API_ONGKIR_KEY')
+            ])->get('https://api.rajaongkir.com/starter/province');
+
+            $provincesData = json_decode($response->getBody(), true);
+            Log::info('Provinces Raw Data:', $provincesData);
+            $provinces = collect($provincesData['rajaongkir']['results'])->pluck('province', 'province_id')->all();
+            Log::info('Provinces Formatted Data:', $provinces);
+
+            // Fetch cities for the selected province
+            $cities = [];
+            if ($address->province) {
+                $cityResponse = Http::setClient($client)->withHeaders([
+                    'key' => env('API_ONGKIR_KEY')
+                ])->get('https://api.rajaongkir.com/starter/city', [
+                    'province' => $address->province
+                ]);
+                $citiesData = json_decode($cityResponse->getBody(), true);
+                Log::info('Cities Raw Data:', $citiesData);
+                $cities = collect($citiesData['rajaongkir']['results'])->pluck('city_name', 'city_id')->all();
+                Log::info('Cities Formatted Data:', $cities);
+            }
+
+            return view('frontend.dashboard.address.edit', compact('address', 'provinces', 'cities'));
+        } catch (\Exception $e) {
+            Log::error('Error fetching provinces for edit: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to load provinces: ' . $e->getMessage());
+        }
     }
 
     /**

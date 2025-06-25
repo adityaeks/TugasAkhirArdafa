@@ -16,8 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug');
             $table->text('thumb_image');
-            $table->integer('vendor_id');
-            $table->integer('category_id');
+            $table->unsignedBigInteger('category_id');
             $table->integer('qty');
             $table->integer('weight');
             $table->text('short_description');
@@ -25,16 +24,10 @@ return new class extends Migration
             $table->text('video_link')->nullable();
             $table->string('sku')->nullable();
             $table->double('price');
-            $table->double('offer_price')->nullable();
-            $table->date('offer_start_date')->nullable();
-            $table->date('offer_end_date')->nullable();
-            $table->string('product_type')->nullable();
             $table->boolean('status');
-            $table->integer('is_approved')->default(0);
-            $table->string('seo_title')->nullable();
-            $table->text('seo_description')->nullable();
-
             $table->timestamps();
+
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
         });
     }
 

@@ -1,178 +1,225 @@
-@extends('frontend.layouts.master')
+<!DOCTYPE html>
+<html lang="en">
 
-@section('title')
-    UMKM Lowayu || Checkout
-@endsection
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>UMKM Lowayu || Checkout</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+</head>
 
-@section('content')
-    <section id="wsus__cart_view">
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-8 col-lg-7">
-                    <div class="wsus__check_form">
-                        <div class="d-flex">
-                            <h5>Detail Pengiriman </h5>
-                            <a href="javascript:;" style="margin-left:auto;" class="common_btn" data-bs-toggle="modal"
-                                data-bs-target="#exampleModal">Tambah alamat baru</a>
-                        </div>
+<body class="bg-gray-50">
+    @include('frontend.layouts.navbar')
+    <section class="container mx-auto px-4 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <div class="w-full lg:w-3/4">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h5 class="text-xl font-semibold text-gray-800">Detail Pengiriman</h5>
+                        <a href="javascript:;" class="common_btn text-blue-600 hover:text-blue-800" id="add-address-button">Tambah alamat baru</a>
+                    </div>
 
-                        <div class="row">
-                            @foreach ($addresses as $address)
-                                <div class="col-xl-6">
-                                    <div class="wsus__checkout_single_address">
-                                        <div class="form-check">
-                                            <input class="form-check-input shipping_address delivery_address"
-                                                value="{{ $address->id }}" data-id="{{ $address->id }}" type="radio"
-                                                name="flexRadioDefault" id="flexRadioDefault{{ $address->id }}">
-                                            <label class="form-check-label" for="flexRadioDefault{{ $address->id }}">
-                                                Pilih Alamat
-                                            </label>
-                                        </div>
-                                        <ul>
-                                            <li><span>Nama :</span> {{ $address->name }}</li>
-                                            <li><span>Phone :</span> {{ $address->phone }}</li>
-                                            <li><span>Email :</span> {{ $address->email }}</li>
-                                            <li><span>Kode Pos :</span> {{ $address->zip }}</li>
-                                            <li><span>Alamat :</span> {{ $address->address }}</li>
-                                        </ul>
-                                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        @foreach ($addresses as $address)
+                            <div class="bg-gray-50 rounded-lg p-4 shadow-sm border border-gray-200">
+                                <div class="flex items-center mb-2">
+                                    <input class="form-radio h-4 w-4 text-blue-600 shipping_address delivery_address"
+                                        value="{{ $address->id }}" data-id="{{ $address->id }}" type="radio"
+                                        name="flexRadioDefault" id="flexRadioDefault{{ $address->id }}">
+                                    <label class="ml-2 text-gray-700 font-medium" for="flexRadioDefault{{ $address->id }}">
+                                        Pilih Alamat
+                                    </label>
                                 </div>
-                            @endforeach
-                        </div>
-                        <div class="mt-3">
-                            <h5>Available services:</h5>
-                            <ul class="list-group list-group-flush available-services" style="display: none;"></ul>
-                        </div>
-
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li><span>Nama :</span> {{ $address->name }}</li>
+                                    <li><span>Phone :</span> {{ $address->phone }}</li>
+                                    <li><span>Email :</span> {{ $address->email }}</li>
+                                    <li><span>Kode Pos :</span> {{ $address->zip }}</li>
+                                    <li><span>Alamat :</span> {{ $address->address }}</li>
+                                </ul>
+                            </div>
+                        @endforeach
                     </div>
+                    <div class="mt-6">
+                        <h5 class="text-lg font-semibold text-gray-800 mb-3">Available services:</h5>
+                        <ul class="list-none available-services hidden"></ul>
+                    </div>
+
                 </div>
-                <div class="col-xl-4 col-lg-5">
-                    <div class="wsus__order_details" id="sticky_sidebar">
-                        <h5 class="mb-0"><i class='fa fa-truck'></i> Delivery Service</h5>
-                        <div class="mt-3">
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input courier-code" type="radio" name="courier" id="inlineRadio1"
-                                    value="jne">
-                                <label class="form-check-label" for="inlineRadio1">JNE</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input courier-code" type="radio" name="courier" id="inlineRadio2"
-                                    value="pos">
-                                <label class="form-check-label" for="inlineRadio2">POS</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input courier-code" type="radio" name="courier" id="inlineRadio3"
-                                    value="tiki">
-                                <label class="form-check-label" for="inlineRadio3">TIKI</label>
-                            </div>
+            </div>
+            <div class="w-full lg:w-1/4">
+                <div class="bg-white rounded-lg shadow-md p-6 sticky top-20" id="sticky_sidebar">
+                    <h5 class="mb-4 text-xl font-semibold text-gray-800"><i class='fa fa-truck mr-2'></i> Delivery Service</h5>
+                    <div class="mt-3 flex space-x-4">
+                        <div class="flex items-center">
+                            <input class="form-radio h-4 w-4 text-blue-600 courier-code" type="radio" name="courier" id="inlineRadio1"
+                                value="jne">
+                            <label class="ml-2 text-gray-700" for="inlineRadio1">JNE</label>
                         </div>
-
-                        <div class="wsus__order_details_summery">
-                            <p>subtotal: <span>Rp{{ number_format(getCartTotal(), 0, ',', '.') }}</span></p>
-                            <p>biaya pengiriman(+): <span id="cost">Rp{{ number_format(0, 0, ',', '.') }}</span>
-                            </p>
-                            <p>kupon(-): <span>Rp{{ number_format(getCartDiscount(), 0, ',', '.') }}</span></p>
-                            <p><b>total:</b> <span><b id="total_amount"
-                                        data-id="{{ getMainCartTotal() }}">Rp{{ number_format(getMainCartTotal(), 0, ',', '.') }}</b></span>
-                            </p>
+                        <div class="flex items-center">
+                            <input class="form-radio h-4 w-4 text-blue-600 courier-code" type="radio" name="courier" id="inlineRadio2"
+                                value="pos">
+                            <label class="ml-2 text-gray-700" for="inlineRadio2">POS</label>
                         </div>
-                        <form action="{{ route('user.checkout.submit') }}" id="checkOutForm">
-                            <input type="hidden" name="shipping_method_id" value="" id="shipping_method_id">
-                            <input type="hidden" name="shipping_address_id" value="" id="shipping_address_id">
-                            <input type="hidden" name="delivery_service" value="" id="delivery_service">
-                            <input type="hidden" name="delivery_package" value="" id="delivery_package">
-                            <input type="hidden" name="total_qty" id="total_qty">
-                            <input type="hidden" name="total_price" id="total_price">
-                        </form>
-                        <a href="javascript:;" id="submitCheckoutForm" class="common_btn">Place Order</a>
+                        <div class="flex items-center">
+                            <input class="form-radio h-4 w-4 text-blue-600 courier-code" type="radio" name="courier" id="inlineRadio3"
+                                value="tiki">
+                            <label class="ml-2 text-gray-700" for="inlineRadio3">TIKI</label>
+                        </div>
                     </div>
+
+                    <div class="mt-6 pt-4 border-t border-gray-200">
+                        <div class="flex justify-between text-gray-700 mb-2">
+                            <span>Subtotal:</span>
+                            <span>Rp{{ number_format(getCartTotal(), 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex justify-between text-gray-700 mb-2">
+                            <span>Biaya Pengiriman(+):</span>
+                            <span id="cost">Rp0</span>
+                        </div>
+                        <div class="flex justify-between text-xl font-bold text-gray-800 pt-4 border-t">
+                            <span>Total:</span>
+                            <span><b id="total_amount"
+                                        data-id="0">Rp0</b></span>
+                        </div>
+                    </div>
+                    <form action="{{ route('user.checkout.submit') }}" id="checkOutForm" class="mt-6">
+                        <input type="hidden" name="shipping_method_id" value="" id="shipping_method_id">
+                        <input type="hidden" name="shipping_address_id" value="" id="shipping_address_id">
+                        <input type="hidden" name="delivery_service" value="" id="delivery_service">
+                        <input type="hidden" name="delivery_package" value="" id="delivery_package">
+                        <input type="hidden" name="total_qty" id="total_qty">
+                        <input type="hidden" name="total_price" id="total_price">
+                    </form>
+                    <button id="submitCheckoutForm" class="mt-6 w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition">Place Order</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <div class="wsus__popup_address">
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">add new address</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden" id="exampleModal">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 md:max-w-md shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center pb-3">
+                <h5 class="text-xl font-semibold text-gray-800" id="exampleModalLabel">Add New Address</h5>
+                <button type="button" class="text-gray-400 hover:text-gray-600" id="close-address-modal" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mt-2 text-gray-600">
+                <form action="{{ route('user.checkout.address.create') }}" method="POST" class="space-y-4">
+                    @csrf
+                    <div>
+                        <input type="text" placeholder="Nama *" name="name"
+                            value="{{ old('name') }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
-                    <div class="modal-body p-0">
-                        <div class="wsus__check_form p-3">
-                            <form action="{{ route('user.checkout.address.create') }}" method="POST">
-                                @csrf
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="wsus__check_single_form">
-                                            <input type="text" placeholder="Nama *" name="name"
-                                                value="{{ old('name') }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="wsus__check_single_form">
-                                            <input type="text" placeholder="No. Hp *" name="phone"
-                                                value="{{ old('phone') }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="wsus__check_single_form">
-                                            <input type="email" placeholder="Email *" name="email"
-                                                value="{{ old('email') }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="wsus__check_single_form">
-                                            <select id="province" class="select_2" name="province">
-                                                <option value="">Select Province</option>
-                                                @foreach ($provinces['rajaongkir']['results'] as $province)
-                                                    <option value="{{ $province['province_id'] }}">
-                                                        {{ $province['province'] }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="wsus__check_single_form">
-                                            <select id="city" class="select_2" name="city">
-                                                <option value="">Select City</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="wsus__check_single_form">
-                                            <input type="text" placeholder="Kode Pos *" name="zip"
-                                                value="{{ old('zip') }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="wsus__check_single_form">
-                                            <input type="text" placeholder="Alamat lengkap *" name="address"
-                                                value="{{ old('address') }}">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-12">
-                                        <div class="wsus__check_single_form">
-                                            <button class="common_btn" type="submit">save address</button>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </form>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <input type="text" placeholder="No. Hp *" name="phone"
+                                value="{{ old('phone') }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <input type="email" placeholder="Email *" name="email"
+                                value="{{ old('email') }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                     </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <select id="province" class="select_2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" name="province">
+                                <option value="">Select Province</option>
+                                @foreach ($provinces['rajaongkir']['results'] as $province)
+                                    <option value="{{ $province['province_id'] }}">
+                                        {{ $province['province'] }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <select id="city" class="select_2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" name="city">
+                                <option value="">Select City</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <input type="text" placeholder="Kode Pos *" name="zip"
+                            value="{{ old('zip') }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <input type="text" placeholder="Alamat lengkap *" name="address"
+                            value="{{ old('address') }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
 
-                </div>
+                    <div class="mt-4">
+                        <button class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition" type="submit">Save Address</button>
+                    </div>
+
+                </form>
             </div>
+
         </div>
     </div>
-@endsection
-
-
-@push('scripts')
+    @include('frontend.layouts.footer12')
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
+        // Konfigurasi Toastr
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+
+        // Mengambil elemen-elemen yang diperlukan
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const closeMobileMenu = document.getElementById('close-mobile-menu');
+        const mobileMenu = document.querySelector('.mobile-menu');
+
+        // Menambahkan event listener untuk tombol hamburger
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.remove('hidden');
+            setTimeout(() => {
+                mobileMenu.classList.add('active');
+            }, 10);
+        });
+
+        // Menambahkan event listener untuk tombol close
+        closeMobileMenu.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            setTimeout(() => {
+                mobileMenu.classList.add('hidden');
+            }, 300);
+        });
+
+        // Logika untuk modal Tambah Alamat Baru
+        const addAddressButton = document.getElementById('add-address-button');
+        const exampleModal = document.getElementById('exampleModal');
+        const closeAddressModal = document.getElementById('close-address-modal');
+
+        addAddressButton.addEventListener('click', () => {
+            exampleModal.classList.remove('hidden');
+        });
+
+        closeAddressModal.addEventListener('click', () => {
+            exampleModal.classList.add('hidden');
+        });
+
+        // Menutup modal jika mengklik di luar area modal
+        exampleModal.addEventListener('click', (e) => {
+            if (e.target === exampleModal) {
+                exampleModal.classList.add('hidden');
+            }
+        });
+
         $(document).ready(function() {
             $.ajaxSetup({
                 headers: {
@@ -325,17 +372,6 @@
                     success: function(result) {
                         $('.available-services').show();
                         $('.available-services').html(result);
-
-                        if (result.hasOwnProperty('shipping_fee')) {
-                            let shippingFee = parseInt(result.shipping_fee);
-                            $('#shipping_fee').text("Rp" + shippingFee.toLocaleString());
-
-                            let currentTotalAmount = parseInt($('#total_amount').data('id'));
-                            let totalAmount = currentTotalAmount + shippingFee;
-                            $('#total_amount').text("Rp" + totalAmount.toLocaleString());
-                        } else {
-                            console.error("Shipping fee not found in response:", result);
-                        }
                     },
                     error: function(e) {
                         console.log("Error fetching shipping fee:", e);
@@ -383,4 +419,6 @@
             updateFormValues();
         });
     </script>
-@endpush
+</body>
+
+</html>
