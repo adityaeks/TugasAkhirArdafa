@@ -1,7 +1,7 @@
 @extends('frontend.layouts.master')
 
 @section('title')
-UMKM Lowayu || About
+OurKitchen || About
 @endsection
 
 @section('content')

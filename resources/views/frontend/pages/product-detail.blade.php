@@ -27,12 +27,12 @@
 
                 <div class="mb-6">
                     <span class="text-3xl font-bold text-blue-500">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
-                    <span class="ml-2 text-gray-400 line-through">Rp{{ number_format($product->original_price, 0, ',', '.') }}</span>
-                    <span class="ml-2 bg-blue-100 text-blue-600 text-sm font-semibold px-2 py-1 rounded">
+                    {{-- <span class="ml-2 text-gray-400 line-through">Rp{{ number_format($product->original_price, 0, ',', '.') }}</span> --}}
+                    {{-- <span class="ml-2 bg-blue-100 text-blue-600 text-sm font-semibold px-2 py-1 rounded">
                         @if($product->discount_percentage > 0)
                             {{ $product->discount_percentage }}% OFF
                         @endif
-                    </span>
+                    </span> --}}
                 </div>
 
                 <p class="text-gray-700 mb-6">

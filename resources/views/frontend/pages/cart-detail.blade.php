@@ -73,10 +73,10 @@
                         <span>Subtotal Produk:</span>
                         <span id="cart-total-display">Rp{{ number_format(getCartTotal(), 0, ',', '.') }}</span>
                     </div>
-                    <div class="flex justify-between text-gray-700 mb-4">
+                    {{-- <div class="flex justify-between text-gray-700 mb-4">
                         <span>Biaya Pengiriman:</span>
                         <span id="shipping-fee-display">Rp0</span>
-                    </div>
+                    </div> --}}
                     <div class="flex justify-between text-xl font-bold text-gray-800 pt-4 border-t">
                         <span>Total:</span>
                         <span id="final-total-display">Rp{{ number_format(getCartTotal(), 0, ',', '.') }}</span>
@@ -90,7 +90,6 @@
             <i class="fas fa-shopping-cart text-6xl text-gray-400 mb-4"></i>
             <p class="text-xl text-gray-600 font-semibold mb-2">Keranjang Anda kosong.</p>
             <p class="text-gray-500 mb-6">Tambahkan beberapa item dari produk kami untuk memulai!</p>
-            <a href="{{ route('products.index') }}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">Lihat Produk</a>
         </div>
         @endif
     </main>
@@ -117,21 +116,24 @@
         const closeMobileMenu = document.getElementById('close-mobile-menu');
         const mobileMenu = document.querySelector('.mobile-menu');
 
-        // Menambahkan event listener untuk tombol hamburger
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.remove('hidden');
-            setTimeout(() => {
-                mobileMenu.classList.add('active');
-            }, 10);
-        });
+        // Tambahkan pengecekan agar tidak error jika elemen tidak ada
+        if (mobileMenuButton && closeMobileMenu && mobileMenu) {
+            // Menambahkan event listener untuk tombol hamburger
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.remove('hidden');
+                setTimeout(() => {
+                    mobileMenu.classList.add('active');
+                }, 10);
+            });
 
-        // Menambahkan event listener untuk tombol close
-        closeMobileMenu.addEventListener('click', () => {
-            mobileMenu.classList.remove('active');
-            setTimeout(() => {
-                mobileMenu.classList.add('hidden');
-            }, 300);
-        });
+            // Menambahkan event listener untuk tombol close
+            closeMobileMenu.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                setTimeout(() => {
+                    mobileMenu.classList.add('hidden');
+                }, 300);
+            });
+        }
 
         // Fungsi untuk memperbarui total keranjang di halaman keranjang
         function updateCartPageTotals() {
@@ -158,6 +160,7 @@
                 const action = this.dataset.action;
                 const input = document.querySelector(`.quantity-input[data-id="${rowId}"]`);
                 let quantity = parseInt(input.value);
+                const oldQuantity = quantity;
 
                 if (action === 'increment') {
                     quantity++;
@@ -180,14 +183,18 @@
                         input.value = quantity;
                         updateItemSubtotal(rowId, quantity);
                         updateCartPageTotals();
-                        updateCartCount();
-                        updateMiniCart();
+                        if (typeof updateCartCount === 'function') updateCartCount();
+                        if (typeof updateMiniCart === 'function') updateMiniCart();
                         toastr.success(data.message);
                     } else {
+                        input.value = oldQuantity; // Kembalikan ke qty lama jika gagal
                         toastr.error(data.message);
                     }
                 })
-                .catch(error => console.error('Error updating quantity:', error));
+                .catch(error => {
+                    input.value = oldQuantity; // Kembalikan ke qty lama jika error
+                    console.error('Error updating quantity:', error);
+                });
             });
         });
 
@@ -208,8 +215,8 @@
                     if (data.status === 'success') {
                         this.closest('tr').remove();
                         updateCartPageTotals();
-                        updateCartCount();
-                        updateMiniCart();
+                        if (typeof updateCartCount === 'function') updateCartCount();
+                        if (typeof updateMiniCart === 'function') updateMiniCart();
                         toastr.success(data.message);
                         if (document.querySelectorAll('.quantity-input').length === 0) {
                             document.querySelector('main').innerHTML = `

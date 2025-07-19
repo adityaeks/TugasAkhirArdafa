@@ -20,10 +20,10 @@ class UserOrderDataTable extends DataTable
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
-        return (new EloquentDataTable($query))
+        $dataTable = new EloquentDataTable($query);
+        $dataTable
             ->addColumn('action', function($query){
                 $showBtn = "<a href='".route('user.orders.show', $query->id)."' class='btn btn-primary'><i class='far fa-eye'></i></a>";
-
                 return $showBtn;
             })
             ->addColumn('customer', function($query){
@@ -46,7 +46,6 @@ class UserOrderDataTable extends DataTable
             })
             ->addColumn('pembayaran', function($query){
                 $status = $query->payment_status ? $query->payment_status : '-';
-
                 switch ($status) {
                     case 'pending':
                         return "<span class='badge bg-warning'>pending</span>";
@@ -80,7 +79,30 @@ class UserOrderDataTable extends DataTable
             })
             ->rawColumns(['pembayaran', 'pengiriman', 'action', 'payment_status'])
             ->setRowId('id');
+
+        // Enable searching for custom columns
+        $dataTable->filterColumn('nama_produk', function($query, $keyword) {
+            $query->where('orders.product_name', 'like', "%{$keyword}%");
+        });
+        $dataTable->filterColumn('jumlah', function($query, $keyword) {
+            $query->where('orders.product_qty', 'like', "%{$keyword}%");
+        });
+        $dataTable->filterColumn('Harga', function($query, $keyword) {
+            $query->where('orders.amount', 'like', "%{$keyword}%");
+        });
+        $dataTable->filterColumn('date', function($query, $keyword) {
+            $query->whereRaw('DATE_FORMAT(orders.created_at, "%d-%b-%Y") like ?', ["%{$keyword}%"]);
+        });
+        $dataTable->filterColumn('pembayaran', function($query, $keyword) {
+            $query->where('transactions.status', 'like', "%{$keyword}%");
+        });
+        $dataTable->filterColumn('pengiriman', function($query, $keyword) {
+            $query->where('orders.order_status', 'like', "%{$keyword}%");
+        });
+
+        return $dataTable;
     }
+
 
     /**
      * Get the query source of dataTable.

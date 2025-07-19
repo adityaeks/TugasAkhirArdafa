@@ -7,7 +7,7 @@ namespace OpenSpout\Reader\Common;
 /**
  * @internal
  */
-final class ColumnWidth
+final readonly class ColumnWidth
 {
     /**
      * @param positive-int $start
@@ -17,6 +17,5 @@ final class ColumnWidth
         public int $start,
         public int $end,
         public float $width,
-    ) {
-    }
+    ) {}
 }

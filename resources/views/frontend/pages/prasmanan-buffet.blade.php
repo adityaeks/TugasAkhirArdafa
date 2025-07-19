@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Hero Section -->
-    <div class="relative bg-cover bg-center py-12" style="background-image: url('https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1920&q=80');">
+    <div class="relative bg-cover bg-center py-12" style="background-image: url('{{ asset('frontend/images/menu-buffet.jpg') }}');">
         <div class="absolute inset-0 bg-gradient-to-r from-blue-400/50 to-blue-600/50"></div>
         <div class="container mx-auto px-6 lg:px-16 text-center relative z-10">
             <h1 class="text-3xl md:text-4xl font-bold mb-4 text-white">Prasmanan Buffet</h1>
@@ -35,7 +35,7 @@
                 </div>
                 <!-- Foto -->
                 <div class="md:w-1/2">
-                    <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80"
+                    <img src="{{ asset('frontend/images/menu-buffet.jpg') }}"
                          alt="Prasmanan Buffet"
                          class="rounded-lg shadow-xl w-full h-[400px] object-cover">
                 </div>
@@ -75,7 +75,7 @@
                         <div class="p-4">
                             <div class="flex justify-between items-start mb-2">
                                 <h3 class="font-bold text-gray-800">{{ $product->name }}</h3>
-                                <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded-full">{{ $product->category->name }}</span>
+                                {{-- <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded-full">{{ $product->category->name }}</span> --}}
                             </div>
                             <p class="text-gray-600 text-sm mb-3">{{ $product->short_description }}</p>
                             <div class="flex justify-between items-center">
@@ -118,10 +118,8 @@
                     <div class="absolute bottom-0 left-0 p-6 text-white">
                         <span class="bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full mb-2 inline-block">PROMO</span>
                         <h3 class="text-2xl font-bold mb-2">Paket Pernikahan</h3>
-                        <p class="text-sm mb-4">Dapatkan diskon 20% untuk pemesanan minimal 100 pax</p>
-                        <a href="#" class="inline-block bg-white text-blue-600 hover:bg-blue-50 font-bold py-2 px-6 rounded-full transition duration-300">
-                            Pesan Sekarang
-                        </a>
+                        <p class="text-sm mb-4">Dapatkan paket paling popular</p>
+
                     </div>
                 </div>
 
@@ -135,18 +133,16 @@
                         <span class="bg-green-500 text-white text-sm font-bold px-3 py-1 rounded-full mb-2 inline-block">SPESIAL</span>
                         <h3 class="text-2xl font-bold mb-2">Paket Corporate Event</h3>
                         <p class="text-sm mb-4">Gratis setup meja untuk pemesanan minimal 50 pax</p>
-                        <a href="#" class="inline-block bg-white text-blue-600 hover:bg-blue-50 font-bold py-2 px-6 rounded-full transition duration-300">
-                            Pesan Sekarang
-                        </a>
+
                     </div>
                 </div>
             </div>
 
             <!-- Additional Promo Info -->
-            <div class="mt-12 text-center">
+            {{-- <div class="mt-12 text-center">
                 <p class="text-gray-600 mb-4">* Promo berlaku sampai 31 Desember 2024</p>
                 <p class="text-gray-600">* Syarat dan ketentuan berlaku</p>
-            </div>
+            </div> --}}
         </div>
     </section>
 

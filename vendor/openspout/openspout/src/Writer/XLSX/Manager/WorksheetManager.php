@@ -17,13 +17,14 @@ use OpenSpout\Writer\Common\Manager\RegisteredStyle;
 use OpenSpout\Writer\Common\Manager\Style\StyleMerger;
 use OpenSpout\Writer\Common\Manager\WorksheetManagerInterface;
 use OpenSpout\Writer\XLSX\Helper\DateHelper;
+use OpenSpout\Writer\XLSX\Helper\DateIntervalHelper;
 use OpenSpout\Writer\XLSX\Manager\Style\StyleManager;
 use OpenSpout\Writer\XLSX\Options;
 
 /**
  * @internal
  */
-final class WorksheetManager implements WorksheetManagerInterface
+final readonly class WorksheetManager implements WorksheetManagerInterface
 {
     /**
      * Maximum number of characters a cell can contain.
@@ -197,12 +198,14 @@ final class WorksheetManager implements WorksheetManagerInterface
         } elseif ($cell instanceof Cell\NumericCell) {
             $cellXML .= '><v>'.$cell->getValue().'</v></c>';
         } elseif ($cell instanceof Cell\FormulaCell) {
-            $cellXML .= '><f>'.substr($cell->getValue(), 1).'</f></c>';
+            $cellXML .= '><f>'.$this->stringsEscaper->escape(substr($cell->getValue(), 1)).'</f></c>';
         } elseif ($cell instanceof Cell\DateTimeCell) {
             $cellXML .= '><v>'.DateHelper::toExcel($cell->getValue()).'</v></c>';
+        } elseif ($cell instanceof Cell\DateIntervalCell) {
+            $cellXML .= '><v>'.DateIntervalHelper::toExcel($cell->getValue()).'</v></c>';
         } elseif ($cell instanceof Cell\ErrorCell) {
             // only writes the error value if it's a string
-            $cellXML .= ' t="e"><v>'.$cell->getRawValue().'</v></c>';
+            $cellXML .= ' t="e"><v>'.$this->stringsEscaper->escape($cell->getRawValue()).'</v></c>';
         } elseif ($cell instanceof Cell\EmptyCell) {
             if ($this->styleManager->shouldApplyStyleOnEmptyCell($styleId)) {
                 $cellXML .= '/>';

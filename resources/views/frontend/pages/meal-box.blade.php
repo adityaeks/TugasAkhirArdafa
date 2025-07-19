@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Hero Section -->
-    <div class="relative bg-cover bg-center py-12" style="background-image: url('https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1920&q=80');">
+    <div class="relative bg-cover bg-center py-12" style="background-image: url('{{ asset('frontend/images/menu-meal.jpg') }}');">
         <div class="absolute inset-0 bg-gradient-to-r from-blue-400/50 to-blue-600/50"></div>
         <div class="container mx-auto px-6 lg:px-16 text-center relative z-10">
             <h1 class="text-3xl md:text-4xl font-bold mb-4 text-white">Meal Box</h1>
@@ -35,7 +35,7 @@
                 </div>
                 <!-- Foto -->
                 <div class="md:w-1/2">
-                    <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80"
+                    <img src="{{ asset('frontend/images/menu-meal.jpg') }}"
                          alt="Meal Box"
                          class="rounded-lg shadow-xl w-full h-[400px] object-cover">
                 </div>
@@ -71,7 +71,7 @@
                         <div class="p-4">
                             <div class="flex justify-between items-start mb-2">
                                 <h3 class="font-bold text-gray-800">{{ $product->name }}</h3>
-                                <span class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">{{ $product->category->name }}</span>
+                                {{-- <span class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">{{ $product->category->name }}</span> --}}
                             </div>
                             <p class="text-gray-600 text-sm mb-3">{{ $product->short_description }}</p>
                             <div class="flex justify-between items-center">
@@ -96,7 +96,7 @@
     </main>
 
     <!-- Promo Section -->
-    <section class="py-16 bg-gray-50">
+    {{-- <section class="py-16 bg-gray-50">
         <div class="container mx-auto px-6 lg:px-16">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold text-gray-800">Promo Spesial</h2>
@@ -144,7 +144,7 @@
                 <p class="text-gray-600">* Syarat dan ketentuan berlaku</p>
             </div>
         </div>
-    </section>
+    </section> --}}
 
     <!-- FAQ Section -->
     @include('frontend.layouts.faq')

@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Hero Section -->
-    <div class="relative bg-cover bg-center py-12" style="background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1920&q=80');">
+    <div class="relative bg-cover bg-center py-12" style="background-image: url('{{ asset('frontend/images/menu-daily.jpg') }}');">
         <div class="absolute inset-0 bg-gradient-to-r from-blue-400/50 to-blue-600/50"></div>
         <div class="container mx-auto px-6 lg:px-16 text-center relative z-10">
             <h1 class="text-3xl md:text-4xl font-bold mb-4 text-white">Daily Home Catering</h1>
@@ -39,7 +39,7 @@
                         <div class="p-4">
                             <div class="flex justify-between items-start mb-2">
                                 <h3 class="font-bold text-gray-800">{{ $product->name }}</h3>
-                                <span class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">{{ $product->category->name }}</span>
+                                {{-- <span class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">{{ $product->category->name }}</span> --}}
                             </div>
                             <p class="text-gray-600 text-sm mb-3">{{ $product->short_description }}</p>
                             <div class="flex justify-between items-center">

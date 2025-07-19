@@ -42,7 +42,7 @@
                 </a>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-                <a href="{{ route('admin.seller-produk.index') }}">
+                <a href="">
                     <div class="card card-statistic-1">
                         <div class="card-icon bg-primary">
                             <i class="fas fa-cart-plus"></i>
@@ -104,61 +104,80 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Data untuk grafik order per hari
-    const ordersPerDayLabels = @json($ordersPerDay->pluck('date'));
-    const ordersPerDayData = @json($ordersPerDay->pluck('total'));
-
-    const ctxDay = document.getElementById('ordersPerDayChart').getContext('2d');
-    new Chart(ctxDay, {
-        type: 'bar',
-        data: {
-            labels: ordersPerDayLabels,
-            datasets: [{
-                label: 'Total Order',
-                data: ordersPerDayData,
-                backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
+// Grafik Order per Hari (Bar Chart Sederhana Tanpa Library)
+const ordersPerDayLabels = @json($ordersPerDay->pluck('date'));
+const ordersPerDayData = @json($ordersPerDay->pluck('total'));
+const dayCanvas = document.getElementById('ordersPerDayChart');
+if (dayCanvas) {
+    const ctx = dayCanvas.getContext('2d');
+    const width = dayCanvas.width = dayCanvas.offsetWidth;
+    const height = dayCanvas.height = 250;
+    ctx.clearRect(0, 0, width, height);
+    // Axis
+    ctx.strokeStyle = '#ccc';
+    ctx.beginPath();
+    ctx.moveTo(40, 10); ctx.lineTo(40, height-30); ctx.lineTo(width-10, height-30); ctx.stroke();
+    // Bars
+    const max = Math.max(...ordersPerDayData, 1);
+    const barW = (width-60) / ordersPerDayLabels.length;
+    ordersPerDayData.forEach((val, i) => {
+        const barH = (val/max)*(height-60);
+        ctx.fillStyle = 'rgba(54,162,235,0.5)';
+        ctx.fillRect(45+i*barW, height-30-barH, barW-10, barH);
+        ctx.fillStyle = '#333';
+        ctx.fillText(ordersPerDayLabels[i], 45+i*barW, height-10);
+        ctx.fillText(val, 45+i*barW, height-35-barH);
     });
+}
 
-    // Data untuk grafik order per bulan
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-    const ordersPerMonthLabels = @json($ordersPerMonth->pluck('month')->map(function($m){ return $m ? $m : 0; })->toArray());
-    const ordersPerMonthData = @json($ordersPerMonth->pluck('total'));
-    const monthLabels = ordersPerMonthLabels.map(m => monthNames[m-1]);
-
-    const ctxMonth = document.getElementById('ordersPerMonthChart').getContext('2d');
-    new Chart(ctxMonth, {
-        type: 'line',
-        data: {
-            labels: monthLabels,
-            datasets: [{
-                label: 'Total Order',
-                data: ordersPerMonthData,
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 2,
-                fill: true
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
+// Grafik Order per Bulan (Line Chart Sederhana Tanpa Library)
+const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+const ordersPerMonthLabels = @json($ordersPerMonth->pluck('month')->map(function($m){ return $m ? $m : 0; })->toArray());
+const ordersPerMonthData = @json($ordersPerMonth->pluck('total'));
+const monthLabels = ordersPerMonthLabels.map(m => monthNames[m-1]);
+const monthCanvas = document.getElementById('ordersPerMonthChart');
+if (monthCanvas) {
+    const ctx = monthCanvas.getContext('2d');
+    const width = monthCanvas.width = monthCanvas.offsetWidth;
+    const height = monthCanvas.height = 250;
+    ctx.clearRect(0, 0, width, height);
+    // Axis
+    ctx.strokeStyle = '#ccc';
+    ctx.beginPath();
+    ctx.moveTo(40, 10); ctx.lineTo(40, height-30); ctx.lineTo(width-10, height-30); ctx.stroke();
+    // Line
+    const max = Math.max(...ordersPerMonthData, 1);
+    const stepX = (width-60) / (monthLabels.length-1 || 1);
+    ctx.strokeStyle = 'rgba(255,99,132,1)';
+    ctx.beginPath();
+    ordersPerMonthData.forEach((val, i) => {
+        const x = 40 + i*stepX;
+        const y = height-30 - (val/max)*(height-60);
+        if(i===0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
     });
+    ctx.stroke();
+    // Area
+    ctx.fillStyle = 'rgba(255,99,132,0.2)';
+    ctx.beginPath();
+    ordersPerMonthData.forEach((val, i) => {
+        const x = 40 + i*stepX;
+        const y = height-30 - (val/max)*(height-60);
+        if(i===0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.lineTo(40+stepX*(monthLabels.length-1), height-30);
+    ctx.lineTo(40, height-30);
+    ctx.closePath();
+    ctx.fill();
+    // Points & Labels
+    ctx.fillStyle = 'rgba(255,99,132,1)';
+    ordersPerMonthData.forEach((val, i) => {
+        const x = 40 + i*stepX;
+        const y = height-30 - (val/max)*(height-60);
+        ctx.beginPath(); ctx.arc(x, y, 4, 0, 2*Math.PI); ctx.fill();
+        ctx.fillText(monthLabels[i], x-10, height-10);
+        ctx.fillText(val, x-5, y-10);
+    });
+}
 </script>
 @endpush

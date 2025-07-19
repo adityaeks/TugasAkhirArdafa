@@ -1,11 +1,11 @@
 @extends('frontend.layouts.master')
 
 @section('title')
-UMKM Lowayu|| Terms and conditions
+OurKitchen|| Terms and conditions
 @endsection
 
 @section('content')
-    
+
     <!--============================
         PAYMENT PAGE START
     ==============================-->

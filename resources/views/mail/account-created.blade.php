@@ -71,23 +71,23 @@
 <body>
     <div class="container">
         <div class="header">
-            Selamat Datang di UMKM Lowayu!
+            Selamat Datang di OurKitchen!
         </div>
         <div class="content">
             Halo, <strong>{{ $name }}</strong>!<br>
-            Terima kasih telah memilih untuk berbelanja di UMKM Lowayu. Kami bangga dapat menyajikan produk-produk
+            Terima kasih telah memilih untuk berbelanja di OurKitchen. Kami bangga dapat menyajikan produk-produk
             berkualitas tinggi yang dibuat langsung oleh tangan-tangan terampil pengrajin lokal kami. Setiap pembelian
             Anda membantu mendukung dan mengembangkan ekonomi lokal serta memberdayakan para pelaku UMKM di
             Lowayu.
             <div class="welcome-button-container">
-                <a href="http://127.0.0.1:8000" class="welcome-button">Kunjungi UMKM Lowayu</a>
+                <a href="http://127.0.0.1:8000" class="welcome-button">Kunjungi OurKitchen</a>
             </div>
             Nikmati berbagai penawaran eksklusif dan produk unik yang hanya bisa Anda temukan di sini. Jangan lupa untuk
             mengikuti kami di media sosial untuk mendapatkan informasi terbaru tentang produk dan promo kami!
             <br><br>
         </div>
         <div class="footer">
-            UMKM Lowayu - Membangun Bersama Komunitas Lokal
+            OurKitchen - Membangun Bersama Komunitas Lokal
         </div>
     </div>
 </body>

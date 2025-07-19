@@ -103,24 +103,35 @@ class CartController extends Controller
     /** Update product quantity */
     public function updateProductQty(Request $request)
     {
-        $productId = Cart::get($request->rowId)->id;
-        $product = Product::findOrFail($productId);
+        // Perbaikan: gunakan 'id' bukan 'rowId' pada request body JS
+        $rowId = $request->id ?? $request->rowId;
+        if (!$rowId) {
+            return response()->json(['status' => 'error', 'message' => 'ID keranjang tidak ditemukan'], 400);
+        }
+
+        $cartItem = \Gloudemans\Shoppingcart\Facades\Cart::get($rowId);
+        if (!$cartItem) {
+            return response()->json(['status' => 'error', 'message' => 'Item tidak ditemukan di keranjang'], 404);
+        }
+
+        $productId = $cartItem->id;
+        $product = \App\Models\Product::find($productId);
+        if (!$product) {
+            return response()->json(['status' => 'error', 'message' => 'Produk tidak ditemukan'], 404);
+        }
 
         // Check product quantity
         if ($product->qty === 0) {
-            return response(['status' => 'error', 'message' => 'Product stock out']);
+            return response()->json(['status' => 'error', 'message' => 'Stok produk habis']);
         } elseif ($product->qty < $request->quantity) {
-            return response(['status' => 'error', 'message' => 'Quantity not available in our stock']);
+            return response()->json(['status' => 'error', 'message' => 'Jumlah stok tidak tersedia']);
         }
 
-        Cart::update($request->rowId, $request->quantity);
-        $productTotal = $this->getProductTotal($request->rowId);
-
-        // Get product weight
-        $cartItem = Cart::get($request->rowId);
+        \Gloudemans\Shoppingcart\Facades\Cart::update($rowId, $request->quantity);
+        $productTotal = $this->getProductTotal($rowId);
         $productWeight = $cartItem->weight * $request->quantity;
 
-        return response([
+        return response()->json([
             'status' => 'success',
             'message' => 'Product Quantity Updated!',
             'product_total' => $productTotal,
@@ -189,12 +200,10 @@ class CartController extends Controller
     {
         try {
             Cart::remove($rowId);
-            toastr('Produk berhasil dihapus!', 'success', 'Success');
-            return redirect()->back();
+            return response()->json(['status' => 'success', 'message' => 'Produk berhasil dihapus!']);
         } catch (\Exception $e) {
             Log::error('Error in removeProduct: ' . $e->getMessage());
-            toastr('Terjadi kesalahan saat menghapus produk!', 'error', 'Error');
-            return redirect()->back();
+            return response()->json(['status' => 'error', 'message' => 'Terjadi kesalahan saat menghapus produk!'], 500);
         }
     }
 

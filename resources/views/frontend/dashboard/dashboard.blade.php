@@ -1,7 +1,7 @@
 @extends('frontend.dashboard.layouts.master')
 
 @section('title')
-UMKM Lowayu || Dahsboard
+OurKitchen || Dahsboard
 @endsection
 
 @section('content')

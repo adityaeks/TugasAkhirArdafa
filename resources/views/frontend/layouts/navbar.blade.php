@@ -7,30 +7,31 @@
         </button>
     </div>
     <nav class="flex flex-col space-y-4">
-        <a href="{{ url('/') }}" class="text-gray-700 hover:text-blue-600 text-lg">Home</a>
-        <a href="{{ route('tumpeng-nasi-liwet') }}" class="text-gray-700 hover:text-blue-600">Tumpeng & Nasi Liwet</a>
-        <a href="{{ route('daily-home-catering') }}" class="text-gray-700 hover:text-blue-600">Daily Home Catering</a>
-        <a href="{{ route('prasmanan-buffet') }}" class="text-gray-700 hover:text-blue-600">Prasmanan Buffet</a>
-        <a href="{{ route('meal-box') }}" class="text-gray-700 hover:text-blue-600">Meal Box</a>
+        <a href="{{ url('/') }}" class="text-gray-700 hover:text-blue-600 text-sm">Home</a>
+        <a href="{{ route('tumpeng-nasi-liwet') }}" class="text-gray-700 hover:text-blue-600 text-sm">Tumpeng & Nasi Liwet</a>
+        <a href="{{ route('daily-home-catering') }}" class="text-gray-700 hover:text-blue-600 text-sm">Daily Home Catering</a>
+        <a href="{{ route('prasmanan-buffet') }}" class="text-gray-700 hover:text-blue-600 text-sm">Prasmaasnan Buffet</a>
+        <a href="{{ route('meal-box') }}" class="text-gray-700 hover:text-blue-600 text-sm">Meal Box</a>
+        <a href="{{ route('snack-box') }}" class="text-gray-700 hover:text-blue-600 text-sm">Snack Box</a>
     </nav>
     <div class="mt-8 space-y-4">
         @auth
             <div class="flex flex-col space-y-2">
                 @if(auth()->user()->role === 'admin')
-                    <a href="{{ route('admin.dashbaord') }}" class="text-gray-700 hover:text-blue-600">
+                    <a href="{{ route('admin.dashbaord') }}" class="text-gray-700 hover:text-blue-600 text-sm">
                         <i class="fas fa-tachometer-alt mr-2"></i>Admin Dashboard
                     </a>
                 @else
-                    <a href="{{ route('user.dashboard') }}" class="text-gray-700 hover:text-blue-600">
+                    <a href="{{ route('user.dashboard') }}" class="text-gray-700 hover:text-blue-600 text-sm">
                         <i class="fas fa-tachometer-alt mr-2"></i>User Dashboard
                     </a>
                 @endif
-                <a href="{{ route('profile.edit') }}" class="text-gray-700 hover:text-blue-600">
+                <a href="{{ route('profile.edit') }}" class="text-gray-700 hover:text-blue-600 text-sm">
                     <i class="fas fa-user mr-2"></i>Profil
                 </a>
                 <form method="POST" action="{{ route('logout') }}" class="w-full">
                     @csrf
-                    <button type="submit" class="w-full text-left text-gray-700 hover:text-blue-600">
+                    <button type="submit" class="w-full text-left text-gray-700 hover:text-blue-600 text-sm">
                         <i class="fas fa-sign-out-alt mr-2"></i>Logout
                     </button>
                 </form>
@@ -60,10 +61,11 @@
         </div>
 
         <nav class="hidden md:flex space-x-8">
-            <a href="{{ route('tumpeng-nasi-liwet') }}" class="text-gray-700 hover:text-blue-600">Tumpeng & Nasi Liwet</a>
-            <a href="{{ route('daily-home-catering') }}" class="text-gray-700 hover:text-blue-600">Daily Home Catering</a>
-            <a href="{{ route('prasmanan-buffet') }}" class="text-gray-700 hover:text-blue-600">Prasmanan Buffet</a>
-            <a href="{{ route('meal-box') }}" class="text-gray-700 hover:text-blue-600">Meal Box</a>
+            <a href="{{ route('tumpeng-nasi-liwet') }}" class="text-gray-700 hover:text-blue-600 text-sm">Tumpeng & Nasi Liwet</a>
+            <a href="{{ route('daily-home-catering') }}" class="text-gray-700 hover:text-blue-600 text-sm">Daily Home Catering</a>
+            <a href="{{ route('prasmanan-buffet') }}" class="text-gray-700 hover:text-blue-600 text-sm">Prasmanan Buffet</a>
+            <a href="{{ route('meal-box') }}" class="text-gray-700 hover:text-blue-600 text-sm">Meal Box</a>
+            <a href="{{ route('snack-box') }}" class="text-gray-700 hover:text-blue-600 text-sm">Snack Box</a>
         </nav>
 
         <div class="flex items-center space-x-4">
@@ -94,8 +96,8 @@
                 </div>
             @else
                 <div class="hidden md:flex items-center space-x-4">
-                    <a href="{{ route('login') }}" class="text-gray-700 hover:text-blue-600">Login</a>
-                    <a href="{{ route('register') }}" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition">
+                    <a href="{{ route('login') }}" class="text-gray-700 hover:text-blue-600 text-sm">Login</a>
+                    <a href="{{ route('register') }}" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition text-sm">
                         Register
                     </a>
                 </div>

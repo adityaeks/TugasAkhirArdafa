@@ -4,7 +4,11 @@
       <i class="far fa-bars dash_bar"></i>
       <i class="far fa-times dash_close"></i>
     </span>
-    <a href="javascript:;" class="dash_logo"><img src="{{asset('frontend/images/umkm.png')}}" alt="logo" class="img-fluid"></a>
+    <div style="display: flex; justify-content: center; align-items: center; width: 100%; margin-top: 20px;">
+        <a href="" style="width: 100%;">
+            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 1.5rem; color: #fff; letter-spacing: 2px; margin: 0 0 10px 0; text-align: center;">OurKitchen</p>
+        </a>
+    </div>
     <ul class="dashboard_link">
       <li><a class="{{setActive(['user.dashboard'])}}" href="{{route('user.dashboard')}}"><i class="fas fa-tachometer"></i>Dashboard</a></li>
 

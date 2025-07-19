@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace OpenSpout\Writer;
 
-/**
- * @readonly
- */
-final class AutoFilter
+final readonly class AutoFilter
 {
     /**
      * @param 0|positive-int $fromColumnIndex
@@ -20,6 +17,5 @@ final class AutoFilter
         public int $fromRow,
         public int $toColumnIndex,
         public int $toRow
-    ) {
-    }
+    ) {}
 }

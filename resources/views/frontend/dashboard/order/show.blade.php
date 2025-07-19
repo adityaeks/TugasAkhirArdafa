@@ -1,13 +1,13 @@
 @php
     $address = json_decode($order->order_address);
-    $shipping = json_decode($order->shpping_method);
+    $shipping = json_decode($order->shipping_method);
     $coupon = json_decode($order->coupon);
 @endphp
 
 @extends('frontend.dashboard.layouts.master')
 
 @section('title')
-    UMKM Lowayu Resi Order
+    OurKitchen Resi Order
 @endsection
 
 @section('content')
@@ -30,8 +30,9 @@
                                                 <div class="row">
                                                     <div class="col-xl-4 col-md-4 mb-5 mb-md-0">
                                                         <div class="wsus__invoice_single">
-                                                            <h5>Informasi Pengiriman</h5>
+                                                            <h5>Alamat Pengiriman</h5>
                                                             <p>{{ $address->address }}, {{ $address->zip }}</p>
+                                                            <p>Kurir : {{ $order->courier }}, {{ $order->service }}</p>
                                                         </div>
                                                     </div>
                                                     <div class="col-xl-4 col-md-4 mb-5 mb-md-0">
@@ -62,9 +63,6 @@
                                                         <tr>
                                                             <th class="name">
                                                                 produk
-                                                            </th>
-                                                            <th class="amount">
-                                                                Seller
                                                             </th>
 
                                                             <th class="amount">
@@ -106,7 +104,7 @@
                                             <p><span>Sub Total:</span>
                                                 Rp{{ number_format($order->sub_total, 0, ',', '.') }}</p>
                                             <p><span>Pengiriman(+):</span>
-                                                Rp{{ number_format($order->shiping_fee, 0, ',', '.') }}</p>
+                                                Rp{{ number_format($order->shipping_fee, 0, ',', '.') }}</p>
                                             <p><span>Total Semua:</span>
                                                 Rp{{ number_format($order->amount, 0, ',', '.') }}</p>
 

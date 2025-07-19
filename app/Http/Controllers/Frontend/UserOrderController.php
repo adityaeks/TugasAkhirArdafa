@@ -17,8 +17,8 @@ class UserOrderController extends Controller
 
     public function show(string $id)
     {
-        $transactions = Transaction::findOrFail($id);
         $order = Order::findOrFail($id);
+        $transactions = Transaction::where('order_id', $id)->first();
         return view('frontend.dashboard.order.show', compact('order','transactions'));
     }
 }

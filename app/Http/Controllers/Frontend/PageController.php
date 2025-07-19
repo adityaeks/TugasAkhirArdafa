@@ -76,6 +76,20 @@ class PageController extends Controller
 
         return view('frontend.pages.meal-box', compact('products'));
     }
+    public function snackBox()
+    {
+        $category = Category::where('slug', 'snack-box')->first();
+        $products = collect();
+
+        if ($category) {
+            $products = Product::where('category_id', $category->id)
+                               ->where('status', 1)
+                               ->orderBy('id', 'DESC')
+                               ->get();
+        }
+
+        return view('frontend.pages.snack-box', compact('products'));
+    }
 
     public function tumpengNasiLiwet()
     {

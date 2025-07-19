@@ -73,6 +73,7 @@ class CheckOutController extends Controller
 
     public function checkOutFormSubmit(Request $request)
     {
+        // dd('--- MASUK CHECKOUT FORM SUBMIT ---');
         \Log::info('--- MASUK CHECKOUT FORM SUBMIT ---');
         try {
             $request->validate([
@@ -127,25 +128,25 @@ class CheckOutController extends Controller
             $totalAmount += $shippingFee;
 
             // Ambil nilai kupon dari sesi
-            $couponDiscount = \Session::get('coupon_discount', 0);
+            $couponDiscount = Session::get('coupon_discount', 0);
             // Kurangi nilai kupon dari total amount
             $totalAmount -= $couponDiscount;
 
             $params = [
                 'transaction_details' => [
-                    'order_id' => \Str::uuid(),
+                    'order_id' => Str::uuid(),
                     'gross_amount' => $totalAmount,
                 ],
                 'item_details' => $itemDetails,
                 'customer_details' => [
-                    'first_name' => $request->user_name ?? \Auth::user()->name,
+                    'first_name' => $request->user_name ?? Auth::user()->name,
                 ],
                 'enabled_payments' => ['credit_card', 'bca_va', 'bni_va', 'bri_va', 'gopay', 'shopeepay', 'dana']
             ];
 
             $auth = base64_encode(config('midtrans.serverKey'));
 
-            $response = \Http::withHeaders([
+            $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
                 'Authorization' => "Basic $auth",
             ])->withOptions([
@@ -153,14 +154,15 @@ class CheckOutController extends Controller
             ])->post('https://app.sandbox.midtrans.com/snap/v1/transactions', $params);
 
             $responseBody = $response->json();
+            // dd($responseBody);
 
             if (!$response->successful()) {
-                \Log::error('Midtrans API failed: ' . json_encode($responseBody));
+                Log::error('Midtrans API failed: ' . json_encode($responseBody));
                 return response()->json(['error' => 'Failed to communicate with Midtrans API'], 500);
             }
 
             if (!isset($responseBody['redirect_url'])) {
-                \Log::error('Midtrans response missing redirect_url: ' . json_encode($responseBody));
+                Log::error('Midtrans response missing redirect_url: ' . json_encode($responseBody));
                 return response()->json(['error' => 'Failed to retrieve redirect URL from Midtrans'], 500);
             }
 

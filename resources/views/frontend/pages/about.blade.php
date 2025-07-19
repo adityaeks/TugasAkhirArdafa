@@ -1,7 +1,7 @@
 @extends('frontend.layouts.master')
 
 @section('title')
-    UMKM Lowayu || About
+    OurKitchen || About
 @endsection
 
 @section('content')
@@ -16,7 +16,7 @@
                         <div class="cart-body p-5">
                             <h1>Tentang Kami</h1>
                             <p>
-                                Selamat datang di UMKM Lowayu! Kami adalah sebuah platform yang berdedikasi untuk mendukung
+                                Selamat datang di OurKitchen! Kami adalah sebuah platform yang berdedikasi untuk mendukung
                                 Usaha Mikro, Kecil, dan Menengah (UMKM) di Indonesia. Kami percaya bahwa UMKM adalah tulang
                                 punggung ekonomi lokal dan memiliki potensi besar untuk berkembang dan berkontribusi pada
                                 kesejahteraan masyarakat.
@@ -67,7 +67,7 @@
                             </p>
 
                             <p>
-                                Terima kasih telah mengunjungi UMKM Lowayu. Kami berharap dapat bekerja sama dengan Anda
+                                Terima kasih telah mengunjungi OurKitchen. Kami berharap dapat bekerja sama dengan Anda
                                 untuk mendukung perkembangan UMKM di Indonesia.
                             </p>
                         </div>

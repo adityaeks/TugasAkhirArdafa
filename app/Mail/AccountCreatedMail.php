@@ -32,7 +32,7 @@ class AccountCreatedMail extends Mailable
 
      public function build()
     {
-        return $this->subject('Selamat Datang di UMKM Lowayu')
+        return $this->subject('Selamat Datang di OurKitchen')
                     ->view('mail.account-created')
                     ->with([
                         'name' => $this->name,

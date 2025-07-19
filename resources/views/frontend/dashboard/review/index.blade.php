@@ -1,7 +1,7 @@
 @extends('frontend.dashboard.layouts.master')
 
 @section('title')
-UMKM Lowayu || Reviews
+OurKitchen || Reviews
 @endsection
 
 @section('content')

@@ -7,7 +7,7 @@ namespace OpenSpout\Writer\XLSX;
 /**
  * @internal
  */
-final class MergeCell
+final readonly class MergeCell
 {
     /**
      * @param 0|positive-int $sheetIndex
@@ -22,6 +22,5 @@ final class MergeCell
         public int $topLeftRow,
         public int $bottomRightColumn,
         public int $bottomRightRow,
-    ) {
-    }
+    ) {}
 }

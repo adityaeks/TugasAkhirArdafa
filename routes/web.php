@@ -106,5 +106,7 @@ Route::group(['middleware' =>['auth', 'verified'], 'prefix' => 'user', 'as' => '
 /** Layanan Catering Routes */
 Route::get('/prasmanan-buffet', [PageController::class, 'prasmananBuffet'])->name('prasmanan-buffet');
 Route::get('/meal-box', [PageController::class, 'mealBox'])->name('meal-box');
+// Route::get('/meal-box2', [PageController::class, 'mealBox2'])->name('meal-box2');
+Route::get('/snack-box', [PageController::class, 'snackBox'])->name('snack-box');
 Route::get('/tumpeng-nasi-liwet', [PageController::class, 'tumpengNasiLiwet'])->name('tumpeng-nasi-liwet');
 Route::get('/daily-home-catering', [PageController::class, 'dailyHomeCatering'])->name('daily-home-catering');

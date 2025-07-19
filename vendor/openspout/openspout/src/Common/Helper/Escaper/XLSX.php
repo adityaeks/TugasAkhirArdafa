@@ -33,6 +33,7 @@ final class XLSX implements EscaperInterface
         $this->initIfNeeded();
 
         $escapedString = $this->escapeControlCharacters($string);
+
         // @NOTE: Using ENT_QUOTES as XML entities ('<', '>', '&') as well as
         //        single/double quotes (for XML attributes) need to be encoded.
         return htmlspecialchars($escapedString, ENT_QUOTES, 'UTF-8');
@@ -79,11 +80,11 @@ final class XLSX implements EscaperInterface
     {
         // control characters values are from 0 to 1F (hex values) in the ASCII table
         // some characters should not be escaped though: "\t", "\r" and "\n".
-        return '[\x00-\x08'.
+        return '[\x00-\x08'
                 // skipping "\t" (0x9) and "\n" (0xA)
-                '\x0B-\x0C'.
+                .'\x0B-\x0C'
                 // skipping "\r" (0xD)
-                '\x0E-\x1F]';
+                .'\x0E-\x1F]';
     }
 
     /**
@@ -106,7 +107,7 @@ final class XLSX implements EscaperInterface
             $character = \chr($charValue);
             if (1 === preg_match("/{$this->escapableControlCharactersPattern}/", $character)) {
                 $charHexValue = dechex($charValue);
-                $escapedChar = '_x'.sprintf('%04s', strtoupper($charHexValue)).'_';
+                $escapedChar = '_x'.\sprintf('%04s', strtoupper($charHexValue)).'_';
                 $controlCharactersEscapingMap[$escapedChar] = $character;
             }
         }

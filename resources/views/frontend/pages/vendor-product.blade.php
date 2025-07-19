@@ -1,7 +1,7 @@
 @extends('frontend.layouts.master')
 
 @section('title')
-    UMKM Lowayu || Vendor Products
+    OurKitchen || Vendor Products
 @endsection
 
 @section('content')
