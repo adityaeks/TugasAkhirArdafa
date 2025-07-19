@@ -65,6 +65,9 @@ class PaymentController extends Controller
         $order->service = $service; // Simpan layanan
         $order->coupon = json_encode(Session::get('coupon'));
         $order->order_status = 'pending';
+        // Generate UUID untuk order_id yang akan dipakai di Midtrans dan transaction
+        $orderUuid = (string) \Str::uuid();
+        $order->order_uuid = $orderUuid;
         $order->save();
 
 
@@ -88,7 +91,7 @@ class PaymentController extends Controller
         $params = [
             'payment_type'=> $request->channel,
             'transaction_details' => [
-                'order_id' => \Str::uuid(),
+                'order_id' => $orderUuid,
                 'gross_amount' => $request->amount,
             ],
             'item_details' => [
@@ -130,9 +133,12 @@ class PaymentController extends Controller
             }
 
             $transaction = new Transaction();
-            $transaction->order_id = $params['transaction_details']['order_id'];
+            $transaction->order_id = $orderUuid;
             $transaction->status = 'pending';
-            // $transaction->transaction_id = $transactionId;
+            // Simpan transaction_id dari response Midtrans jika ada
+            if (isset($responseBody['transaction_id'])) {
+                $transaction->transaction_id = $responseBody['transaction_id'];
+            }
             $transaction->user_name = $request->name;
             $transaction->payment_method = 'midtrans';
             $transaction->product_name = $request->name;
@@ -174,7 +180,33 @@ class PaymentController extends Controller
                 return response()->json(['error' => 'Invalid response format from Midtrans API'], 500);
             }
 
-            $payment = Transaction::where('order_id', $request->order_id)->firstOrFail();
+
+            // Coba cari berdasarkan order_id, jika tidak ketemu coba pakai transaction_id
+            $payment = Transaction::where('order_id', $request->order_id)->first();
+            if (!$payment && isset($request->transaction_id)) {
+                $payment = Transaction::where('transaction_id', $request->transaction_id)->first();
+            }
+            if (!$payment) {
+                return response()->json(['error' => 'Transaction not found for given order_id or transaction_id'], 404);
+            }
+
+            // Update transaction_id jika sebelumnya null dan ada di request
+            if (empty($payment->transaction_id) && isset($request->transaction_id)) {
+                $payment->transaction_id = $request->transaction_id;
+            }
+
+            // Update status transaksi
+            $payment->status = $responseData->transaction_status;
+            $payment->save();
+
+            // Update status order jika ada
+            $order = \App\Models\Order::where('order_uuid', $payment->order_id)->first();
+            if ($order) {
+                // Kolom pembayaran ambil dari status
+                $order->status = $responseData->transaction_status;
+                // Tidak perlu update order_status, biarkan default (pending)
+                $order->save();
+            }
 
             // Pastikan status pembayaran hanya diubah jika belum di-settlement atau capture
             if ($payment->status === 'settlement' || $payment->status === 'capture') {

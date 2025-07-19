@@ -82,7 +82,7 @@
             <div id="description" class="tab-content active">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">About This Dish</h3>
                 <p class="text-gray-700 mb-4">
-                    {{ $product->long_description }}
+                    {!! $product->long_description !!}
                 </p>
             </div>
 

@@ -9,7 +9,7 @@
   <!-- General CSS Files -->
   <link rel="stylesheet" href="{{asset('backend/assets/modules/bootstrap/css/bootstrap.min.css')}}">
   <link rel="stylesheet" href="{{asset('backend/assets/modules/fontawesome/css/all.min.css')}}">
-  <link rel="icon" type="image/png" href="{{asset('frontend/images/umkm.png')}}">
+  {{-- <link rel="icon" type="image/png" href="{{asset('frontend/images/umkm.png')}}"> --}}
 
   <!-- CSS Libraries -->
   <link rel="stylesheet" href="{{asset('backend/assets/modules/jqvmap/dist/jqvmap.min.css')}}">

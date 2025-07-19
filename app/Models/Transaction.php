@@ -11,7 +11,8 @@ class Transaction extends Model
 
     public function order()
     {
-        return $this->belongsTo(Order::class, 'order_id', 'id');
+        // Relasi ke order_uuid (UUID) di tabel orders
+        return $this->belongsTo(Order::class, 'order_id', 'order_uuid');
     }
     public function orderProduct()
     {

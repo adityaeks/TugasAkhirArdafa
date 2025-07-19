@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\OrderProduct;
 use App\Models\Product;
-use App\Models\ProductImageGallery;
+// use App\Models\ProductImageGallery;
 use App\Traits\ImageUploadTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -153,13 +153,13 @@ class ProductController extends Controller
             $this->deleteImage($product->thumb_image);
             \Log::info('Gambar utama dihapus', ['thumb_image' => $product->thumb_image]);
 
-            // Hapus gambar galeri produk
-            $galleryImages = ProductImageGallery::where('product_id', $product->id)->get();
-            foreach($galleryImages as $image){
-                $this->deleteImage($image->image);
-                $image->delete();
-            }
-            \Log::info('Gambar galeri dihapus', ['gallery_count' => count($galleryImages)]);
+            // Hapus gambar galeri produk (Dihilangkan karena tabel tidak ada)
+            // $galleryImages = ProductImageGallery::where('product_id', $product->id)->get();
+            // foreach($galleryImages as $image){
+            //     $this->deleteImage($image->image);
+            //     $image->delete();
+            // }
+            // \Log::info('Gambar galeri dihapus', ['gallery_count' => count($galleryImages)]);
 
             // Hapus produk itu sendiri
             $product->delete();

@@ -132,9 +132,13 @@ class CheckOutController extends Controller
             // Kurangi nilai kupon dari total amount
             $totalAmount -= $couponDiscount;
 
+
+            // Generate UUID ONCE and use for all references
+            $order_uuid = (string) \Str::uuid();
+
             $params = [
                 'transaction_details' => [
-                    'order_id' => Str::uuid(),
+                    'order_id' => $order_uuid,
                     'gross_amount' => $totalAmount,
                 ],
                 'item_details' => $itemDetails,
@@ -184,6 +188,8 @@ class CheckOutController extends Controller
             $order->service = $service;
             $order->coupon = json_encode(\Session::get('coupon'));
             $order->order_status = 'pending';
+            // Tambahkan UUID untuk order_uuid
+            $order->order_uuid = $order_uuid;
             $order->save();
 
             // Save to order_products table
@@ -205,7 +211,7 @@ class CheckOutController extends Controller
             }
             // Save transaction with redirect URL
             $transaction = new \App\Models\Transaction();
-            $transaction->order_id = $order->id;
+            $transaction->order_id = $order_uuid;
             $transaction->status = 'pending';
             $transaction->user_name = \Auth::user()->name;
             $transaction->payment_method = 'midtrans';

@@ -45,7 +45,8 @@ class UserOrderDataTable extends DataTable
                 return date('d-M-Y', strtotime($query->created_at));
             })
             ->addColumn('pembayaran', function($query){
-                $status = $query->payment_status ? $query->payment_status : '-';
+                $status = $query->status ? $query->status : '-'; // Ambil dari kolom 'status' di tabel orders
+
                 switch ($status) {
                     case 'pending':
                         return "<span class='badge bg-warning'>pending</span>";
@@ -53,6 +54,10 @@ class UserOrderDataTable extends DataTable
                     case 'settlement':
                     case 'capture':
                         return "<span class='badge bg-success'>success</span>";
+                    case 'expire':
+                    case 'cancel':
+                    case 'failure':
+                        return "<span class='badge bg-danger'>gagal</span>";
                     default:
                         return $status;
                 }
