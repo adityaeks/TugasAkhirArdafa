@@ -13,16 +13,6 @@
                 <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Rasakan Makanan Olahan Khas Kami</h1>
                 <p class="text-lg text-gray-600 mb-8">Jelajahi cita rasa autentik dari masakan khas kami yang dibuat dengan
                     bahan-bahan segar dan berkualitas tinggi.</p>
-                {{-- <div class="mt-8 flex items-center space-x-6">
-                    <div class="flex items-center">
-                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                        <span class="text-gray-700">Free Shipping</span>
-                    </div>
-                    <div class="flex items-center">
-                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                        <span class="text-gray-700">30-Day Returns</span>
-                    </div>
-                </div> --}}
             </div>
             <div class="md:w-1/2 flex justify-center">
                 <img src="{{ asset('frontend/images/home.jpg') }}" alt="Premium Kitchenware"
@@ -40,74 +30,113 @@
                 <p class="text-gray-600 max-w-2xl mx-auto">Temukan berbagai layanan catering berkualitas dari Our Kitchen untuk memenuhi kebutuhan kuliner Anda.</p>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Layanan 1: Prasmanan Buffet -->
-                <div class="bg-white rounded-xl shadow-md overflow-hidden product-card transition duration-300">
-                    <div class="relative">
-                        <img src="{{ asset('frontend/images/buffet.jpg') }}" alt="Prasmanan Buffet" class="w-full h-64 object-cover">
-
-                    </div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-lg font-semibold text-gray-800">Prasmanan Buffet</h3>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-4">Layanan prasmanan untuk pernikahan, ulang tahun, rapat perusahaan, dan acara keluarga.</p>
-                        {{-- <div class="flex justify-between items-center">
-                            <div>
-                                <span class="text-blue-600 font-bold">Mulai Rp45.000/pax</span>
+            <!-- Carousel Section -->
+            <div class="relative" x-data="carousel()">
+                <div id="layanan-carousel" class="overflow-hidden">
+                    <div class="flex transition-transform duration-500" :style="carouselTransform">
+                        <template x-for="(card, idx) in cards.concat(cards.slice(0, 4))" :key="card.title + '-' + idx">
+                            <div :class="cardClass">
+                                <a :href="card.href" class="block bg-white rounded-xl shadow-md overflow-hidden product-card transition duration-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                                    <div class="relative">
+                                        <img :src="card.img" :alt="card.title" class="w-full h-64 object-cover">
+                                    </div>
+                                    <div class="p-6">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <h3 class="text-lg font-semibold text-gray-800" x-text="card.title"></h3>
+                                        </div>
+                                        <p class="text-gray-600 text-sm mb-4" x-text="card.desc"></p>
+                                    </div>
+                                </a>
                             </div>
-                            <a href="{{ url('/prasmanan-buffet') }}" class="bg-blue-100 text-blue-600 p-2 rounded-full hover:bg-blue-200 transition">
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div> --}}
+                        </template>
                     </div>
                 </div>
-
-                <!-- Layanan 2: Meal Box -->
-                <div class="bg-white rounded-xl shadow-md overflow-hidden product-card transition duration-300">
-                    <div class="relative">
-                        <img src="{{ asset('frontend/images/snack.jpg') }}" alt="Meal Box" class="w-full h-64 object-cover">
-
-                    </div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-lg font-semibold text-gray-800">Meal & Snack Box</h3>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-4">Makanan sehat dan lezat untuk kebutuhan harian Anda dengan berbagai pilihan paket.</p>
-
-                    </div>
-                </div>
-
-                <!-- Layanan 3: Tumpeng & Nasi Liwet -->
-                <div class="bg-white rounded-xl shadow-md overflow-hidden product-card transition duration-300">
-                    <div class="relative">
-                        <img src="{{ asset('frontend/images/Nasi-Liwet.jpg') }}" alt="Tumpeng & Nasi Liwet" class="w-full h-64 object-cover">
-
-                    </div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-lg font-semibold text-gray-800">Tumpeng & Nasi Liwet</h3>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-4">Tumpeng dan nasi liwet tradisional dengan berbagai lauk pilihan untuk acara spesial Anda.</p>
-
-                    </div>
-                </div>
-
-                <!-- Layanan 4: Daily Home Catering -->
-                <div class="bg-white rounded-xl shadow-md overflow-hidden product-card transition duration-300">
-                    <div class="relative">
-                        <img src="{{ asset('frontend/images/daily.jpg') }}" alt="Daily Home Catering" class="w-full h-64 object-cover">
-
-                    </div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-lg font-semibold text-gray-800">Daily Home Catering</h3>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-4">Menu baru setiap hari untuk kebutuhan makan harian keluarga Anda.</p>
-
-                    </div>
-                </div>
+                <!-- Carousel Controls -->
+                <button @click="prev()" class="absolute left-0 top-1/2 -translate-y-1/2 bg-white shadow p-2 rounded-full z-10">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button @click="next()" class="absolute right-0 top-1/2 -translate-y-1/2 bg-white shadow p-2 rounded-full z-10">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
             </div>
+            <!-- Alpine.js Carousel Data & Logic -->
+            <script>
+                function carousel() {
+                    return {
+                        active: 0,
+                        cards: [
+                            {
+                                href: "{{ route('prasmanan-buffet') }}",
+                                img: "{{ asset('frontend/images/buffet.jpg') }}",
+                                title: "Prasmanan Buffet",
+                                desc: "Layanan prasmanan untuk pernikahan, ulang tahun, rapat perusahaan, dan acara keluarga."
+                            },
+                            {
+                                href: "{{ route('meal-box') }}",
+                                img: "{{ asset('frontend/images/mealbox.jpg') }}",
+                                title: "Meal Box",
+                                desc: "Makanan sehat dan lezat untuk kebutuhan harian Anda dengan berbagai pilihan paket meal box."
+                            },
+                            {
+                                href: "{{ route('snack-box') }}",
+                                img: "{{ asset('frontend/images/snack.jpg') }}",
+                                title: "Snack Box",
+                                desc: "Aneka snack box untuk berbagai acara, cocok untuk rapat, arisan, dan event lainnya."
+                            },
+                            {
+                                href: "{{ route('tumpeng-nasi-liwet') }}",
+                                img: "{{ asset('frontend/images/Nasi-Liwet.jpg') }}",
+                                title: "Tumpeng & Nasi Liwet",
+                                desc: "Tumpeng dan nasi liwet tradisional dengan berbagai lauk pilihan untuk acara spesial Anda."
+                            },
+                            {
+                                href: "{{ route('daily-home-catering') }}",
+                                img: "{{ asset('frontend/images/daily.jpg') }}",
+                                title: "Daily Home Catering",
+                                desc: "Menu baru setiap hari untuk kebutuhan makan harian keluarga Anda."
+                            }
+                        ],
+                        get isMobile() {
+                            return window.innerWidth < 640;
+                        },
+                        get visibleCards() {
+                            if (window.innerWidth < 640) return 1;
+                            if (window.innerWidth < 1024) return 2;
+                            return 4;
+                        },
+                        get cardClass() {
+                            if (window.innerWidth < 640) return 'w-full px-2 align-top flex-shrink-0';
+                            if (window.innerWidth < 1024) return 'w-1/2 px-2 align-top flex-shrink-0';
+                            return 'w-1/4 px-2 align-top flex-shrink-0';
+                        },
+                        get carouselTransform() {
+                            let percent = this.active * (100 / this.visibleCards);
+                            return `transform: translateX(-${percent}%);`;
+                        },
+                        next() {
+                            if (this.active < this.cards.length) {
+                                this.active++;
+                            } else {
+                                this.active = 1;
+                            }
+                        },
+                        prev() {
+                            if (this.active > 0) {
+                                this.active--;
+                            } else {
+                                this.active = this.cards.length - 1;
+                            }
+                        },
+                        handleResize() {
+                            this.active = 0;
+                        },
+                        init() {
+                            window.addEventListener('resize', () => this.handleResize());
+                        }
+                    }
+                }
+            </script>
+            <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
         </div>
     </section>
 

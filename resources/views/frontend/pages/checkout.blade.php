@@ -11,50 +11,30 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <!-- Toastr CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <!-- jQuery harus sebelum jQuery UI -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 </head>
 
 <body class="bg-gray-50">
     @include('frontend.layouts.navbar')
     <section class="container mx-auto px-4 py-8">
         <div class="flex flex-col lg:flex-row gap-8">
-            <div class="w-full lg:w-3/4">
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <h5 class="text-xl font-semibold text-gray-800">Detail Pengiriman</h5>
-                        <a href="javascript:;" class="common_btn text-blue-600 hover:text-blue-800" id="add-address-button">Tambah alamat baru</a>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        @foreach ($addresses as $address)
-                            <div class="bg-gray-50 rounded-lg p-4 shadow-sm border border-gray-200">
-                                <div class="flex items-center mb-2">
-                                    <input class="form-radio h-4 w-4 text-blue-600 shipping_address delivery_address"
-                                        value="{{ $address->id }}" data-id="{{ $address->id }}" type="radio"
-                                        name="flexRadioDefault" id="flexRadioDefault{{ $address->id }}">
-                                    <label class="ml-2 text-gray-700 font-medium" for="flexRadioDefault{{ $address->id }}">
-                                        Pilih Alamat
-                                    </label>
-                                </div>
-                                <ul class="text-sm text-gray-600 space-y-1">
-                                    <li><span>Nama :</span> {{ $address->name }}</li>
-                                    <li><span>Phone :</span> {{ $address->phone }}</li>
-                                    <li><span>Email :</span> {{ $address->email }}</li>
-                                    <li><span>Kode Pos :</span> {{ $address->zip }}</li>
-                                    <li><span>Alamat :</span> {{ $address->address }}</li>
-                                </ul>
-                            </div>
-                        @endforeach
-                    </div>
-                    <div class="mt-6">
-                        <h5 class="text-lg font-semibold text-gray-800 mb-3">Available services:</h5>
-                        <ul class="list-none available-services hidden"></ul>
-                    </div>
-
-                </div>
-            </div>
             <div class="w-full lg:w-1/4">
                 <div class="bg-white rounded-lg shadow-md p-6 sticky top-20" id="sticky_sidebar">
                     <h5 class="mb-4 text-xl font-semibold text-gray-800"><i class='fa fa-truck mr-2'></i> Delivery Service</h5>
+                    <div class="mb-4 flex flex-col gap-y-2">
+                        <div class="flex items-center">
+                            <input class="form-radio h-4 w-4 text-blue-600 shipping_type" type="radio" name="shipping_type" id="shippingTypeCourier" value="courier" checked>
+                            <label class="ml-2 text-gray-800 font-semibold" for="shippingTypeCourier">Pakai Kurir</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input class="form-radio h-4 w-4 text-blue-600 shipping_type" type="radio" name="shipping_type" id="shippingTypePickup" value="pickup">
+                            <label class="ml-2 text-gray-800 font-semibold" for="shippingTypePickup">Ambil Sendiri</label>
+                        </div>
+                    </div>
                     <div class="mt-3 flex space-x-4">
                         <div class="flex items-center">
                             <input class="form-radio h-4 w-4 text-blue-600 courier-code" type="radio" name="courier" id="inlineRadio1"
@@ -99,6 +79,41 @@
                     <button id="submitCheckoutForm" class="mt-6 w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition">Place Order</button>
                 </div>
             </div>
+            <div class="w-full lg:w-3/4">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div id="shipping-details-section">
+                        <div class="flex justify-between items-center mb-6">
+                            <h5 class="text-xl font-semibold text-gray-800">Detail Pengiriman</h5>
+                            <a href="javascript:;" class="common_btn text-blue-600 hover:text-blue-800" id="add-address-button">Tambah alamat baru</a>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            @foreach ($addresses as $address)
+                                <div class="bg-gray-50 rounded-lg p-4 shadow-sm border border-gray-200">
+                                    <div class="flex items-center mb-2">
+                                        <input class="form-radio h-4 w-4 text-blue-600 shipping_address delivery_address"
+                                            value="{{ $address->id }}" data-id="{{ $address->id }}" type="radio"
+                                            name="flexRadioDefault" id="flexRadioDefault{{ $address->id }}">
+                                        <label class="ml-2 text-gray-700 font-medium" for="flexRadioDefault{{ $address->id }}">
+                                            Pilih Alamat
+                                        </label>
+                                    </div>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li><span>Nama :</span> {{ $address->name }}</li>
+                                        <li><span>Phone :</span> {{ $address->phone }}</li>
+                                        <li><span>Email :</span> {{ $address->email }}</li>
+                                        <li><span>Kode Pos :</span> {{ $address->zip }}</li>
+                                        <li><span>Alamat :</span> {{ $address->address }}</li>
+                                    </ul>
+                                </div>
+                            @endforeach
+                        </div>
+                        <div class="mt-6">
+                            <h5 class="text-lg font-semibold text-gray-800 mb-3">Available services:</h5>
+                            <ul class="list-none available-services hidden"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -131,16 +146,24 @@
                         <div>
                             <select id="province" class="select_2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" name="province">
                                 <option value="">Select Province</option>
-                                @foreach ($provinces['rajaongkir']['results'] as $province)
-                                    <option value="{{ $province['province_id'] }}">
-                                        {{ $province['province'] }}</option>
-                                @endforeach
+                                @if(isset($provinces['data']) && is_array($provinces['data']))
+                                    @foreach ($provinces['data'] as $province)
+                                        <option value="{{ $province['id'] }}">{{ $province['province_name'] }}</option>
+                                    @endforeach
+                                @else
+                                    <option value="">Data provinsi tidak tersedia</option>
+                                @endif
                             </select>
                         </div>
                         <div>
-                            <select id="city" class="select_2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" name="city">
-                                <option value="">Select City</option>
-                            </select>
+                            <input type="text" id="city" name="city_name" class="select_2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Type city name..." autocomplete="off">
+                            <input type="hidden" name="city_id" id="city_id">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div>
+                            <input type="text" id="district" name="district_name" class="select_2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Kecamatan *" required>
+                            <input type="hidden" name="district_id" id="district_id" value="">
                         </div>
                     </div>
                     <div>
@@ -162,9 +185,6 @@
         </div>
     </div>
     @include('frontend.layouts.footer12')
-    <!-- Toastr JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
         // Konfigurasi Toastr
         toastr.options = {
@@ -296,13 +316,32 @@
                 $('#delivery_package').val($(this).val());
             });
 
+            // Sembunyikan detail pengiriman jika pilih pickup
+            $('input[name="shipping_type"]').change(function() {
+                if ($(this).val() === 'pickup') {
+                    $('#shipping-details-section').hide();
+                    $('.courier-code').closest('.mt-3').hide();
+                    $('.available-services').hide();
+                    $('#delivery_package').val('');
+                    $('#cost').text('Rp0');
+                    $('#total_amount').text('Rp' + $('#total_price').val());
+                } else {
+                    $('#shipping-details-section').show();
+                    $('.courier-code').closest('.mt-3').show();
+                }
+            });
+            // Trigger default
+            $('input[name="shipping_type"]:checked').trigger('change');
+
             $('#submitCheckoutForm').off('click').on('click', function(e) {
                 e.preventDefault(); // Prevent default action
                 console.log('Submit button clicked'); // Log for debugging
 
-                if ($('#shipping_address_id').val() == "") {
+                var shippingType = $('input[name="shipping_type"]:checked').val();
+
+                if (shippingType === 'courier' && $('#shipping_address_id').val() == "") {
                     toastr.error('Shipping address is required');
-                } else if ($('#delivery_package').val() == "") {
+                } else if ($('#delivery_package').val() == "" && shippingType === 'courier') {
                     toastr.error('Delivery service is required');
                 } else {
                     var token = $('meta[name="csrf-token"]').attr('content');
@@ -322,7 +361,8 @@
                             shipping_address_id: $('#shipping_address_id').val(),
                             delivery_package: $('#delivery_package').val(),
                             total_qty: totalQty,
-                            total_price: totalPrice
+                            total_price: totalPrice,
+                            shipping_type: shippingType
                         },
                         success: function(data) {
                             console.log(data);
@@ -387,32 +427,30 @@
             }
 
             $(document).ready(function() {
-                $('#province').change(function() {
-                    var provinceId = $(this).val();
-                    if (provinceId) {
+                // Autocomplete untuk kota
+                $('#city').autocomplete({
+                    source: function(request, response) {
                         $.ajax({
-                            url: 'checkout/cities/' + provinceId,
-                            type: 'GET',
+                            url: '/user/checkout/search-city',
                             dataType: 'json',
+                            data: { search: request.term },
                             success: function(data) {
-                                $('#city').empty();
-                                $('#city').append(
-                                    '<option value="">Select City</option>');
-                                $.each(data, function(key, value) {
-                                    $('#city').append('<option value="' + value
-                                        .city_id + '">' + value.city_name +
-                                        '</option>');
-                                });
-                            },
-                            error: function(xhr, status, error) {
-                                console.log('Error: ' + error);
+                                response($.map(data, function(item) {
+                                    return {
+                                        label: item.city_name,
+                                        value: item.city_name,
+                                        city_id: item.city_id
+                                    };
+                                }));
                             }
                         });
-                    } else {
-                        $('#city').empty();
-                        $('#city').append('<option value="">Select City</option>');
+                    },
+                    minLength: 3,
+                    select: function(event, ui) {
+                        $('#city_id').val(ui.item.city_id);
                     }
                 });
+                // Hapus autocomplete untuk #district
             });
 
             displayTotalWeight();

@@ -31,21 +31,28 @@
                                                     <div class="col-xl-4 col-md-4 mb-5 mb-md-0">
                                                         <div class="wsus__invoice_single">
                                                             <h5>Alamat Pengiriman</h5>
-                                                            <p>{{ $address->address }}, {{ $address->zip }}</p>
-                                                            <p>Kurir : {{ $order->courier }}, {{ $order->service }}</p>
+                                                            <p>{{ $address->address ?? '-' }}, {{ $address->zip ?? '-' }}</p>
+                                                            <p>Nama: {{ $address->name ?? '-' }}</p>
+                                                            <p>Phone: {{ $address->phone ?? '-' }}</p>
+                                                            <p>Email: {{ $address->email ?? '-' }}</p>
+                                                            <p>Provinsi: {{ $address->province ?? '-' }}</p>
+                                                            <p>Kota: {{ $address->city ?? '-' }}</p>
+                                                            <p>Kecamatan: {{ $address->district_name ?? '-' }}</p>
+                                                            <p>Kode Pos: {{ $address->zip ?? '-' }}</p>
+                                                            <p>Kurir : {{ $order->courier ?? '-' }}, {{ $order->service ?? '-' }}</p>
                                                         </div>
                                                     </div>
                                                     <div class="col-xl-4 col-md-4 mb-5 mb-md-0">
                                                         <div class="wsus__invoice_single text-md-center">
                                                             <h5>informasi pembayaran</h5>
-                                                            <h6>{{ $address->name }}</h6>
-                                                            <p>{{ $address->email }}</p>
-                                                            <p>{{ $address->phone }}</p>
+                                                            <h6>{{ $address->name ?? '-'}}</h6>
+                                                            <p>{{ $address->email ?? '-'}}</p>
+                                                            <p>{{ $address->phone ?? '-'}}</p>
                                                         </div>
                                                     </div>
                                                     <div class="col-xl-4 col-md-4">
                                                         <div class="wsus__invoice_single text-md-end">
-                                                            <h5>Invoice: #{{ $order->invoice_id }}</h5>
+                                                            <h5>Invoice: {{ $order->invoice_id ?? '-' }}</h5>
                                                             <h6>Order status:
                                                                 {{ config('order_status.order_status_admin')[$order->order_status]['status'] }}
                                                             </h6>

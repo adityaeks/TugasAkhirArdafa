@@ -44,12 +44,12 @@
                                     <label for="remember_me" class="ml-2 block text-sm text-gray-900">Remember me</label>
                                 </div>
 
-                                <div class="text-sm">
+                                {{-- <div class="text-sm">
                                     <a href="{{ route('password.request') }}"
                                         class="font-medium text-blue-600 hover:text-blue-500">
                                         Lupa password?
                                     </a>
-                                </div>
+                                </div> --}}
                             </div>
 
                             <div>

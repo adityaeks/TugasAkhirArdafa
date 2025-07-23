@@ -97,6 +97,8 @@ Route::group(['middleware' =>['auth', 'verified'], 'prefix' => 'user', 'as' => '
     Route::post('checkout/submit', [CheckOutController::class, 'checkOutFormSubmit'])->name('checkout.submit');
     Route::get('checkout/provinces', [CheckOutController::class, 'getProvinces']);
     Route::get('checkout/cities/{province}', [CheckOutController::class, 'getCities']);
+    Route::get('checkout/search-city', [\App\Http\Controllers\Frontend\CheckOutController::class, 'searchCity']);
+    Route::get('checkout/search-district', [\App\Http\Controllers\Frontend\CheckOutController::class, 'searchDistrict']);
 
     /** Payment Routes */
     Route::get('payment', [PaymentController::class, 'index'])->name('payment');

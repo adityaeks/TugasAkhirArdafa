@@ -27,33 +27,43 @@ class CheckOutController extends Controller
         $addresses = UserAddress::where('user_id', Auth::user()->id)->get();
         $cartItems = Cart::content();
         try {
-            $client = new Client([
-                'verify' => false, // Nonaktifkan verifikasi SSL
-            ]);
-            $response = Http::setCLient($client)->withHeaders([
+            $response = Http::withHeaders([
                 'key' => env('API_ONGKIR_KEY')
-            ])->get('https://api.rajaongkir.com/starter/province');
+            ])->get('https://rajaongkir.komerce.id/api/v1/destination/province');
 
-            $provinces = json_decode($response->getBody(), true);
+            $provinces = $response->json();
+            // Normalisasi agar setiap item punya key 'province_name' dari 'name', 'province', atau '-'
+            if (isset($provinces['data']) && is_array($provinces['data'])) {
+                foreach ($provinces['data'] as $k => $province) {
+                    $provinces['data'][$k]['province_name'] = $province['name'] ?? $province['province'] ?? '-';
+                }
+            }
+            if (!isset($provinces['data'])) {
+                $provinces['data'] = [];
+            }
             return view('frontend.pages.checkout', compact('addresses', 'provinces', 'cartItems'));
         } catch (\Exception $e) {
-            Log::error('Error calculating shipping fee: ' . $e->getMessage());
-            return [];
+            Log::error('Error fetching provinces: ' . $e->getMessage());
+            $provinces = ['data' => []];
+            return view('frontend.pages.checkout', compact('addresses', 'provinces', 'cartItems'));
         }
     }
 
 
     public function createAddress(Request $request)
     {
+        \Log::info('Masuk ke createAddress');
         $request->validate([
             'name' => ['required', 'max:200'],
             'phone' => ['required', 'max:200'],
             'email' => ['required', 'email'],
             'province' => ['required'],
             'city' => ['required'],
-            'zip' => ['required', 'max: 200'],
-            'address' => ['required', 'max: 200']
+            'district_name' => ['required', 'max:200'], // tambahkan validasi district_name
+            'zip' => ['required', 'max:200'],
+            'address' => ['required', 'max:200']
         ]);
+        dd($request->all());
 
         $address = new UserAddress();
         $address->user_id = Auth::user()->id;
@@ -62,9 +72,18 @@ class CheckOutController extends Controller
         $address->email = $request->email;
         $address->province = $request->province;
         $address->city = $request->city;
+        $address->district_name = $request->district_name; // simpan district_name
+        $address->district_id = $request->district_id;     // simpan district_id (meski kosong/manual)
         $address->zip = $request->zip;
         $address->address = $request->address;
-        $address->save();
+
+        \Log::info('Mencoba menyimpan alamat baru:', $address->toArray());
+        try {
+            $result = $address->save();
+            \Log::info('Hasil save alamat:', ['result' => $result, 'id' => $address->id]);
+        } catch (\Exception $e) {
+            \Log::error('Gagal menyimpan alamat: ' . $e->getMessage());
+        }
 
         toastr('Address created successfully!', 'success', 'Success');
 
@@ -73,29 +92,38 @@ class CheckOutController extends Controller
 
     public function checkOutFormSubmit(Request $request)
     {
-        // dd('--- MASUK CHECKOUT FORM SUBMIT ---');
         \Log::info('--- MASUK CHECKOUT FORM SUBMIT ---');
         try {
-            $request->validate([
-                'shipping_address_id' => ['required', 'integer'],
-                'delivery_package' => ['required'],
-            ], [
-                'shipping_address_id.required' => 'Alamat pengiriman wajib diisi',
-                'delivery_package.required' => 'Paket pengiriman wajib dipilih',
-            ]);
+            $shippingType = $request->input('shipping_type', 'courier');
+            $rules = [];
+            $messages = [];
+            if ($shippingType === 'courier') {
+                $rules['shipping_address_id'] = ['required', 'integer'];
+                $messages['shipping_address_id.required'] = 'Alamat pengiriman wajib diisi';
+            }
+            $request->validate($rules, $messages);
 
-            $address = \App\Models\UserAddress::findOrFail($request->shipping_address_id)->toArray();
-            if($address){
-                \Session::put('address', $address);
+            $address = null;
+            if ($shippingType === 'courier') {
+                $address = \App\Models\UserAddress::findOrFail($request->shipping_address_id)->toArray();
+                if($address){
+                    \Session::put('address', $address);
+                }
             }
 
-            // Pastikan shipping_fee, courier, dan service sudah ada di session
-            $shippingFee = \Session::get('shipping_fee');
-            $courier = \Session::get('courier');
-            $service = \Session::get('service');
-            if ($shippingFee === null || $courier === null || $service === null) {
-                \Log::error('Shipping data missing: shipping_fee=' . var_export($shippingFee, true) . ', courier=' . var_export($courier, true) . ', service=' . var_export($service, true));
-                return response()->json(['error' => 'Silakan pilih layanan pengiriman terlebih dahulu.'], 422);
+            if ($shippingType === 'pickup') {
+                $shippingFee = 0;
+                $courier = null;
+                $service = null;
+            } else {
+                // Pastikan shipping_fee, courier, dan service sudah ada di session
+                $shippingFee = \Session::get('shipping_fee');
+                $courier = \Session::get('courier');
+                $service = \Session::get('service');
+                if ($shippingFee === null || $courier === null || $service === null) {
+                    \Log::error('Shipping data missing: shipping_fee=' . var_export($shippingFee, true) . ', courier=' . var_export($courier, true) . ', service=' . var_export($service, true));
+                    return response()->json(['error' => 'Silakan pilih layanan pengiriman terlebih dahulu.'], 422);
+                }
             }
 
             $cartItems = \Cart::content();
@@ -132,7 +160,6 @@ class CheckOutController extends Controller
             // Kurangi nilai kupon dari total amount
             $totalAmount -= $couponDiscount;
 
-
             // Generate UUID ONCE and use for all references
             $order_uuid = (string) \Str::uuid();
 
@@ -158,7 +185,6 @@ class CheckOutController extends Controller
             ])->post('https://app.sandbox.midtrans.com/snap/v1/transactions', $params);
 
             $responseBody = $response->json();
-            // dd($responseBody);
 
             if (!$response->successful()) {
                 Log::error('Midtrans API failed: ' . json_encode($responseBody));
@@ -188,7 +214,6 @@ class CheckOutController extends Controller
             $order->service = $service;
             $order->coupon = json_encode(\Session::get('coupon'));
             $order->order_status = 'pending';
-            // Tambahkan UUID untuk order_uuid
             $order->order_uuid = $order_uuid;
             $order->save();
 
@@ -255,18 +280,31 @@ class CheckOutController extends Controller
 
     public function shippingFee(Request $request)
     {
-        // Ambil address_id dari request
         $addressId = $request->get('address_id');
-        $productWeight = $request->get('total_weight'); // Ambil berat produk langsung dari request
-
-        // Cari alamat berdasarkan address_id
+        $productWeight = $request->get('total_weight');
+        $courier = $request->get('courier');
         $address = UserAddress::find($addressId);
-
-        // Hitung biaya pengiriman
-        $availableServices = $this->calculateShippingFee($addressId, $address, $request->get('courier'), $productWeight);
-
-        // Mengembalikan view dengan data yang sudah diproses
-        return $this->loadTheme('available_services', ['services' => $availableServices, 'totalWeight' => $productWeight]);
+        // Diasumsikan address->district_id sudah ada, jika tidak, tambahkan field ini
+        $districtId = $address->district_id ?? null;
+        if (!$districtId) {
+            return response()->json(['error' => 'District ID not found in address'], 400);
+        }
+        try {
+            $response = Http::withHeaders([
+                'key' => env('API_ONGKIR_KEY')
+            ])->post('https://rajaongkir.komerce.id/api/v1/cost/district', [
+                'origin_district_id' => env('API_ONGKIR_ORIGIN_DISTRICT_ID'), // set di .env
+                'destination_district_id' => $districtId,
+                'weight' => $productWeight,
+                'courier' => $courier,
+            ]);
+            $costs = $response->json();
+            // Struktur response: ['data' => [...]]
+            return response()->json($costs['data'] ?? []);
+        } catch (\Exception $e) {
+            Log::error('Error fetching shipping fee: ' . $e->getMessage());
+            return response()->json([]);
+        }
     }
 
     public function choosePackage(Request $request)
@@ -417,32 +455,89 @@ class CheckOutController extends Controller
     {
         $response = Http::withHeaders([
             'key' => env('API_ONGKIR_KEY')
-        ])->get('https://api.rajaongkir.com/starter/province');
+        ])->get('https://rajaongkir.komerce.id/api/v1/destination/province');
 
-        $provinces = json_decode($response->getBody(), true);
-
+        // dd($response->json());
+        $provinces = $response->json();
+        if (!isset($provinces['data'])) {
+            $provinces['data'] = [];
+        }
         return view('frontend.pages.checkout', compact('provinces'));
     }
 
     public function getCities($provinceId)
     {
         try {
-            $client = new Client([
-                'verify' => false, // Nonaktifkan verifikasi SSL
-            ]);
-            $response = Http::setCLient($client)->withHeaders([
+            $response = Http::withHeaders([
                 'key' => env('API_ONGKIR_KEY')
-            ])->get('https://api.rajaongkir.com/starter/city', [
-                'province' => $provinceId
-            ]);
+            ])->get('https://rajaongkir.komerce.id/api/v1/destination/city?province_id=' . $provinceId);
 
-            $cities = json_decode($response->getBody(), true);
-            // dd($cities['rajaongkir']['result']);
-            return response()->json($cities['rajaongkir']['results']);
+            $cities = $response->json();
+            dd($cities);
+            // Normalisasi agar setiap item punya key 'city_id' dan 'city_name'
+            $result = [];
+            if (isset($cities['data']) && is_array($cities['data'])) {
+                foreach ($cities['data'] as $city) {
+                    $result[] = [
+                        'city_id' => $city['id'] ?? $city['city_id'] ?? '-',
+                        'city_name' => $city['name'] ?? $city['city_name'] ?? '-',
+                    ];
+                }
+            }
+            return response()->json($result);
         } catch (\Exception $e) {
             Log::error('Error fetching cities: ' . $e->getMessage());
             return response()->json([]);
         }
+    }
+
+    // Hapus duplikasi method searchCity, sisakan satu versi yang benar
+    public function searchCity(Request $request)
+    {
+        $search = $request->get('search');
+        $response = Http::withHeaders([
+            'key' => env('API_ONGKIR_KEY')
+        ])->get('https://rajaongkir.komerce.id/api/v1/destination/domestic-destination?search=' . $search);
+
+        $cities = $response->json();
+        // dd($cities);
+        Log::info('searchCity response:', $cities);
+        $result = [];
+        if (isset($cities['data']) && is_array($cities['data'])) {
+            foreach ($cities['data'] as $city) {
+                $result[] = [
+                    'city_id' => $city['id'] ?? '-',
+                    'city_name' => $city['label'] ?? $city['name'] ?? $city['city'] ?? $city['city_name'] ?? '-',
+                ];
+            }
+        }
+        return response()->json($result);
+    }
+
+    public function searchDistrict(Request $request)
+    {
+        $search = $request->get('search');
+        $cityId = $request->get('city_id');
+        $url = 'https://rajaongkir.komerce.id/api/v1/destination/district?search=' . urlencode($search);
+        if ($cityId) {
+            $url .= '&city=' . $cityId;
+        }
+        $response = Http::withHeaders([
+            'key' => env('API_ONGKIR_KEY')
+        ])->get($url);
+
+        $districts = $response->json();
+        $result = [];
+        if (isset($districts['data']) && is_array($districts['data'])) {
+            foreach ($districts['data'] as $district) {
+                $result[] = [
+                    'district_id' => $district['id'] ?? '-',
+                    'district_name' => $district['label'] ?? $district['name'] ?? $district['district'] ?? $district['district_name'] ?? '-',
+                ];
+            }
+        }
+        // Jika gagal, return array kosong, jangan error
+        return response()->json($result);
     }
 
     protected function loadTheme($view, $data = [])
