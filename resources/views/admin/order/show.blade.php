@@ -118,12 +118,7 @@
                                     </div>
                                     <div class="invoice-detail-item">
                                         <div class="invoice-detail-name">Shipping (+)</div>
-                                        <div class="invoice-detail-value">Rp {{ $order->shiping_fee }}</div>
-                                    </div>
-                                    <div class="invoice-detail-item">
-                                        <div class="invoice-detail-name">Coupon (-)</div>
-                                        <div class="invoice-detail-value">Rp
-                                            {{ @$coupon->discount ? @$coupon->discount : 0 }}</div>
+                                        <div class="invoice-detail-value">Rp {{ $order->shiping_fee ?? 0}}</div>
                                     </div>
                                     <hr class="mt-2 mb-2">
                                     <div class="invoice-detail-item">

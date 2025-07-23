@@ -14,6 +14,7 @@ use App\Http\Controllers\Frontend\UserOrderController;
 use App\Http\Controllers\Frontend\WishlistController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\WilayahController;
 
 /*
 |--------------------------------------------------------------------------
@@ -112,3 +113,7 @@ Route::get('/meal-box', [PageController::class, 'mealBox'])->name('meal-box');
 Route::get('/snack-box', [PageController::class, 'snackBox'])->name('snack-box');
 Route::get('/tumpeng-nasi-liwet', [PageController::class, 'tumpengNasiLiwet'])->name('tumpeng-nasi-liwet');
 Route::get('/daily-home-catering', [PageController::class, 'dailyHomeCatering'])->name('daily-home-catering');
+
+Route::get('/get-regencies/{province_id}', [WilayahController::class, 'getRegencies']);
+Route::get('/get-districts/{regency_id}', [WilayahController::class, 'getDistricts']);
+Route::get('/get-villages/{district_id}', [WilayahController::class, 'getVillages']);

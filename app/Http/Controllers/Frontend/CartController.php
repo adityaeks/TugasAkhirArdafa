@@ -64,7 +64,8 @@ class CartController extends Controller
                 'weight' => $product->weight,
                 'options' => [
                     'image' => $product->thumb_image,
-                    'slug' => $product->slug
+                    'slug' => $product->slug,
+                    'category_slug' => $product->category->slug ?? null
                 ]
             ];
 

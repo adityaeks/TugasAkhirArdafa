@@ -17,8 +17,15 @@ class UserOrderController extends Controller
 
     public function show(string $id)
     {
-        $order = Order::findOrFail($id);
-        $transactions = Transaction::where('order_id', $id)->first();
-        return view('frontend.dashboard.order.show', compact('order','transactions'));
+        $order = Order::with(['transaction', 'orderProducts'])->findOrFail($id);
+        $transactions = $order->transaction;
+        $address = json_decode($order->order_address);
+
+        $provinceName = $address->province_id ? \App\Models\Province::find($address->province_id)?->name : '-';
+        $regencyName = $address->regency_id ? \App\Models\Regency::find($address->regency_id)?->name : '-';
+        $districtName = $address->district_id ? \App\Models\District::find($address->district_id)?->name : '-';
+        $villageName = $address->village_id ? \App\Models\Village::find($address->village_id)?->name : '-';
+
+        return view('frontend.dashboard.order.show', compact('order','transactions','address','provinceName','regencyName','districtName','villageName'));
     }
 }

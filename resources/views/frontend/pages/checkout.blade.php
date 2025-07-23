@@ -22,64 +22,8 @@
     @include('frontend.layouts.navbar')
     <section class="container mx-auto px-4 py-8">
         <div class="flex flex-col lg:flex-row gap-8">
-            <div class="w-full lg:w-1/4">
-                <div class="bg-white rounded-lg shadow-md p-6 sticky top-20" id="sticky_sidebar">
-                    <h5 class="mb-4 text-xl font-semibold text-gray-800"><i class='fa fa-truck mr-2'></i> Delivery Service</h5>
-                    <div class="mb-4 flex flex-col gap-y-2">
-                        <div class="flex items-center">
-                            <input class="form-radio h-4 w-4 text-blue-600 shipping_type" type="radio" name="shipping_type" id="shippingTypeCourier" value="courier" checked>
-                            <label class="ml-2 text-gray-800 font-semibold" for="shippingTypeCourier">Pakai Kurir</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input class="form-radio h-4 w-4 text-blue-600 shipping_type" type="radio" name="shipping_type" id="shippingTypePickup" value="pickup">
-                            <label class="ml-2 text-gray-800 font-semibold" for="shippingTypePickup">Ambil Sendiri</label>
-                        </div>
-                    </div>
-                    <div class="mt-3 flex space-x-4">
-                        <div class="flex items-center">
-                            <input class="form-radio h-4 w-4 text-blue-600 courier-code" type="radio" name="courier" id="inlineRadio1"
-                                value="jne">
-                            <label class="ml-2 text-gray-700" for="inlineRadio1">JNE</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input class="form-radio h-4 w-4 text-blue-600 courier-code" type="radio" name="courier" id="inlineRadio2"
-                                value="pos">
-                            <label class="ml-2 text-gray-700" for="inlineRadio2">POS</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input class="form-radio h-4 w-4 text-blue-600 courier-code" type="radio" name="courier" id="inlineRadio3"
-                                value="tiki">
-                            <label class="ml-2 text-gray-700" for="inlineRadio3">TIKI</label>
-                        </div>
-                    </div>
-
-                    <div class="mt-6 pt-4 border-t border-gray-200">
-                        <div class="flex justify-between text-gray-700 mb-2">
-                            <span>Subtotal:</span>
-                            <span>Rp{{ number_format(getCartTotal(), 0, ',', '.') }}</span>
-                        </div>
-                        <div class="flex justify-between text-gray-700 mb-2">
-                            <span>Biaya Pengiriman(+):</span>
-                            <span id="cost">Rp0</span>
-                        </div>
-                        <div class="flex justify-between text-xl font-bold text-gray-800 pt-4 border-t">
-                            <span>Total:</span>
-                            <span><b id="total_amount"
-                                        data-id="0">Rp0</b></span>
-                        </div>
-                    </div>
-                    <form action="{{ route('user.checkout.submit') }}" id="checkOutForm" class="mt-6">
-                        <input type="hidden" name="shipping_method_id" value="" id="shipping_method_id">
-                        <input type="hidden" name="shipping_address_id" value="" id="shipping_address_id">
-                        <input type="hidden" name="delivery_service" value="" id="delivery_service">
-                        <input type="hidden" name="delivery_package" value="" id="delivery_package">
-                        <input type="hidden" name="total_qty" id="total_qty">
-                        <input type="hidden" name="total_price" id="total_price">
-                    </form>
-                    <button id="submitCheckoutForm" class="mt-6 w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition">Place Order</button>
-                </div>
-            </div>
-            <div class="w-full lg:w-3/4">
+            <!-- Kolom kiri: Form/alamat -->
+            <div class="w-full lg:w-3/4 order-2 lg:order-1">
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <div id="shipping-details-section">
                         <div class="flex justify-between items-center mb-6">
@@ -91,7 +35,7 @@
                                 <div class="bg-gray-50 rounded-lg p-4 shadow-sm border border-gray-200">
                                     <div class="flex items-center mb-2">
                                         <input class="form-radio h-4 w-4 text-blue-600 shipping_address delivery_address"
-                                            value="{{ $address->id }}" data-id="{{ $address->id }}" type="radio"
+                                            value="{{ $address->id }}" data-id="{{ $address->id }}" data-regency-id="{{ $address->regency_id }}" type="radio"
                                             name="flexRadioDefault" id="flexRadioDefault{{ $address->id }}">
                                         <label class="ml-2 text-gray-700 font-medium" for="flexRadioDefault{{ $address->id }}">
                                             Pilih Alamat
@@ -101,17 +45,74 @@
                                         <li><span>Nama :</span> {{ $address->name }}</li>
                                         <li><span>Phone :</span> {{ $address->phone }}</li>
                                         <li><span>Email :</span> {{ $address->email }}</li>
+                                        <li><span>Provinsi  :</span> {{ $address->province->name }}</li>
+                                        <li><span>Kota  :</span> {{ $address->regency->name }}</li>
+                                        <li><span>Kecamatan  :</span> {{ $address->district->name }}</li>
+                                        <li><span>Desa/Kelurahan  :</span> {{ $address->village->name }}</li>
                                         <li><span>Kode Pos :</span> {{ $address->zip }}</li>
                                         <li><span>Alamat :</span> {{ $address->address }}</li>
                                     </ul>
                                 </div>
                             @endforeach
                         </div>
-                        <div class="mt-6">
-                            <h5 class="text-lg font-semibold text-gray-800 mb-3">Available services:</h5>
-                            <ul class="list-none available-services hidden"></ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Kolom kanan: Card Delivery Service -->
+            <div class="w-full lg:w-1/4 order-1 lg:order-2">
+                <div class="bg-white rounded-lg shadow-md p-6 sticky top-20" id="sticky_sidebar">
+                    <h5 class="mb-4 text-xl font-semibold text-gray-800"><i class='fa fa-truck mr-2'></i> Pengiriman</h5>
+                    <div class="mb-4 flex flex-col gap-y-2">
+                        <div class="flex items-center">
+                            <input class="form-radio h-4 w-4 text-blue-600" type="radio" name="jenis_pengiriman" id="pengirimanSidoarjoSurabaya" value="sidoarjo_surabaya" disabled>
+                            <label class="ml-2 text-gray-800 font-semibold" for="pengirimanSidoarjoSurabaya">Sidoarjo & Surabaya</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input class="form-radio h-4 w-4 text-blue-600" type="radio" name="jenis_pengiriman" id="pengirimanLuarSidoarjoSurabaya" value="luar_sidoarjo_surabaya" disabled>
+                            <label class="ml-2 text-gray-800 font-semibold" for="pengirimanLuarSidoarjoSurabaya">Luar Sidoarjo & Surabaya</label>
                         </div>
                     </div>
+                    <div class="mt-6 pt-4 border-t border-gray-200">
+                        <div class="mb-4">
+                            <h6 class="font-semibold text-gray-700 mb-2">Detail Produk</h6>
+                            <ul class="divide-y divide-gray-200">
+                                @foreach($cartItems as $item)
+                                    <li class="py-2 flex justify-between items-center">
+                                        <div>
+                                            <span class="font-medium">{{ $item->name }}</span>
+                                            <span class="text-xs text-gray-500">x{{ $item->qty }}</span>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="text-gray-700">Rp{{ number_format($item->price * $item->qty, 0, ',', '.') }}</span>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        <hr class="my-4 border-gray-200">
+                        <div class="flex justify-between text-gray-700 mb-2">
+                            <span>Subtotal:</span>
+                            <span>Rp{{ number_format(getCartTotal(), 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex justify-between text-gray-700 mb-2">
+                            <span>Biaya Pengiriman(+):</span>
+                            <span id="cost">Rp0</span>
+                        </div>
+                        <div class="flex justify-between text-xl font-bold text-gray-800 pt-4 border-t">
+                            <span>Total:</span>
+                            <span><b id="total_amount" data-id="0">Rp0</b></span>
+                        </div>
+                    </div>
+                    <form action="{{ route('user.checkout.submit') }}" id="checkOutForm" class="mt-6">
+                        <input type="hidden" name="shipping_method_id" value="" id="shipping_method_id">
+                        <input type="hidden" name="shipping_address_id" value="" id="shipping_address_id">
+                        <input type="hidden" name="delivery_service" value="" id="delivery_service">
+                        <input type="hidden" name="delivery_package" value="" id="delivery_package">
+                        <input type="hidden" name="total_qty" id="total_qty">
+                        <input type="hidden" name="total_price" id="total_price">
+                        <input type="hidden" name="shipping_fee" id="shipping_fee" value="0">
+                    </form>
+                    <button id="submitCheckoutForm" class="mt-6 w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition">Place Order</button>
                 </div>
             </div>
         </div>
@@ -144,26 +145,29 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <select id="province" class="select_2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" name="province">
-                                <option value="">Select Province</option>
-                                @if(isset($provinces['data']) && is_array($provinces['data']))
-                                    @foreach ($provinces['data'] as $province)
-                                        <option value="{{ $province['id'] }}">{{ $province['province_name'] }}</option>
-                                    @endforeach
-                                @else
-                                    <option value="">Data provinsi tidak tersedia</option>
-                                @endif
+                            <select id="province" name="province_id" class="select_2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                <option value="">Pilih Provinsi</option>
+                                @foreach($provinces as $province)
+                                    <option value="{{ $province->id }}">{{ $province->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div>
-                            <input type="text" id="city" name="city_name" class="select_2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Type city name..." autocomplete="off">
-                            <input type="hidden" name="city_id" id="city_id">
+                            <select id="regency" name="regency_id" class="select_2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                <option value="">Pilih Kabupaten/Kota</option>
+                            </select>
                         </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                         <div>
-                            <input type="text" id="district" name="district_name" class="select_2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Kecamatan *" required>
-                            <input type="hidden" name="district_id" id="district_id" value="">
+                            <select id="district" name="district_id" class="select_2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                <option value="">Pilih Kecamatan</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select id="village" name="village_id" class="select_2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                <option value="">Pilih Desa/Kelurahan</option>
+                            </select>
                         </div>
                     </div>
                     <div>
@@ -309,7 +313,64 @@
             });
 
             $('.shipping_address').on('click', function() {
+                // Pastikan ID alamat selalu diisi ke input hidden
                 $('#shipping_address_id').val($(this).data('id'));
+                var regencyId = $(this).data('regency-id');
+                var sidoarjoRegencyId = 3515;
+                var surabayaRegencyId = 3578;
+                var ongkirTetap = 10000;
+                var shippingFee = ongkirTetap;
+                var isAreaGratis = (regencyId == sidoarjoRegencyId || regencyId == surabayaRegencyId);
+
+                var cartItems = window.cartItems || [];
+                var slugTumpeng = 'tumpeng-nasi-liwet';
+                var slugPrasmanan = 'prasmanan-buffet';
+                var slugDaily = 'daily-home-catering';
+                var slugMeal = 'meal-box';
+                var slugSnack = 'snack-box';
+
+                // Jika ada produk tumpeng atau prasmanan buffet, gratis ongkir
+                var adaTumpengAtauPrasmanan = cartItems.some(function(item) {
+                    return [slugTumpeng, slugPrasmanan].includes(item.options.category_slug);
+                });
+
+                // Jika semua produk daily home/meal box/snack box dan qty >= 3 serta sidoarjo, gratis ongkir
+                var semuaDailyMealSnack = cartItems.length > 0 && cartItems.every(function(item) {
+                    return [slugDaily, slugMeal, slugSnack].includes(item.options.category_slug);
+                });
+                var totalQtyDailyMealSnack = 0;
+                cartItems.forEach(function(item) {
+                    if ([slugDaily, slugMeal, slugSnack].includes(item.options.category_slug)) {
+                        totalQtyDailyMealSnack += parseInt(item.qty);
+                    }
+                });
+
+                if (adaTumpengAtauPrasmanan) {
+                    shippingFee = 0;
+                } else if (isAreaGratis && semuaDailyMealSnack && totalQtyDailyMealSnack >= 3) {
+                    shippingFee = 0;
+                } else if (isAreaGratis && semuaDailyMealSnack && totalQtyDailyMealSnack < 3) {
+                    shippingFee = ongkirTetap;
+                } else if (!isAreaGratis && adaTumpengAtauPrasmanan) {
+                    shippingFee = 0;
+                } else {
+                    shippingFee = ongkirTetap;
+                }
+
+                if(isAreaGratis) {
+                    $('#pengirimanSidoarjoSurabaya').prop('checked', true);
+                    $('#pengirimanLuarSidoarjoSurabaya').prop('checked', false);
+                } else {
+                    $('#pengirimanSidoarjoSurabaya').prop('checked', false);
+                    $('#pengirimanLuarSidoarjoSurabaya').prop('checked', true);
+                }
+                // Update biaya pengiriman dan total
+                $('#cost').text('Rp' + shippingFee.toLocaleString());
+                $('#shipping_fee').val(shippingFee); // update hidden input
+                var subtotal = parseInt({{ getCartTotal() }});
+                var total = subtotal + shippingFee;
+                $('#total_amount').text('Rp' + total.toLocaleString());
+                $('#total_amount').data('id', total);
             });
 
             $('.delivery-package').on('click', function() {
@@ -347,6 +408,7 @@
                     var token = $('meta[name="csrf-token"]').attr('content');
                     var totalQty = $('#total_qty').val();
                     var totalPrice = $('#total_price').val();
+                    var shippingFee = $('#shipping_fee').val(); // Get shipping fee from hidden input
 
                     console.log('Sending AJAX request'); // Log for debugging
 
@@ -362,7 +424,8 @@
                             delivery_package: $('#delivery_package').val(),
                             total_qty: totalQty,
                             total_price: totalPrice,
-                            shipping_type: shippingType
+                            shipping_type: shippingType,
+                            shipping_fee: shippingFee // Include shipping fee in AJAX data
                         },
                         success: function(data) {
                             console.log(data);
@@ -456,7 +519,62 @@
             displayTotalWeight();
             updateFormValues();
         });
+
+        $(document).ready(function() {
+            // Cascade wilayah Indonesia
+            $('#province').change(function() {
+                var id = $(this).val();
+                $('#regency').empty().append('<option value="">Pilih Kabupaten/Kota</option>');
+                $('#district').empty().append('<option value="">Pilih Kecamatan</option>');
+                $('#village').empty().append('<option value="">Pilih Desa/Kelurahan</option>');
+                if(id) {
+                    $.get('/get-regencies/' + id, function(data) {
+                        $.each(data, function(i, item) {
+                            $('#regency').append('<option value="'+item.id+'">'+item.name+'</option>');
+                        });
+                    });
+                }
+            });
+            $('#regency').change(function() {
+                var id = $(this).val();
+                $('#district').empty().append('<option value="">Pilih Kecamatan</option>');
+                $('#village').empty().append('<option value="">Pilih Desa/Kelurahan</option>');
+                if(id) {
+                    $.get('/get-districts/' + id, function(data) {
+                        $.each(data, function(i, item) {
+                            $('#district').append('<option value="'+item.id+'">'+item.name+'</option>');
+                        });
+                    });
+                }
+            });
+            $('#district').change(function() {
+                var id = $(this).val();
+                $('#village').empty().append('<option value="">Pilih Desa/Kelurahan</option>');
+                if(id) {
+                    $.get('/get-villages/' + id, function(data) {
+                        $.each(data, function(i, item) {
+                            $('#village').append('<option value="'+item.id+'">'+item.name+'</option>');
+                        });
+                    });
+                }
+            });
+        });
     </script>
+    <script>
+window.cartItems = [
+@foreach($cartItems as $item)
+    {
+        id: {{ $item->id }},
+        name: @json($item->name),
+        qty: {{ $item->qty }},
+        price: {{ $item->price }},
+        options: {
+            category_slug: @json($item->options['category_slug'] ?? null)
+        }
+    },
+@endforeach
+];
+</script>
 </body>
 
 </html>

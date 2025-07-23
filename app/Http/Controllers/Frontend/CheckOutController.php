@@ -26,67 +26,40 @@ class CheckOutController extends Controller
     {
         $addresses = UserAddress::where('user_id', Auth::user()->id)->get();
         $cartItems = Cart::content();
-        try {
-            $response = Http::withHeaders([
-                'key' => env('API_ONGKIR_KEY')
-            ])->get('https://rajaongkir.komerce.id/api/v1/destination/province');
-
-            $provinces = $response->json();
-            // Normalisasi agar setiap item punya key 'province_name' dari 'name', 'province', atau '-'
-            if (isset($provinces['data']) && is_array($provinces['data'])) {
-                foreach ($provinces['data'] as $k => $province) {
-                    $provinces['data'][$k]['province_name'] = $province['name'] ?? $province['province'] ?? '-';
-                }
-            }
-            if (!isset($provinces['data'])) {
-                $provinces['data'] = [];
-            }
-            return view('frontend.pages.checkout', compact('addresses', 'provinces', 'cartItems'));
-        } catch (\Exception $e) {
-            Log::error('Error fetching provinces: ' . $e->getMessage());
-            $provinces = ['data' => []];
-            return view('frontend.pages.checkout', compact('addresses', 'provinces', 'cartItems'));
-        }
+        $provinces = \App\Models\Province::all();
+        return view('frontend.pages.checkout', compact('addresses', 'provinces', 'cartItems'));
     }
 
 
     public function createAddress(Request $request)
     {
-        \Log::info('Masuk ke createAddress');
         $request->validate([
             'name' => ['required', 'max:200'],
             'phone' => ['required', 'max:200'],
             'email' => ['required', 'email'],
-            'province' => ['required'],
-            'city' => ['required'],
-            'district_name' => ['required', 'max:200'], // tambahkan validasi district_name
+            'province_id' => ['required', 'integer'],
+            'regency_id' => ['required', 'integer'],
+            'district_id' => ['required', 'integer'],
+            'village_id' => ['required', 'integer'],
             'zip' => ['required', 'max:200'],
-            'address' => ['required', 'max:200']
+            'address' => ['required', 'max:200'],
         ]);
-        dd($request->all());
 
         $address = new UserAddress();
         $address->user_id = Auth::user()->id;
         $address->name = $request->name;
         $address->phone = $request->phone;
         $address->email = $request->email;
-        $address->province = $request->province;
-        $address->city = $request->city;
-        $address->district_name = $request->district_name; // simpan district_name
-        $address->district_id = $request->district_id;     // simpan district_id (meski kosong/manual)
+        $address->province_id = $request->province_id;
+        $address->regency_id = $request->regency_id;
+        $address->district_id = $request->district_id;
+        $address->village_id = $request->village_id;
         $address->zip = $request->zip;
         $address->address = $request->address;
-
-        \Log::info('Mencoba menyimpan alamat baru:', $address->toArray());
-        try {
-            $result = $address->save();
-            \Log::info('Hasil save alamat:', ['result' => $result, 'id' => $address->id]);
-        } catch (\Exception $e) {
-            \Log::error('Gagal menyimpan alamat: ' . $e->getMessage());
-        }
+        // dd($request->all());
+        $address->save();
 
         toastr('Address created successfully!', 'success', 'Success');
-
         return redirect()->back();
     }
 
@@ -111,20 +84,10 @@ class CheckOutController extends Controller
                 }
             }
 
-            if ($shippingType === 'pickup') {
-                $shippingFee = 0;
-                $courier = null;
-                $service = null;
-            } else {
-                // Pastikan shipping_fee, courier, dan service sudah ada di session
-                $shippingFee = \Session::get('shipping_fee');
-                $courier = \Session::get('courier');
-                $service = \Session::get('service');
-                if ($shippingFee === null || $courier === null || $service === null) {
-                    \Log::error('Shipping data missing: shipping_fee=' . var_export($shippingFee, true) . ', courier=' . var_export($courier, true) . ', service=' . var_export($service, true));
-                    return response()->json(['error' => 'Silakan pilih layanan pengiriman terlebih dahulu.'], 422);
-                }
-            }
+            // Ambil shipping_fee dari request, courier dan service null
+            $shippingFee = $request->input('shipping_fee', 0);
+            $courier = null;
+            $service = null;
 
             $cartItems = \Cart::content();
             $itemDetails = [];

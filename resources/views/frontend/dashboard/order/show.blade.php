@@ -35,11 +35,11 @@
                                                             <p>Nama: {{ $address->name ?? '-' }}</p>
                                                             <p>Phone: {{ $address->phone ?? '-' }}</p>
                                                             <p>Email: {{ $address->email ?? '-' }}</p>
-                                                            <p>Provinsi: {{ $address->province ?? '-' }}</p>
-                                                            <p>Kota: {{ $address->city ?? '-' }}</p>
-                                                            <p>Kecamatan: {{ $address->district_name ?? '-' }}</p>
+                                                            <p>Provinsi: {{ $provinceName }}</p>
+                                                            <p>Kota: {{ $regencyName }}</p>
+                                                            <p>Kecamatan: {{ $districtName }}</p>
+                                                            <p>Desa/Kelurahan: {{ $villageName }}</p>
                                                             <p>Kode Pos: {{ $address->zip ?? '-' }}</p>
-                                                            <p>Kurir : {{ $order->courier ?? '-' }}, {{ $order->service ?? '-' }}</p>
                                                         </div>
                                                     </div>
                                                     <div class="col-xl-4 col-md-4 mb-5 mb-md-0">
@@ -57,7 +57,7 @@
                                                                 {{ config('order_status.order_status_admin')[$order->order_status]['status'] }}
                                                             </h6>
                                                             {{-- <p>Payment Method: {{ $order->payment_method }}</p> --}}
-                                                            <p>Payment Status: {{ $transactions->status }}</p>
+                                                            <p>Payment Status: {{ $order->status }}</p>
                                                             {{-- <p>Transaction id: {{ $order->transaction->transaction_id }} --}}
                                                             </p>
                                                         </div>

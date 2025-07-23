@@ -73,13 +73,13 @@
                             },
                             {
                                 href: "{{ route('meal-box') }}",
-                                img: "{{ asset('frontend/images/mealbox.jpg') }}",
+                                img: "{{ asset('frontend/images/3.png') }}",
                                 title: "Meal Box",
                                 desc: "Makanan sehat dan lezat untuk kebutuhan harian Anda dengan berbagai pilihan paket meal box."
                             },
                             {
                                 href: "{{ route('snack-box') }}",
-                                img: "{{ asset('frontend/images/snack.jpg') }}",
+                                img: "{{ asset('frontend/images/4.png') }}",
                                 title: "Snack Box",
                                 desc: "Aneka snack box untuk berbagai acara, cocok untuk rapat, arisan, dan event lainnya."
                             },
