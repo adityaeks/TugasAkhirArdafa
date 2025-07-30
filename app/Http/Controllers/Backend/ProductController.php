@@ -11,7 +11,8 @@ use App\Models\Product;
 use App\Traits\ImageUploadTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Str;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -135,14 +136,14 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        \Log::info('Proses hapus produk dimulai', ['id' => $id]);
+        Log::info('Proses hapus produk dimulai', ['id' => $id]);
         try {
             $product = Product::findOrFail($id);
-            \Log::info('Produk ditemukan', ['product' => $product]);
+            Log::info('Produk ditemukan', ['product' => $product]);
 
             // Cek apakah produk memiliki pesanan
             if(OrderProduct::where('product_id', $product->id)->count() > 0){
-                \Log::warning('Produk memiliki pesanan, tidak bisa dihapus', ['product_id' => $product->id]);
+                Log::warning('Produk memiliki pesanan, tidak bisa dihapus', ['product_id' => $product->id]);
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Produk ini memiliki pesanan, tidak bisa dihapus.'
@@ -151,7 +152,7 @@ class ProductController extends Controller
 
             // Hapus gambar utama produk
             $this->deleteImage($product->thumb_image);
-            \Log::info('Gambar utama dihapus', ['thumb_image' => $product->thumb_image]);
+            Log::info('Gambar utama dihapus', ['thumb_image' => $product->thumb_image]);
 
             // Hapus gambar galeri produk (Dihilangkan karena tabel tidak ada)
             // $galleryImages = ProductImageGallery::where('product_id', $product->id)->get();
@@ -159,18 +160,18 @@ class ProductController extends Controller
             //     $this->deleteImage($image->image);
             //     $image->delete();
             // }
-            // \Log::info('Gambar galeri dihapus', ['gallery_count' => count($galleryImages)]);
+            // Log::info('Gambar galeri dihapus', ['gallery_count' => count($galleryImages)]);
 
             // Hapus produk itu sendiri
             $product->delete();
-            \Log::info('Produk berhasil dihapus', ['id' => $id]);
+            Log::info('Produk berhasil dihapus', ['id' => $id]);
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Produk berhasil dihapus!'
             ]);
         } catch (\Exception $e) {
-            \Log::error('Error saat hapus produk', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            Log::error('Error saat hapus produk', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
             return response()->json([
                 'status' => 'error',
                 'message' => 'Terjadi kesalahan saat menghapus produk: ' . $e->getMessage()

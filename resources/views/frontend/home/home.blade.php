@@ -140,8 +140,8 @@
         </div>
     </section>
 
-    <!-- Why Choose Us -->
-    <section id="about" class="py-16 bg-white">
+    <!-- Profile -->
+    <section id="profile" class="py-16 bg-white">
         <div class="container mx-auto px-6 lg:px-16">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold text-gray-800 mb-2">
@@ -290,6 +290,72 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- Contact Us -->
+    <section id="contact" class="py-16 bg-white">
+        <div class="container mx-auto px-6 lg:px-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Hubungi Kami</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    Siap melayani kebutuhan catering Anda. Silakan hubungi kami untuk konsultasi dan pemesanan.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Address -->
+                <div class="text-center p-6 rounded-lg hover:bg-gray-50 transition">
+                    <div class="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-map-marker-alt text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Alamat</h3>
+                    <p class="text-gray-600">
+                        Perum Villa Jasmine 3, A2 No. 8-2, Suko, Sidoarjo
+                    </p>
+                </div>
+
+                <!-- Phone -->
+                <div class="text-center p-6 rounded-lg hover:bg-gray-50 transition">
+                    <div class="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-phone text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Telepon</h3>
+                    <p class="text-gray-600">
+                        +62 878-8797-3004
+                    </p>
+                </div>
+
+                <!-- Email -->
+                <div class="text-center p-6 rounded-lg hover:bg-gray-50 transition">
+                    <div class="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-envelope text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Email</h3>
+                    <p class="text-gray-600">
+                        hello@ourkitchen.com
+                    </p>
+                </div>
+            </div>
+
+            <!-- Social Media -->
+            {{-- <div class="text-center mt-12">
+                <h3 class="text-2xl font-semibold text-gray-800 mb-6">Ikuti Kami</h3>
+                <div class="flex justify-center space-x-6">
+                    <a href="#" class="bg-primary text-white w-14 h-14 rounded-full flex items-center justify-center hover:bg-primary/80 transition">
+                        <i class="fab fa-facebook-f text-xl"></i>
+                    </a>
+                    <a href="#" class="bg-primary text-white w-14 h-14 rounded-full flex items-center justify-center hover:bg-primary/80 transition">
+                        <i class="fab fa-instagram text-xl"></i>
+                    </a>
+                    <a href="#" class="bg-primary text-white w-14 h-14 rounded-full flex items-center justify-center hover:bg-primary/80 transition">
+                        <i class="fab fa-whatsapp text-xl"></i>
+                    </a>
+                    <a href="#" class="bg-primary text-white w-14 h-14 rounded-full flex items-center justify-center hover:bg-primary/80 transition">
+                        <i class="fab fa-tiktok text-xl"></i>
+                    </a>
+                </div>
+            </div> --}}
         </div>
     </section>
 @endsection

@@ -30,6 +30,11 @@ class PageController extends Controller
         return view('frontend.pages.contact');
     }
 
+    public function testimoni()
+    {
+        return view('frontend.pages.testimoni');
+    }
+
     public function handleContactForm(Request $request)
     {
         $request->validate([

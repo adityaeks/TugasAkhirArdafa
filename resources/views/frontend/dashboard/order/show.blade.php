@@ -26,6 +26,17 @@
                                 <div class="">
                                     <div class="wsus__invoice_area">
                                         <div class="wsus__invoice_header">
+                                            <div class="header-yellow p-3 mb-4 rounded"  style="background-color: #ffd90027">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="{{ asset('frontend/images/logo123.png') }}" alt="OurKitchen Logo" class="logo-small mr-2 rounded" style="width: 80px">
+                                                        <h3 class="mb-0 text-dark">OurKitchen</h3>
+                                                    </div>
+                                                    <div class="text-dark">
+                                                        <strong>Invoice #{{ $order->invoice_id ?? '-' }}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="wsus__invoice_content">
                                                 <div class="row">
                                                     <div class="col-xl-4 col-md-4 mb-5 mb-md-0">
@@ -134,6 +145,29 @@
         </div>
     </section>
 @endsection
+
+@push('styles')
+<style>
+    .logo-small {
+        object-fit: contain;
+        border-radius: 4px;
+        max-width: 100%;
+        display: block;
+    }
+
+    .header-yellow {
+        background: linear-gradient(135deg, #FFD700, #FFA500);
+        border: 2px solid #FF8C00;
+        box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);
+    }
+
+    .header-yellow h2, .header-yellow h3 {
+        color: #333 !important;
+        font-weight: bold;
+        text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+    }
+</style>
+@endpush
 
 @push('scripts')
     <script>

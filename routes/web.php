@@ -65,6 +65,8 @@ Route::get('change-product-list-view', [FrontendProductController::class, 'chage
 Route::get('about', [PageController::class, 'about'])->name('about');
 /** terms and conditions page route */
 Route::get('terms-and-conditions', [PageController::class, 'termsAndCondition'])->name('terms-and-conditions');
+/** testimoni route */
+Route::get('testimoni', [PageController::class, 'testimoni'])->name('testimoni');
 /** contact route */
 Route::get('contact', [PageController::class, 'contact'])->name('contact');
 Route::post('contact', [PageController::class, 'handleContactForm'])->name('handle-contact-form');

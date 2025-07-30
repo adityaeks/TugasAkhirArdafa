@@ -4,7 +4,7 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
                 <div class="flex items-center mb-4">
-                    <i class="fas fa-utensils text-2xl text-blue-600 mr-2"></i>
+                    <img src="{{ asset('frontend/images/logo12.jpg') }}" alt="OurKitchen Logo" class="w-8 h-8 mr-2 rounded">
                     <h3 class="text-xl font-bold text-gray-400">OurKitchen</h3>
                 </div>
                 <p class="text-gray-400 text-sm">Makanan segar dan sehat yang disiapkan dengan cinta dan bahan-bahan terbaik.
@@ -19,18 +19,22 @@
             <div>
                 <h3 class="text-lg font-semibold text-gray-400 mb-4">Menu Utama</h3>
                 <ul class="space-y-2">
-                    <li><a href="{{ url('/') }}" class="text-gray-400 hover:text-white text-sm">Beranda</a></li>
-                    <li><a href="{{ route('tumpeng-nasi-liwet') }}" class="text-gray-400 hover:text-white text-sm">Tumpeng & Nasi Liwet</a></li>
-                    <li><a href="{{ route('daily-home-catering') }}" class="text-gray-400 hover:text-white text-sm">Daily Home Catering</a></li>
+                    <li><a href="{{ url('/') }}" class="text-gray-400 hover:text-white text-sm">Home</a></li>
+                    <li><a href="{{ route('products.index') }}" class="text-gray-400 hover:text-white text-sm">Menu</a></li>
+                    <li><a href="#profile" class="text-gray-400 hover:text-white text-sm">Profile</a></li>
+                    <li><a href="#testimonials" class="text-gray-400 hover:text-white text-sm">Testimoni</a></li>
+                    <li><a href="#contact" class="text-gray-400 hover:text-white text-sm">Contact Us</a></li>
                 </ul>
             </div>
 
             <div>
-                <h3 class="text-lg font-semibold text-gray-400 mb-4">Kategori Lainnya</h3>
+                <h3 class="text-lg font-semibold text-gray-400 mb-4">Layanan</h3>
                 <ul class="space-y-2">
-                    <li><a href="{{ route('prasmanan-buffet') }}" class="text-gray-400 hover:text-white text-sm">Prasmanan Buffet</a></li>
-                    <li><a href="{{ route('meal-box') }}" class="text-gray-400 hover:text-white text-sm">Meal Box</a></li>
-                    <li><a href="{{ route('snack-box') }}" class="text-gray-400 hover:text-white text-sm">Snack Box</a></li>
+                    <li><a href="{{ route('products.index') }}?category=prasmanan-buffet" class="text-gray-400 hover:text-white text-sm">Prasmanan Buffet</a></li>
+                    <li><a href="{{ route('products.index') }}?category=meal-box" class="text-gray-400 hover:text-white text-sm">Meal Box</a></li>
+                    <li><a href="{{ route('products.index') }}?category=snack-box" class="text-gray-400 hover:text-white text-sm">Snack Box</a></li>
+                    <li><a href="{{ route('products.index') }}?category=tumpeng-nasi-liwet" class="text-gray-400 hover:text-white text-sm">Tumpeng & Nasi Liwet</a></li>
+                    <li><a href="{{ route('products.index') }}?category=daily-home-catering" class="text-gray-400 hover:text-white text-sm">Daily Home Catering</a></li>
                 </ul>
             </div>
 

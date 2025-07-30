@@ -162,28 +162,43 @@
     <!-- Related Products -->
     @if(isset($relatedProducts) && count($relatedProducts) > 0)
     <div class="mt-12">
-        <h3 class="text-xl font-bold text-gray-800 mb-6">You Might Also Like</h3>
+        <h3 class="text-xl font-bold text-gray-800 mb-6">Produk Terkait</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             @foreach($relatedProducts as $relatedProduct)
-            <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow group">
                 <a href="{{ route('product-detail', $relatedProduct->slug) }}" class="block">
                     <div class="relative">
                         <img src="{{ asset($relatedProduct->thumb_image) }}"
                              alt="{{ $relatedProduct->name }}"
-                             class="w-full h-48 object-cover">
-                        <span class="absolute top-2 right-2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-full">NEW</span>
+                             class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+                        @if($relatedProduct->offer_price && $relatedProduct->offer_price < $relatedProduct->price)
+                            <div class="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-sm font-semibold">
+                                {{ round((($relatedProduct->price - $relatedProduct->offer_price) / $relatedProduct->price) * 100) }}% OFF
+                            </div>
+                        @endif
                     </div>
                     <div class="p-4">
-                        <h4 class="font-semibold text-gray-800 mb-1">{{ $relatedProduct->name }}</h4>
+                        <h4 class="font-semibold text-gray-800 mb-1 hover:text-primary transition">{{ $relatedProduct->name }}</h4>
                         <p class="text-gray-600 text-sm mb-2">{{ $relatedProduct->short_description }}</p>
                         <div class="flex justify-between items-center">
-                            <span class="font-bold text-blue-500">Rp{{ number_format($relatedProduct->price, 0, ',', '.') }}</span>
-                            <button class="text-blue-500 hover:text-blue-600">
-                                <i class="fas fa-plus-circle text-xl"></i>
-                            </button>
+                            <span class="font-bold text-primary">
+                                @if($relatedProduct->offer_price && $relatedProduct->offer_price < $relatedProduct->price)
+                                    Rp{{ number_format($relatedProduct->offer_price, 0, ',', '.') }}
+                                @else
+                                    Rp{{ number_format($relatedProduct->price, 0, ',', '.') }}
+                                @endif
+                            </span>
                         </div>
                     </div>
                 </a>
+                <!-- Add to Cart Button - Outside the link -->
+                <div class="px-4 pb-4">
+                    <button onclick="addToCart({{ $relatedProduct->id }})"
+                        class="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/80 transition duration-300 flex items-center justify-center gap-2">
+                        <i class="fas fa-shopping-cart"></i>
+                        Tambah ke Keranjang
+                    </button>
+                </div>
             </div>
             @endforeach
         </div>
@@ -317,6 +332,35 @@
         document.getElementById(tabName).classList.add("active");
         evt.currentTarget.classList.add("border-blue-500", "text-blue-600");
         evt.currentTarget.classList.remove("border-transparent", "text-gray-500");
+    }
+
+    // Fungsi untuk menambahkan produk ke keranjang (untuk related products)
+    function addToCart(productId) {
+        fetch('{{ route('add-to-cart') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                quantity: 1
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                toastr.success(data.message);
+                updateCartCount(); // Perbarui jumlah keranjang
+                updateMiniCart(); // Perbarui mini-cart
+            } else {
+                toastr.error(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            toastr.error('Terjadi kesalahan saat menambahkan produk ke keranjang.');
+        });
     }
 </script>
 @endpush

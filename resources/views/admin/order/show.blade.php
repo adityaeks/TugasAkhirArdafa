@@ -9,7 +9,7 @@
 @section('content')
     <!-- Main Content -->
     <section class="section">
-        <div class="section-header">
+        <div class="section-header no-print">
             <h1>Orders</h1>
         </div>
 
@@ -19,8 +19,15 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="invoice-title">
-                                <h2></h2>
-                                <div class="invoice-number">Invoice #{{ $order->invoice_id }}</div>
+                                <div class="header-yellow p-3 mb-3 rounded" style="background-color: #ffd90027">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ asset('frontend/images/logo123.png') }}" alt="OurKitchen Logo" class="logo-small mr-2 rounded" style="width: 80px">
+                                            <h2 class="mb-0 text-dark">OurKitchen</h2>
+                                        </div>
+                                        <div class="invoice-number text-dark">Invoice #{{ $order->invoice_id }}</div>
+                                    </div>
+                                </div>
                             </div>
                             <hr>
                             <div class="row">
@@ -132,7 +139,7 @@
                     </div>
                 </div>
                 <hr>
-                <div class="text-md-right">
+                <div class="text-md-right no-print">
                     <button class="btn btn-warning btn-icon icon-left print_invoice"><i class="fas fa-print"></i>
                         Print</button>
                 </div>
@@ -140,6 +147,133 @@
         </div>
     </section>
 @endsection
+
+@push('styles')
+<style>
+    .logo-small {
+        object-fit: contain;
+        border-radius: 4px;
+        max-width: 100%;
+        display: block;
+    }
+
+    .header-yellow {
+        background: linear-gradient(135deg, #FFD700, #FFA500);
+        border: 2px solid #FF8C00;
+        box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);
+    }
+
+    .header-yellow h2, .header-yellow h3 {
+        color: #333 !important;
+        font-weight: bold;
+        text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Print Styles */
+    @media print {
+        body {
+            background: white !important;
+            color: black !important;
+            font-size: 12px !important;
+            line-height: 1.4 !important;
+        }
+
+        .header-yellow {
+            background: #f8f9fa !important;
+            border: 1px solid #dee2e6 !important;
+            box-shadow: none !important;
+            margin-bottom: 20px !important;
+        }
+
+        .header-yellow h2, .header-yellow h3 {
+            color: #333 !important;
+            text-shadow: none !important;
+            font-size: 18px !important;
+        }
+
+        .logo-small {
+            width: 40px !important;
+            height: 40px !important;
+        }
+
+        .invoice-number {
+            font-size: 14px !important;
+            font-weight: bold !important;
+        }
+
+        .table {
+            border-collapse: collapse !important;
+            width: 100% !important;
+            margin-bottom: 20px !important;
+        }
+
+        .table th, .table td {
+            border: 1px solid #dee2e6 !important;
+            padding: 8px !important;
+            text-align: left !important;
+        }
+
+        .table th {
+            background: #f8f9fa !important;
+            font-weight: bold !important;
+        }
+
+        .invoice-detail-item {
+            margin-bottom: 8px !important;
+        }
+
+        .invoice-detail-name {
+            font-weight: bold !important;
+        }
+
+        .invoice-detail-value {
+            text-align: right !important;
+        }
+
+        .invoice-detail-value-lg {
+            font-size: 16px !important;
+            font-weight: bold !important;
+        }
+
+        /* Hide unnecessary elements for print */
+        .btn, .section-header, .navbar-bg, .main-sidebar, .main-navbar, .no-print {
+            display: none !important;
+        }
+
+        /* Ensure proper page breaks */
+        .invoice-print {
+            page-break-inside: avoid !important;
+        }
+
+        /* Remove shadows and decorative elements */
+        * {
+            box-shadow: none !important;
+            text-shadow: none !important;
+        }
+
+        /* Ensure text is readable */
+        a {
+            color: #333 !important;
+            text-decoration: none !important;
+        }
+
+        /* Compact spacing for print */
+        .section-body {
+            padding: 0 !important;
+        }
+
+        .invoice {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        hr {
+            border: 1px solid #dee2e6 !important;
+            margin: 15px 0 !important;
+        }
+    }
+</style>
+@endpush
 
 @push('scripts')
     <script>
